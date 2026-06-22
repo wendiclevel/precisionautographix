@@ -41,7 +41,7 @@ header {
 }
 
 .logo-wrap { display: flex; align-items: center; text-decoration: none; }
-.logo-img { height: 90px; width: auto; display: block; }
+.logo-img { height: 130px; width: auto; display: block; }
 
 .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; }
 
