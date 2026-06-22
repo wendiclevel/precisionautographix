@@ -10,14 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Deploy via SCP to DreamHost
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.DREAMHOST_HOST }}
-          username: ${{ secrets.DREAMHOST_USER }}
-          password: ${{ secrets.DREAMHOST_PASS }}
-          port: 22
-          source: "index.html,css/"
-          target: ${{ secrets.DREAMHOST_PATH }}
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
+
+      - name: Deploy via rsync
+        run: |
+          sshpass -p "${{ secrets.DREAMHOST_PASS }}" rsync -avz \
+            -e "ssh -o StrictHostKeyChecking=no -p 22" \
+            index.html css/ \
+            ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }}:${{ secrets.DREAMHOST_PATH }}/
