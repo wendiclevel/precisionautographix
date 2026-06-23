@@ -812,7 +812,7 @@
             placement: 'Vehicle cab',
             qty: 1,
             workNotes: 'Current edition required — 2024 ERG. Guide pages: ' + selectedSpecs.map(s => s.guideNum).join(', '),
-            penalty: '$481 – $87,006 per violation per day (49 USC 5123) — same penalty schedule as hazmat placards, applies interstate and intrastate',
+            penalty: 'Missing emergency response information: $481 – $87,006/day (49 USC 5123 hazmat violation schedule). The ERG satisfies 49 CFR 172.602 — typically cited as a correctable violation at roadside inspection; applies interstate and intrastate.',
             ergSpecs: selectedSpecs
           });
         }
@@ -1082,7 +1082,6 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
     let _logoBase64 = null;
     (function() {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
       img.onload = () => {
         try {
           const c = document.createElement('canvas');
@@ -1330,8 +1329,219 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         });
       }
 
+      // ══════════════════ ERG APPENDIX PAGES ══════════════════
+      let _ergAppendixDone = false;
+      if (ergReq) {
+        const _hazToGuide = { fuel:['128'], propane:['115'], pesticide:['151','153'], pool:['154'], oxidizer:['140'], other_haz:[] };
+        const _guidesToShow = [];
+        const _seenG = new Set();
+        answers.hazmatTypes.forEach(h => { (_hazToGuide[h]||[]).forEach(g => { if(!_seenG.has(g)){_seenG.add(g);_guidesToShow.push(g);} }); });
+
+        const _ERG = {
+          '115': {
+            title:'GUIDE 115 — FLAMMABLE GAS', cls:'Class 2.1  ·  Propane / LP Gas / Compressed Flammable Gas',
+            mats:'UN 1075 (Propane) · UN 1965 (LP Gas Mixture) · Butane, Hydrogen, Natural Gas',
+            hazFire:'Extremely flammable; may be ignited by heat, sparks, or flames. Vapors travel to ignition source and flash back. BLEVE risk in fire. Gas may accumulate in low areas — heavier than air.',
+            hazHealth:'Vapors may cause dizziness or asphyxiation without warning. Contact with liquefied gas causes frostbite. No odor warning for some compressed gases.',
+            safety:'Call 911. Isolate hazard area — 100m (330 ft) small leak; 300m (1000 ft) large spill. Stay upwind and uphill. Eliminate ALL ignition sources (no smoking, sparks, or flames in area).',
+            isolation:'Small spill: 100m (330 ft)   ·   Large spill: 300m (1000 ft)   ·   Tank/rail car fire: 1600m (1 mile) all directions',
+            fire:'Small: Dry chemical or CO2. Large: Water spray/fog from distance. Cool tanks with flooding water — BLEVE risk. Isolate 1600m if tank truck is in fire. Do NOT direct water at leak source.',
+            spill:'Eliminate ALL ignition sources. Stop leak if possible without risk. Turn leaking container so gas escapes rather than liquid. Prevent entry into sewers and confined spaces. Ventilate area.',
+            aid:'Move victim to fresh air. If not breathing, give artificial respiration. For liquefied gas frostbite, thaw with lukewarm water. Call 911. Seek medical attention.'
+          },
+          '128': {
+            title:'GUIDE 128 — FLAMMABLE LIQUID', cls:'Class 3  ·  Gasoline / Diesel / Heating Oil / Jet Fuel',
+            mats:'UN 1203 (Gasoline) · UN 1993 (Diesel/Heating Oil) · UN 1863 (Jet Fuel) · UN 1267 (Crude Oil)',
+            hazFire:'Highly flammable; ignited by heat, sparks, or flames. Vapors form explosive mixtures with air. Vapors travel to ignition source and flash back. BLEVE risk. Liquid floats on water and may reignite.',
+            hazHealth:'Inhalation or contact may irritate or burn skin and eyes. Fire produces irritating, corrosive, and/or toxic gases. Vapors may cause dizziness or suffocation at high concentrations.',
+            safety:'Call 911. Isolate hazard area — 50m (150 ft) small leak; 300m (1000 ft) large spill. Stay upwind. Eliminate ALL ignition sources (no smoking, flares, sparks, or open flames in area).',
+            isolation:'Small spill: 50m (150 ft)   ·   Large spill: 300m (1000 ft)   ·   Tank/rail car fire: 800m (0.5 mile) all directions',
+            fire:'Small: Dry chemical, CO2, water spray, or foam. Large: Water spray, fog, or regular foam. Move containers from fire area. Cool tanks with water. Do NOT get water inside containers.',
+            spill:'Eliminate ignition sources. Stop leak if possible. Do not walk through spilled material. Prevent entry into waterways, sewers, and confined areas. Absorb with dry earth, sand, or vermiculite.',
+            aid:'Move victim to fresh air. Administer oxygen if breathing is difficult. Flush skin and eyes with water for 20+ min. Remove contaminated clothing. Do NOT induce vomiting if ingested. Call 911.'
+          },
+          '140': {
+            title:'GUIDE 140 — OXIDIZER', cls:'Class 5.1  ·  Oxidizing Solid/Liquid (Pool Shock, Ammonium Nitrate, Hydrogen Peroxide)',
+            mats:'UN 1479 (Oxidizing Solid) · UN 2014 (Hydrogen Peroxide) · UN 1942 (Ammonium Nitrate) · UN 2880 (Calcium Hypochlorite)',
+            hazFire:'Accelerates burning when involved in fire. Some may decompose explosively when heated or contaminated. Contact with combustibles (wood, paper, oil) may cause fire. Containers may explode when heated.',
+            hazHealth:'Inhalation, ingestion, or skin/eye contact may cause severe injury or death. Fire produces irritating and corrosive gases. Effects may be delayed. Runoff may pollute waterways.',
+            safety:'Call 911. Keep unauthorized personnel away. Isolate hazard area — 100m (330 ft). Stay upwind, uphill, upstream. Keep combustibles AWAY from spilled material.',
+            isolation:'Small spill: 50m (160 ft)   ·   Large spill: 100m (330 ft)   ·   Fire: 500m (0.3 mile) all directions',
+            fire:'Small: Flood with water — Do NOT use dry chemical, CO2, or Halon. Large: Flood with large amounts of water. Move containers from fire area. Prevent water runoff from contaminating water supply.',
+            spill:'Stop leak if possible. Keep combustibles away from material. Do not touch spilled material without full protective gear. Prevent entry into waterways and sewers. Collect for proper disposal.',
+            aid:'Move victim to fresh air. Call 911. Flush skin or eyes with running water for 20+ min. Remove and isolate contaminated clothing. Effects may be delayed — seek medical attention even with no immediate symptoms.'
+          },
+          '151': {
+            title:'GUIDE 151 — TOXIC / POISON (Non-Combustible)', cls:'Class 6.1  ·  Toxic Substances — Pesticides, Herbicides',
+            mats:'UN 2588 (Pesticide Solid) · UN 2902 (Pesticide Liquid, Toxic) · Check product SDS sheet for specific UN number',
+            hazFire:'Some materials may burn, but none ignite readily. Containers may explode in heat of fire.',
+            hazHealth:'TOXIC — Inhalation, ingestion, or contact with skin or eyes may cause severe injury or death. Fire produces irritating, corrosive, and/or toxic gases. Runoff from fire control poses environmental hazard.',
+            safety:'Call 911. Keep unauthorized personnel away. Stay upwind, uphill, upstream. Isolate hazard area — 100m (330 ft). Ventilate closed spaces before entering.',
+            isolation:'Small spill: 75m (250 ft)   ·   Large spill: 100m (330 ft)   ·   Fire: 800m (0.5 mile) all directions',
+            fire:'Small: Dry chemical, CO2, water spray, or foam. Large: Water spray, fog, or foam. Move containers from fire area. Do NOT get water inside containers.',
+            spill:'Stop leak if possible without risk. Do not walk through spilled material. Prevent entry into waterways, sewers, and basements. Absorb with dry earth, sand, or vermiculite. Dispose of properly.',
+            aid:'Move victim to fresh air. Call 911. If not breathing, give artificial respiration. Flush skin or eyes with running water for 20+ min. Remove and isolate contaminated clothing. Ensure medical personnel know the material involved.'
+          },
+          '153': {
+            title:'GUIDE 153 — TOXIC / POISON (Combustible)', cls:'Class 6.1  ·  Toxic Combustible Substances — Combustible Pesticides/Herbicides',
+            mats:'Combustible pesticides and herbicides — see product SDS sheet for specific UN number',
+            hazFire:'Combustible material; may be ignited by heat, sparks, or flames. Containers may explode when heated.',
+            hazHealth:'TOXIC — Inhalation, ingestion, or contact may cause severe injury or death. Fire produces irritating, corrosive, and/or toxic gases. Water runoff may cause environmental pollution.',
+            safety:'Call 911. Keep unauthorized personnel away. Stay upwind, uphill, upstream. Eliminate ignition sources. Isolate hazard area — 100m (330 ft) minimum.',
+            isolation:'Small spill: 50m (160 ft)   ·   Large spill: 100m (330 ft)   ·   Fire: 800m (0.5 mile) all directions',
+            fire:'Small: Dry chemical, CO2, or water spray. Large: Water spray or fog. Move containers from fire area. Cool fire-exposed tanks with water.',
+            spill:'Eliminate ignition sources. Stop leak if possible. Do not walk through spilled material. Prevent entry into waterways and sewers. Absorb with non-combustible material.',
+            aid:'Move victim to fresh air. Call 911. If not breathing, give artificial respiration. Flush skin or eyes with running water for 20+ min. Remove contaminated clothing. Seek medical attention immediately.'
+          },
+          '154': {
+            title:'GUIDE 154 — CORROSIVE', cls:'Class 8  ·  Corrosive Substances — Pool Chemicals, Acids, Caustics',
+            mats:'UN 1760 (Corrosive Liquid) · UN 1824 (Sodium Hydroxide Solution) · UN 1789 (Hydrochloric Acid) · UN 1830 (Sulfuric Acid)',
+            hazFire:'Non-combustible — material itself does not burn, but decomposes on heating producing corrosive/toxic fumes. Some oxidizing corrosives may ignite combustibles.',
+            hazHealth:'CORROSIVE — Inhalation, ingestion, or contact may cause severe burns, injury, or death. Fire produces irritating, corrosive, and/or toxic gases. Runoff from fire control may cause pollution.',
+            safety:'Call 911. Keep unauthorized personnel away. Stay upwind, uphill, upstream. Isolate hazard area — 50m (160 ft) minimum. Ventilate enclosed areas before entry.',
+            isolation:'Small spill: 25m (75 ft)   ·   Large spill: 50m (160 ft)   ·   Fire: 300m (0.2 mile) all directions',
+            fire:'Small: Dry chemical, CO2, or water spray. Large: Dry chemical, CO2, alcohol-resistant foam, or water spray. Move containers from fire area. Do NOT get water inside containers.',
+            spill:'Do NOT touch spilled material without full protective gear. Stop leak if possible. Absorb with dry earth or sand — do not use sawdust or combustible absorbent. Prevent entry into waterways and sewers.',
+            aid:'Move victim to fresh air. Call 911. Flush skin or eyes with running water for 20+ min. Remove and isolate contaminated clothing. Do not apply ointment to burns. Seek medical attention immediately.'
+          }
+        };
+
+        if (_guidesToShow.length > 0) {
+          _ergAppendixDone = true;
+          doc.addPage(); addFooter();
+          let ay = 0;
+
+          // Appendix header band
+          doc.setFillColor(20,50,120); doc.rect(0,0,W,16,'F');
+          doc.setFillColor(204,0,0); doc.rect(0,0,4,16,'F');
+          doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+          doc.text('APPENDIX A — EMERGENCY RESPONSE INFORMATION', M, 10);
+          doc.setFont('helvetica','normal'); doc.setFontSize(7);
+          doc.text('From: USDOT 2024 Emergency Response Guidebook (ERG)  ·  49 CFR 172.602 compliance reference  ·  Keep in vehicle cab', M, 14.5);
+          ay = 20;
+
+          // Notice box
+          doc.setFillColor(255,252,215); doc.rect(M,ay,W-M*2,12,'F');
+          doc.setDrawColor(180,160,0); doc.rect(M,ay,W-M*2,12,'S');
+          doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(100,80,0);
+          doc.text('NOTICE: This appendix is compiled from USDOT 2024 ERG, a public domain PHMSA publication. For complete emergency response', M+3, ay+5);
+          doc.text('information, always carry the current ERG edition in your vehicle cab.  Free download: phmsa.dot.gov/hazmat/erg', M+3, ay+9.5);
+          ay += 15;
+
+          for (const gn of _guidesToShow) {
+            const g = _ERG[gn];
+            if (!g) continue;
+            if (ay > 195) { doc.addPage(); addFooter(); ay = 20; }
+
+            // Guide title bar
+            doc.setFillColor(20,50,120); doc.rect(M,ay,W-M*2,8,'F');
+            doc.setFillColor(204,0,0); doc.rect(M,ay,3,8,'F');
+            doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+            doc.text(g.title, M+6, ay+5.5);
+            ay += 8;
+
+            // Class / materials bar
+            doc.setFillColor(235,240,255); doc.rect(M,ay,W-M*2,10,'F');
+            doc.setDrawColor(170,185,220); doc.rect(M,ay,W-M*2,10,'S');
+            doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(40,40,120);
+            doc.text(g.cls, M+4, ay+4.5);
+            doc.setFont('helvetica','normal'); doc.setFontSize(6.2); doc.setTextColor(80,80,120);
+            doc.text(doc.splitTextToSize(g.mats, W-M*2-8)[0], M+4, ay+8.5);
+            ay += 12;
+
+            // POTENTIAL HAZARDS header
+            doc.setFillColor(80,20,20); doc.rect(M,ay,W-M*2,5.5,'F');
+            doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+            doc.text('POTENTIAL HAZARDS', M+4, ay+4);
+            ay += 5.5;
+
+            const fhL = doc.splitTextToSize(g.hazFire, W-M*2-38);
+            const fhH = fhL.length*3.6+7;
+            doc.setFillColor(255,242,238); doc.rect(M,ay,W-M*2,fhH,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(180,50,0);
+            doc.text('Fire/Explosion:', M+4, ay+5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(70,30,20);
+            doc.text(fhL, M+40, ay+5);
+            ay += fhH;
+
+            const hhL = doc.splitTextToSize(g.hazHealth, W-M*2-24);
+            const hhH = hhL.length*3.6+7;
+            doc.setFillColor(255,246,238); doc.rect(M,ay,W-M*2,hhH,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(150,80,0);
+            doc.text('Health:', M+4, ay+5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(70,40,10);
+            doc.text(hhL, M+22, ay+5);
+            ay += hhH;
+
+            // PUBLIC SAFETY header
+            if (ay > 225) { doc.addPage(); addFooter(); ay = 20; }
+            doc.setFillColor(20,80,20); doc.rect(M,ay,W-M*2,5.5,'F');
+            doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+            doc.text('PUBLIC SAFETY', M+4, ay+4);
+            ay += 5.5;
+
+            const sfL = doc.splitTextToSize(g.safety, W-M*2-8);
+            const sfH = sfL.length*3.6+7;
+            doc.setFillColor(235,248,235); doc.rect(M,ay,W-M*2,sfH,'F');
+            doc.setFont('helvetica','normal'); doc.setFontSize(6.8); doc.setTextColor(30,70,30);
+            doc.text(sfL, M+4, ay+5);
+            ay += sfH;
+
+            // Isolation distance row
+            doc.setFillColor(210,235,210); doc.rect(M,ay,W-M*2,7,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(0,100,0);
+            doc.text('INITIAL ISOLATION:', M+4, ay+4.5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(20,70,20);
+            doc.text(doc.splitTextToSize(g.isolation, W-M*2-44)[0], M+42, ay+4.5);
+            ay += 9;
+
+            // EMERGENCY RESPONSE header
+            if (ay > 225) { doc.addPage(); addFooter(); ay = 20; }
+            doc.setFillColor(20,50,120); doc.rect(M,ay,W-M*2,5.5,'F');
+            doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+            doc.text('EMERGENCY RESPONSE', M+4, ay+4);
+            ay += 5.5;
+
+            const frL = doc.splitTextToSize(g.fire, W-M*2-22);
+            const frH = frL.length*3.6+7;
+            doc.setFillColor(245,238,255); doc.rect(M,ay,W-M*2,frH,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(100,0,150);
+            doc.text('Fire:', M+4, ay+5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(60,20,80);
+            doc.text(frL, M+18, ay+5);
+            ay += frH;
+
+            const spL = doc.splitTextToSize(g.spill, W-M*2-28);
+            const spH = spL.length*3.6+7;
+            doc.setFillColor(235,240,255); doc.rect(M,ay,W-M*2,spH,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(0,60,160);
+            doc.text('Spill/Leak:', M+4, ay+5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(20,40,100);
+            doc.text(spL, M+30, ay+5);
+            ay += spH;
+
+            const faL = doc.splitTextToSize(g.aid, W-M*2-26);
+            const faH = faL.length*3.6+7;
+            doc.setFillColor(232,248,238); doc.rect(M,ay,W-M*2,faH,'F');
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(0,100,40);
+            doc.text('First Aid:', M+4, ay+5);
+            doc.setFont('helvetica','normal'); doc.setTextColor(20,70,30);
+            doc.text(faL, M+26, ay+5);
+            ay += faH + 8;
+          }
+
+          // End notice
+          if (ay > 250) { doc.addPage(); addFooter(); ay = 20; }
+          doc.setFillColor(248,248,248); doc.rect(M,ay,W-M*2,11,'F');
+          doc.setDrawColor(200,200,200); doc.rect(M,ay,W-M*2,11,'S');
+          doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(120,120,120);
+          const _endN = doc.splitTextToSize('Emergency response information sourced from USDOT 2024 ERG (public domain, PHMSA). This summary does not substitute for the complete ERG or professional hazmat training. Always carry the current ERG in your vehicle cab per 49 CFR 172.602.', W-M*2-8);
+          doc.text(_endN, M+4, ay+4.5);
+        }
+      }
+
       // ══════════════════ APPROVAL BLOCK ══════════════════
-      if (y > 210) { doc.addPage(); addFooter(); y = 20; }
+      if (_ergAppendixDone || y > 210) { doc.addPage(); addFooter(); y = 20; }
       y += 6;
 
       doc.setFillColor(255,245,245); doc.rect(M, y, W-M*2, 52, 'F');
@@ -1344,7 +1554,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       y += 12;
 
       doc.setTextColor(...DARK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct and authorizes Precision Autographix to produce and install the listed graphics.';
+      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct, authorizes Precision Autographix to produce and install the listed graphics, and acknowledges having read the Liability Disclaimer on the following page.';
       const atLines = doc.splitTextToSize(approvalText, W-M*2-8);
       doc.text(atLines, M+4, y); y += atLines.length*4.5 + 5;
 
@@ -1366,6 +1576,81 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('Authorized by (Precision Autographix)', M+4, sigY2+12);
       doc.text('Date', M+90, sigY2+12);
       doc.setLineWidth(0.2);
+
+      // ══════════════════ LIABILITY DISCLAIMER PAGE ══════════════════
+      doc.addPage(); addFooter();
+
+      // Header bar
+      doc.setFillColor(40,40,40); doc.rect(0,0,W,14,'F');
+      doc.setFillColor(204,0,0); doc.rect(0,0,4,14,'F');
+      doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text('LIABILITY DISCLAIMER & LIMITATION OF LIABILITY', M, 9.5);
+      let dy = 20;
+
+      // Intro note
+      doc.setFillColor(250,250,250); doc.rect(M,dy,W-M*2,10,'F');
+      doc.setDrawColor(200,200,200); doc.rect(M,dy,W-M*2,10,'S');
+      doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(80,80,80);
+      doc.text('Please read this disclaimer carefully. By signing the Work Order Approval on the preceding page, you acknowledge and agree to these terms.', M+4, dy+6.5);
+      dy += 14;
+
+      // Disclaimer sections
+      const dSections = [
+        {
+          title: 'INFORMATIONAL PURPOSE ONLY',
+          body: 'This compliance report and work order are provided for general informational purposes only. Nothing in this document constitutes legal advice, formal regulatory guidance, a compliance audit, or a guarantee of compliance with any federal, state, or local regulation. This report is intended solely to assist in identifying common commercial vehicle marking requirements for general planning and graphics production purposes.'
+        },
+        {
+          title: 'NO WARRANTY',
+          body: 'Vehicle marking and compliance requirements vary by jurisdiction, vehicle type, GVWR, operation type, cargo class, cargo quantity, number of vehicles, and individual circumstances. Precision Autographix makes no warranty, express or implied, regarding the accuracy, completeness, currency, or applicability of any information in this report. Regulations change; this report reflects general requirements as understood at the time of generation and may not reflect recent regulatory changes or jurisdiction-specific rules.'
+        },
+        {
+          title: 'REGULATORY VERIFICATION REQUIRED',
+          body: 'You are solely responsible for independently verifying all applicable requirements with the relevant regulatory authorities before operating any vehicle. These include but are not limited to: FMCSA (fmcsa.dot.gov), PHMSA (phmsa.dot.gov), your state Department of Transportation, the Alabama Law Enforcement Agency (ALEA), and/or a qualified transportation compliance attorney or consultant. Do not rely solely on this report to determine your compliance obligations.'
+        },
+        {
+          title: 'HAZARDOUS MATERIALS NOTICE',
+          body: 'Hazardous materials compliance is complex and highly fact-specific. Placard requirements, UN numbers, ERG guide references, and emergency response information provided herein are general starting points only. Your specific cargo, concentration, quantity, and packaging may alter your requirements significantly. Always consult your product Safety Data Sheet (SDS) and a qualified hazmat compliance professional. Precision Autographix is not a hazmat consultant and does not certify hazmat compliance.'
+        },
+        {
+          title: 'LIMITATION OF LIABILITY',
+          body: 'Precision Autographix, its owners, officers, employees, and agents shall not be liable for any penalties, fines, citations, out-of-service orders, license suspensions, accidents, property damage, personal injury, or losses of any kind — direct, indirect, incidental, or consequential — arising from reliance on this compliance report, from any inaccuracy or omission herein, or from the use of any information provided. The maximum liability of Precision Autographix in connection with any compliance report is limited to the amount paid for the graphics services described in the approved work order.'
+        },
+        {
+          title: 'GRAPHICS PRODUCTION SCOPE',
+          body: 'Precision Autographix is responsible only for the production and installation of vinyl graphics as specified in the signed and approved work order. Compliance determination, placard class selection, UN number verification, cargo classification, operational decisions, and all other regulatory matters remain the sole responsibility of the vehicle operator, fleet owner, and their qualified regulatory counsel. We produce what you specify — it is your responsibility to specify correctly.'
+        }
+      ];
+
+      dSections.forEach(sec => {
+        if (dy > 240) { doc.addPage(); addFooter(); dy = 20; }
+        // Section title
+        doc.setFillColor(230,230,230); doc.rect(M,dy,W-M*2,6,'F');
+        doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(40,40,40);
+        doc.text(sec.title, M+4, dy+4.2);
+        dy += 7;
+        // Body text
+        const bLines = doc.splitTextToSize(sec.body, W-M*2-6);
+        doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(70,70,70);
+        doc.text(bLines, M+4, dy+4);
+        dy += bLines.length*3.6 + 8;
+      });
+
+      // Regulatory contacts box
+      if (dy > 240) { doc.addPage(); addFooter(); dy = 20; }
+      doc.setFillColor(235,242,255); doc.rect(M,dy,W-M*2,22,'F');
+      doc.setDrawColor(150,180,220); doc.rect(M,dy,W-M*2,22,'S');
+      doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(20,60,140);
+      doc.text('REGULATORY CONTACTS — VERIFY YOUR REQUIREMENTS DIRECTLY', M+4, dy+5.5);
+      doc.setFont('helvetica','normal'); doc.setFontSize(6.8); doc.setTextColor(40,70,140);
+      doc.text('FMCSA (Commercial Vehicle / USDOT): fmcsa.dot.gov  |  1-800-832-5660', M+4, dy+10.5);
+      doc.text('PHMSA (Hazardous Materials): phmsa.dot.gov  |  Hazmat Info Center: 1-800-467-4922', M+4, dy+15);
+      doc.text('Alabama ALEA / Motor Carrier Safety: alea.gov  |  Alabama DOT: dot.state.al.us', M+4, dy+19.5);
+      dy += 26;
+
+      // Copyright / version line
+      doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(150,150,150);
+      doc.text(`Compliance Report generated ${woDate} by Precision Autographix automated tool — precisionautographix.com — Baldwin County, AL`, M, dy+4);
 
       // ── ADD FOOTERS TO ALL PAGES ──
       const totalPages = doc.getNumberOfPages();
