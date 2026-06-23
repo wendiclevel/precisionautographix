@@ -121,6 +121,7 @@
       transition: border-color 0.2s;
     }
     .check-card.selected .check-box { border-color: #cc0000; background: rgba(204,0,0,0.2); }
+    .check-card.selected .check-box::after { content: '✓'; }
     .check-label { color: #e8e8e8; font-size: 0.9rem; font-weight: 600; }
     .check-sub { color: #666; font-size: 0.78rem; margin-left: auto; }
 
@@ -390,27 +391,27 @@
         <div class="check-grid">
           <label class="check-card" onclick="toggleCheck(this,'interstate')">
             <input type="checkbox" name="ops" value="interstate"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">We cross state lines</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Operating in more than one state</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'forhire')">
             <input type="checkbox" name="ops" value="forhire"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">We are a for-hire carrier</div><div class="option-desc" style="font-size:0.78rem;color:#666;">We transport goods or people for compensation</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'hazmat')">
             <input type="checkbox" name="ops" value="hazmat"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">We haul hazardous materials</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Fuel, propane, chemicals, pesticides, etc.</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'oversize')">
             <input type="checkbox" name="ops" value="oversize"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">We haul oversize / heavy loads</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Equipment, modular structures, wide loads</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'passengers')">
             <input type="checkbox" name="ops" value="passengers"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">We transport passengers for compensation</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Charter, shuttle, bus, rideshare</div></div>
           </label>
         </div>
@@ -427,30 +428,30 @@
         <div class="check-grid">
           <label class="check-card" onclick="toggleCheck(this,'al')">
             <input type="checkbox" name="states" value="al"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Alabama</div></div>
             <span class="check-sub">Home state</span>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'fl')">
             <input type="checkbox" name="states" value="fl"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Florida</div></div>
             <span class="check-sub">FL PSC may apply</span>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'ms')">
             <input type="checkbox" name="states" value="ms"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Mississippi</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'ga')">
             <input type="checkbox" name="states" value="ga"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Georgia</div></div>
             <span class="check-sub">GA PSC may apply</span>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'other_state')">
             <input type="checkbox" name="states" value="other_state"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Other states</div></div>
           </label>
         </div>
@@ -467,32 +468,32 @@
         <div class="check-grid">
           <label class="check-card" onclick="toggleCheck(this,'fuel')">
             <input type="checkbox" name="hazmatType" value="fuel"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Fuel / Petroleum (gasoline, diesel, heating oil)</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 3 — Flammable Liquid</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'propane')">
             <input type="checkbox" name="hazmatType" value="propane"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Propane / LP Gas</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 2.1 — Flammable Gas</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'pesticide')">
             <input type="checkbox" name="hazmatType" value="pesticide"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Pesticides / Herbicides</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 6 — Toxic / Poison</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'pool')">
             <input type="checkbox" name="hazmatType" value="pool"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Pool Chemicals / Corrosives</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 8 — Corrosive</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'oxidizer')">
             <input type="checkbox" name="hazmatType" value="oxidizer"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Oxidizers / Pool Shock / Agricultural</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 5 — Oxidizer</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(this,'other_haz')">
             <input type="checkbox" name="hazmatType" value="other_haz"/>
-            <div class="check-box">✓</div>
+            <div class="check-box"></div>
             <div><div class="check-label">Other / Not Sure</div></div>
           </label>
         </div>
