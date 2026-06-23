@@ -19,5 +19,5 @@ jobs:
         run: |
           sshpass -p "${{ secrets.DREAMHOST_PASS }}" rsync -avz \
             -e "ssh -o StrictHostKeyChecking=no -p 22" \
-            index.html compliance.html css images \
+            index.html compliance.html compliance-checker.html css images \
             ${{ secrets.DREAMHOST_USER }}@${{ secrets.DREAMHOST_HOST }}:${{ secrets.DREAMHOST_PATH }}/

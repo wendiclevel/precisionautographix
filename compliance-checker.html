@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Free Vehicle Compliance Checker | Precision Autographix</title>
+  <meta name="description" content="Find out exactly what markings your commercial vehicle legally requires. Free compliance checker for Baldwin County, AL and Gulf Coast operators." />
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .checker-hero {
+      padding: 10rem 2rem 4rem;
+      background: linear-gradient(135deg, #000 0%, #1a0000 50%, #000 100%);
+      position: relative;
+    }
+    .checker-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+    }
+    .checker-hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .checker-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e8e8e8;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .checker-hero p { color: #c0c0c0; font-size: 1.05rem; line-height: 1.7; max-width: 580px; margin-bottom: 1.5rem; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(204,0,0,0.15);
+      border: 1px solid #cc0000;
+      color: #ff6666;
+      padding: 0.5rem 1rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* CHECKER FORM */
+    .checker-section { background: var(--dark); padding: 4rem 2rem; }
+    .checker-wrap { max-width: 720px; margin: 0 auto; }
+
+    /* Progress */
+    .progress-bar-wrap { margin-bottom: 2.5rem; }
+    .progress-label { display: flex; justify-content: space-between; color: #666; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.6rem; }
+    .progress-label span { color: #cc0000; }
+    .progress-track { background: #1a1a1a; height: 4px; border-radius: 2px; }
+    .progress-fill { background: #cc0000; height: 4px; border-radius: 2px; transition: width 0.4s ease; }
+
+    /* Steps */
+    .checker-step { display: none; }
+    .checker-step.active { display: block; }
+    .step-question {
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e8e8e8;
+      margin-bottom: 0.5rem;
+    }
+    .step-sub { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* Option cards */
+    .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; margin-bottom: 2rem; }
+    .option-card {
+      background: #111;
+      border: 2px solid #222;
+      border-radius: 4px;
+      padding: 1.1rem 1.25rem;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .option-card:hover { border-color: #444; }
+    .option-card.selected { border-color: #cc0000; background: rgba(204,0,0,0.08); }
+    .option-card input { display: none; }
+    .option-icon { font-size: 1.4rem; line-height: 1; flex-shrink: 0; margin-top: 0.1rem; }
+    .option-label { color: #e8e8e8; font-size: 0.88rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1.3; }
+    .option-desc { color: #666; font-size: 0.78rem; margin-top: 0.25rem; }
+
+    /* Checkbox options */
+    .check-grid { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 2rem; }
+    .check-card {
+      background: #111;
+      border: 2px solid #222;
+      border-radius: 4px;
+      padding: 0.9rem 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      transition: border-color 0.2s;
+    }
+    .check-card:hover { border-color: #444; }
+    .check-card.selected { border-color: #cc0000; background: rgba(204,0,0,0.08); }
+    .check-card input { display: none; }
+    .check-box {
+      width: 18px; height: 18px;
+      border: 2px solid #444;
+      border-radius: 2px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      color: #cc0000;
+      transition: border-color 0.2s;
+    }
+    .check-card.selected .check-box { border-color: #cc0000; background: rgba(204,0,0,0.2); }
+    .check-label { color: #e8e8e8; font-size: 0.9rem; font-weight: 600; }
+    .check-sub { color: #666; font-size: 0.78rem; margin-left: auto; }
+
+    /* Contact form */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; margin-bottom: 1rem; }
+    .checker-input {
+      background: #111;
+      border: 1px solid #333;
+      color: #e8e8e8;
+      padding: 0.85rem 1rem;
+      border-radius: 3px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    .checker-input:focus { outline: none; border-color: #cc0000; }
+    .checker-input::placeholder { color: #555; }
+    .input-full { grid-column: 1 / -1; }
+
+    /* Nav buttons */
+    .step-nav { display: flex; gap: 1rem; align-items: center; margin-top: 1rem; }
+    .btn-back {
+      background: transparent;
+      border: 1px solid #333;
+      color: #888;
+      padding: 0.8rem 1.5rem;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: #666; color: #c0c0c0; }
+    .btn-next {
+      background: #cc0000;
+      border: none;
+      color: #fff;
+      padding: 0.8rem 2rem;
+      border-radius: 3px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+    .btn-next:hover { background: #ff2200; }
+    .btn-next:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    /* Gate */
+    .gate-box {
+      background: rgba(204,0,0,0.06);
+      border: 1px solid rgba(204,0,0,0.25);
+      border-radius: 6px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+    .gate-box h3 { color: #e8e8e8; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+    .gate-box p { color: #888; font-size: 0.88rem; margin-bottom: 1.5rem; }
+
+    /* Results */
+    .results-wrap { display: none; max-width: 720px; margin: 0 auto; }
+    .results-wrap.show { display: block; }
+    .results-header { margin-bottom: 2rem; }
+    .results-header h2 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; color: #e8e8e8; margin-bottom: 0.5rem; }
+    .results-header p { color: #888; font-size: 0.9rem; }
+
+    .req-item {
+      background: #111;
+      border: 1px solid #222;
+      border-left: 4px solid #cc0000;
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+    .req-item-icon { color: #cc0000; font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .req-item-label { color: #e8e8e8; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .req-item-detail { color: #777; font-size: 0.83rem; line-height: 1.5; }
+    .req-item.recommended { border-left-color: #666; }
+    .req-item.recommended .req-item-icon { color: #666; }
+
+    .results-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(204,0,0,0.12);
+      border: 1px solid rgba(204,0,0,0.3);
+      color: #ff6666;
+      padding: 0.3rem 0.75rem;
+      border-radius: 2px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+    .results-badge.rec {
+      background: rgba(100,100,100,0.12);
+      border-color: rgba(100,100,100,0.3);
+      color: #aaa;
+    }
+
+    .results-cta {
+      background: #0d0d0d;
+      border: 1px solid #222;
+      border-radius: 6px;
+      padding: 2rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .results-cta h3 { color: #e8e8e8; font-size: 1.1rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+    .results-cta p { color: #888; font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+    .success-msg { display: none; text-align: center; padding: 2rem; }
+    .success-msg.show { display: block; }
+
+    @media (max-width: 768px) {
+      .option-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo-wrap">
+        <img src="images/logo.png" alt="Precision Autographix" class="logo-img" />
+      </a>
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#gallery">Gallery</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="compliance.html">Compliance Guide</a></li>
+        <li><a href="compliance-checker.html" style="color:#cc0000;">Compliance Checker</a></li>
+        <li><a href="index.html#contact" class="btn-nav">Get a Quote</a></li>
+      </ul>
+    </nav>
+  </header>
+  <script>
+    (function() {
+      const ham = document.getElementById('nav-hamburger');
+      const nav = document.getElementById('nav-links');
+      ham.addEventListener('click', () => { ham.classList.toggle('open'); nav.classList.toggle('open'); });
+      nav.querySelectorAll('a').forEach(a => { a.addEventListener('click', () => { ham.classList.remove('open'); nav.classList.remove('open'); }); });
+    })();
+  </script>
+
+  <!-- HERO -->
+  <section class="checker-hero">
+    <div class="checker-hero-inner">
+      <div class="hero-badge">&#10003; Free Tool — No Account Required</div>
+      <h1>What Does Your<br><span class="accent">Vehicle Legally Need?</span></h1>
+      <p>Answer 5 quick questions and get a personalized checklist of every marking, number, and placard your vehicle is required to display — by federal and state law.</p>
+    </div>
+  </section>
+
+  <!-- CHECKER -->
+  <section class="checker-section">
+    <div class="checker-wrap" id="checker-form-wrap">
+
+      <!-- PROGRESS -->
+      <div class="progress-bar-wrap">
+        <div class="progress-label">
+          <span id="step-label">Step 1 of 5</span>
+          <span id="step-pct">20%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+        </div>
+      </div>
+
+      <!-- STEP 1: VEHICLE TYPE -->
+      <div class="checker-step active" id="step-1">
+        <p class="step-question">What type of vehicle are you marking?</p>
+        <p class="step-sub">Select the option that best describes your vehicle.</p>
+        <div class="option-grid">
+          <label class="option-card" onclick="selectOption(this,'vehicleType','pickup')">
+            <input type="radio" name="vehicleType" value="pickup"/>
+            <span class="option-icon">🛻</span>
+            <div><div class="option-label">Pickup Truck / SUV</div><div class="option-desc">Under 1-ton or light duty</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','van')">
+            <input type="radio" name="vehicleType" value="van"/>
+            <span class="option-icon">🚐</span>
+            <div><div class="option-label">Cargo Van / Sprinter</div><div class="option-desc">Cargo or passenger van</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','boxtruck')">
+            <input type="radio" name="vehicleType" value="boxtruck"/>
+            <span class="option-icon">🚚</span>
+            <div><div class="option-label">Box Truck / Straight Truck</div><div class="option-desc">Single unit, medium/heavy duty</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','semi')">
+            <input type="radio" name="vehicleType" value="semi"/>
+            <span class="option-icon">🚛</span>
+            <div><div class="option-label">Semi / Tractor-Trailer</div><div class="option-desc">18-wheeler or combination</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','tanker')">
+            <input type="radio" name="vehicleType" value="tanker"/>
+            <span class="option-icon">⛽</span>
+            <div><div class="option-label">Tanker Truck</div><div class="option-desc">Fuel, liquid, or gas delivery</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','flatbed')">
+            <input type="radio" name="vehicleType" value="flatbed"/>
+            <span class="option-icon">🏗️</span>
+            <div><div class="option-label">Flatbed / Lowboy</div><div class="option-desc">Equipment or oversize hauling</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','boat')">
+            <input type="radio" name="vehicleType" value="boat"/>
+            <span class="option-icon">⛵</span>
+            <div><div class="option-label">Boat / Vessel</div><div class="option-desc">Hull numbers or vessel name</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','other')">
+            <input type="radio" name="vehicleType" value="other"/>
+            <span class="option-icon">🔧</span>
+            <div><div class="option-label">Other / Not Sure</div><div class="option-desc">We'll help figure it out</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-next" id="next-1" onclick="goNext(2)" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: GVWR -->
+      <div class="checker-step" id="step-2">
+        <p class="step-question">What is the vehicle's GVWR?</p>
+        <p class="step-sub">Gross Vehicle Weight Rating — found on the door jamb sticker. This determines which federal rules apply.</p>
+        <div class="option-grid" style="grid-template-columns:1fr;">
+          <label class="option-card" onclick="selectOption(this,'gvwr','under10k')">
+            <input type="radio" name="gvwr" value="under10k"/>
+            <div><div class="option-label">Under 10,001 lbs</div><div class="option-desc">Light duty — most pickups, vans, small trucks</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'gvwr','10k26k')">
+            <input type="radio" name="gvwr" value="10k26k"/>
+            <div><div class="option-label">10,001 – 26,000 lbs</div><div class="option-desc">Medium duty — most cargo vans, box trucks, service vehicles</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'gvwr','over26k')">
+            <input type="radio" name="gvwr" value="over26k"/>
+            <div><div class="option-label">Over 26,000 lbs</div><div class="option-desc">Heavy duty — semis, large straight trucks, tankers</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'gvwr','unknown')">
+            <input type="radio" name="gvwr" value="unknown"/>
+            <div><div class="option-label">I'm not sure</div><div class="option-desc">We can help determine this</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(1)">← Back</button>
+          <button class="btn-next" id="next-2" onclick="goNext(3)" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: OPERATIONS -->
+      <div class="checker-step" id="step-3">
+        <p class="step-question">How do you operate?</p>
+        <p class="step-sub">Select all that apply to your business.</p>
+        <div class="check-grid">
+          <label class="check-card" onclick="toggleCheck(this,'interstate')">
+            <input type="checkbox" name="ops" value="interstate"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">We cross state lines</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Operating in more than one state</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'forhire')">
+            <input type="checkbox" name="ops" value="forhire"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">We are a for-hire carrier</div><div class="option-desc" style="font-size:0.78rem;color:#666;">We transport goods or people for compensation</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'hazmat')">
+            <input type="checkbox" name="ops" value="hazmat"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">We haul hazardous materials</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Fuel, propane, chemicals, pesticides, etc.</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'oversize')">
+            <input type="checkbox" name="ops" value="oversize"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">We haul oversize / heavy loads</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Equipment, modular structures, wide loads</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'passengers')">
+            <input type="checkbox" name="ops" value="passengers"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">We transport passengers for compensation</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Charter, shuttle, bus, rideshare</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(2)">← Back</button>
+          <button class="btn-next" onclick="goNext(4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: STATES -->
+      <div class="checker-step" id="step-4">
+        <p class="step-question">Which states do you operate in?</p>
+        <p class="step-sub">Select all states where your vehicles run. State-specific requirements vary.</p>
+        <div class="check-grid">
+          <label class="check-card" onclick="toggleCheck(this,'al')">
+            <input type="checkbox" name="states" value="al"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Alabama</div></div>
+            <span class="check-sub">Home state</span>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'fl')">
+            <input type="checkbox" name="states" value="fl"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Florida</div></div>
+            <span class="check-sub">FL PSC may apply</span>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'ms')">
+            <input type="checkbox" name="states" value="ms"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Mississippi</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'ga')">
+            <input type="checkbox" name="states" value="ga"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Georgia</div></div>
+            <span class="check-sub">GA PSC may apply</span>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'other_state')">
+            <input type="checkbox" name="states" value="other_state"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Other states</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(3)">← Back</button>
+          <button class="btn-next" onclick="goNext(5)">Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: HAZMAT TYPE -->
+      <div class="checker-step" id="step-5">
+        <p class="step-question">What type of hazardous materials?</p>
+        <p class="step-sub">Select all that apply. This determines which placard class is required.</p>
+        <div class="check-grid">
+          <label class="check-card" onclick="toggleCheck(this,'fuel')">
+            <input type="checkbox" name="hazmatType" value="fuel"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Fuel / Petroleum (gasoline, diesel, heating oil)</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 3 — Flammable Liquid</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'propane')">
+            <input type="checkbox" name="hazmatType" value="propane"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Propane / LP Gas</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 2.1 — Flammable Gas</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'pesticide')">
+            <input type="checkbox" name="hazmatType" value="pesticide"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Pesticides / Herbicides</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 6 — Toxic / Poison</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'pool')">
+            <input type="checkbox" name="hazmatType" value="pool"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Pool Chemicals / Corrosives</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 8 — Corrosive</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'oxidizer')">
+            <input type="checkbox" name="hazmatType" value="oxidizer"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Oxidizers / Pool Shock / Agricultural</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 5 — Oxidizer</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(this,'other_haz')">
+            <input type="checkbox" name="hazmatType" value="other_haz"/>
+            <div class="check-box">✓</div>
+            <div><div class="check-label">Other / Not Sure</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(4)">← Back</button>
+          <button class="btn-next" onclick="goGate()">See My Requirements →</button>
+        </div>
+      </div>
+
+      <!-- GATE: CONTACT INFO -->
+      <div class="checker-step" id="step-gate">
+        <p class="step-question">Almost There — Get Your Free Report</p>
+        <p class="step-sub">Enter your info below and we'll show your personalized compliance checklist. We'll also send you a copy and reach out with a no-obligation quote.</p>
+        <div class="gate-box">
+          <h3>Your Free Compliance Report</h3>
+          <p>Tell us who to send it to. No spam — just your results and a follow-up from our team.</p>
+          <div class="contact-grid">
+            <input class="checker-input" type="text" id="g-name" placeholder="Your Name *" required />
+            <input class="checker-input" type="text" id="g-company" placeholder="Company Name *" required />
+            <input class="checker-input" type="email" id="g-email" placeholder="Email Address *" required />
+            <input class="checker-input" type="tel" id="g-phone" placeholder="Phone Number *" required />
+            <input class="checker-input input-full" type="number" id="g-vehicles" placeholder="How many vehicles need marking?" min="1" />
+          </div>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBackFromGate()">← Back</button>
+          <button class="btn-next" onclick="submitAndShow()">Get My Compliance Report →</button>
+        </div>
+        <p style="color:#555;font-size:0.78rem;margin-top:1rem;">Your information is only used to send your report and follow up on your quote request.</p>
+      </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-wrap" id="results-wrap">
+      <div class="results-header">
+        <p style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#cc0000;margin-bottom:0.4rem;">Your Personalized Report</p>
+        <h2 id="results-title">Your Vehicle Compliance Checklist</h2>
+        <p id="results-subtitle" style="color:#888;font-size:0.9rem;"></p>
+      </div>
+
+      <div id="results-required"></div>
+      <div id="results-recommended"></div>
+
+      <div class="results-cta">
+        <h3>Ready to Get These Done?</h3>
+        <p>Precision Autographix installs everything on this list — at your location, on your schedule. No downtime.</p>
+        <a href="index.html#contact" class="btn-primary">Request a Quote for My Vehicle</a>
+      </div>
+
+      <div class="success-msg" id="submit-confirm">
+        <div style="font-size:2rem;margin-bottom:0.5rem;">✔</div>
+        <p style="color:#e8e8e8;font-weight:700;">Report sent to <span id="confirm-email"></span></p>
+        <p style="color:#888;font-size:0.85rem;margin-top:0.25rem;">Our team will follow up with a quote within 24 hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Precision Autographix. All rights reserved. | Branding in Motion</p>
+    <p style="margin-top:0.5rem;">Serving Baldwin County, AL and surrounding areas.</p>
+  </footer>
+
+  <script>
+    // ── STATE ──
+    const answers = {
+      vehicleType: null,
+      gvwr: null,
+      ops: [],
+      states: [],
+      hazmatTypes: []
+    };
+
+    let prevHazmatStep = 4;
+
+    // ── OPTION SELECT (radio) ──
+    function selectOption(el, field, value) {
+      document.querySelectorAll(`[onclick*="'${field}'"]`).forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      answers[field] = value;
+      const nextBtn = document.getElementById('next-' + document.querySelector('.checker-step.active').id.replace('step-',''));
+      if (nextBtn) nextBtn.disabled = false;
+
+      // Auto-advance radio steps after short delay
+      setTimeout(() => {
+        const activeStep = document.querySelector('.checker-step.active');
+        if (activeStep.id === 'step-1') goNext(2);
+        else if (activeStep.id === 'step-2') goNext(3);
+      }, 300);
+    }
+
+    // ── CHECKBOX TOGGLE ──
+    function toggleCheck(el, value) {
+      el.classList.toggle('selected');
+      const isChecked = el.classList.contains('selected');
+
+      // Determine which array to update
+      const name = el.querySelector('input').name;
+      if (name === 'ops') {
+        if (isChecked) { if (!answers.ops.includes(value)) answers.ops.push(value); }
+        else { answers.ops = answers.ops.filter(v => v !== value); }
+      } else if (name === 'states') {
+        if (isChecked) { if (!answers.states.includes(value)) answers.states.push(value); }
+        else { answers.states = answers.states.filter(v => v !== value); }
+      } else if (name === 'hazmatType') {
+        if (isChecked) { if (!answers.hazmatTypes.includes(value)) answers.hazmatTypes.push(value); }
+        else { answers.hazmatTypes = answers.hazmatTypes.filter(v => v !== value); }
+      }
+    }
+
+    // ── NAVIGATION ──
+    function goNext(stepNum) {
+      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step-' + stepNum).classList.add('active');
+      updateProgress(stepNum);
+      window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
+    }
+
+    function goBack(stepNum) {
+      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step-' + stepNum).classList.add('active');
+      updateProgress(stepNum);
+    }
+
+    function goGate() {
+      // Skip hazmat step if not hauling hazmat
+      if (!answers.ops.includes('hazmat')) {
+        showGate(4);
+      } else {
+        showGate(5);
+      }
+    }
+
+    function goBackFromGate() {
+      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+      if (!answers.ops.includes('hazmat')) {
+        document.getElementById('step-4').classList.add('active');
+        updateProgress(4);
+      } else {
+        document.getElementById('step-5').classList.add('active');
+        updateProgress(5);
+      }
+    }
+
+    function showGate(fromStep) {
+      prevHazmatStep = fromStep;
+      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step-gate').classList.add('active');
+      updateProgress(6);
+    }
+
+    // Skip state step if not interstate
+    function goNext(n) {
+      if (n === 4 && !answers.ops.includes('interstate')) {
+        // Skip state selection, go to hazmat or gate
+        if (answers.ops.includes('hazmat')) {
+          document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+          document.getElementById('step-5').classList.add('active');
+          updateProgress(5);
+          return;
+        } else {
+          showGate(3);
+          return;
+        }
+      }
+      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+      document.getElementById('step-' + n).classList.add('active');
+      updateProgress(n);
+      window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
+    }
+
+    function updateProgress(step) {
+      const pct = Math.round((step / 6) * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('step-pct').textContent = pct + '%';
+      document.getElementById('step-label').textContent = 'Step ' + Math.min(step, 5) + ' of 5';
+    }
+
+    // ── GENERATE REQUIREMENTS ──
+    function generateRequirements() {
+      const required = [];
+      const recommended = [];
+
+      const vt = answers.vehicleType;
+      const gvwr = answers.gvwr;
+      const ops = answers.ops;
+      const states = answers.states;
+      const haz = answers.hazmatTypes;
+
+      const isInterstate = ops.includes('interstate');
+      const isForHire = ops.includes('forhire');
+      const hasHazmat = ops.includes('hazmat');
+      const isOversize = ops.includes('oversize');
+      const hasPassengers = ops.includes('passengers');
+      const isHeavy = gvwr === 'over26k';
+      const isMedium = gvwr === '10k26k';
+
+      // Always: Company name
+      required.push({
+        label: 'Company Name Lettering',
+        detail: 'Legal company name or DBA must appear on both sides of any commercial vehicle. Minimum 2-inch contrasting letters.',
+        service: 'Company Name — Both Sides'
+      });
+
+      // USDOT Number
+      const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
+                          (isMedium && isInterstate) ||
+                          hasHazmat || hasPassengers ||
+                          vt === 'tanker' || vt === 'semi';
+      if (needsUSDOT) {
+        required.push({
+          label: 'USDOT Number',
+          detail: 'Required on both sides of the vehicle — must be preceded by "USDOT", minimum 2-inch letters, contrasting color. Fines up to $16,000/day for non-compliance.',
+          service: 'USDOT Number — Both Sides'
+        });
+      }
+
+      // MC Number
+      if (isForHire && isInterstate) {
+        required.push({
+          label: 'MC Number (Operating Authority)',
+          detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides.',
+          service: 'MC Number — Both Sides'
+        });
+      }
+
+      // Hazmat placards
+      if (hasHazmat) {
+        const hazLabels = {
+          fuel: 'Class 3 — Flammable Liquid (red placard)',
+          propane: 'Class 2.1 — Flammable Gas (red placard)',
+          pesticide: 'Class 6 — Toxic / Poison (white placard)',
+          pool: 'Class 8 — Corrosive (black & white placard)',
+          oxidizer: 'Class 5 — Oxidizer (yellow placard)',
+          other_haz: 'Hazmat class to be determined'
+        };
+        const hazList = haz.length > 0 ? haz.map(h => hazLabels[h] || h).join('; ') : 'Hazmat class to be determined';
+        required.push({
+          label: 'Hazmat Placards',
+          detail: `Required on all four sides of the vehicle. 250mm diamond shape. ${hazList}. Must remain legible throughout transport.`,
+          service: 'Hazmat Placards — All 4 Sides: ' + hazList
+        });
+      }
+
+      // Oversize
+      if (isOversize || vt === 'flatbed') {
+        required.push({
+          label: 'OVERSIZE LOAD Banner',
+          detail: 'Required front and rear when load exceeds legal dimensions. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum.',
+          service: 'Oversize Load Banners — Front & Rear'
+        });
+      }
+
+      // Boat
+      if (vt === 'boat') {
+        required.push({
+          label: 'Hull Registration Numbers',
+          detail: 'Alabama requires registration numbers on both sides of the bow — minimum 3-inch block letters, contrasting color. Format: AL XXXX XX.',
+          service: 'Hull Registration Numbers — Both Sides of Bow'
+        });
+        recommended.push({
+          label: 'Vessel Name & Hailing Port',
+          detail: 'Required on documented vessels. Displayed on the stern. Marine-grade vinyl rated for saltwater and UV exposure.',
+          service: 'Vessel Name & Hailing Port — Stern'
+        });
+      }
+
+      // Florida PSC
+      if (states.includes('fl') && isForHire) {
+        required.push({
+          label: 'Florida PSC Number',
+          detail: 'For-hire carriers operating intrastate in Florida must display their Florida Public Service Commission number on both sides of the vehicle.',
+          service: 'Florida PSC Number — Both Sides'
+        });
+      }
+
+      // Georgia PSC
+      if (states.includes('ga') && isForHire) {
+        required.push({
+          label: 'Georgia PSC Number',
+          detail: 'For-hire carriers operating intrastate in Georgia must display their Georgia Public Service Commission number on both sides.',
+          service: 'Georgia PSC Number — Both Sides'
+        });
+      }
+
+      // IRP Recommendation
+      if (isInterstate && (isHeavy || isMedium)) {
+        recommended.push({
+          label: 'IRP Apportioned Registration (Recommended)',
+          detail: 'Register under the International Registration Plan to operate in all 48 states with one apportioned plate. Administered by ALDOT Motor Carrier Services.',
+          service: 'IRP Registration — Contact ALDOT'
+        });
+      }
+
+      // IFTA Recommendation
+      if (isInterstate && (isHeavy || vt === 'semi' || vt === 'tanker')) {
+        recommended.push({
+          label: 'IFTA Fuel Tax Registration (Recommended)',
+          detail: 'File one quarterly fuel tax return covering all member states instead of buying trip permits at every state line. Administered by Alabama DOR.',
+          service: 'IFTA Registration — Contact AL DOR'
+        });
+      }
+
+      return { required, recommended };
+    }
+
+    // ── SUBMIT & SHOW ──
+    async function submitAndShow() {
+      const name = document.getElementById('g-name').value.trim();
+      const company = document.getElementById('g-company').value.trim();
+      const email = document.getElementById('g-email').value.trim();
+      const phone = document.getElementById('g-phone').value.trim();
+      const vehicles = document.getElementById('g-vehicles').value.trim();
+
+      if (!name || !email || !phone || !company) {
+        alert('Please fill in your name, company, email, and phone number.');
+        return;
+      }
+
+      const { required, recommended } = generateRequirements();
+      const allServices = [...required, ...recommended].map(r => r.service).join('\n');
+
+      // Build package summary
+      const packageSummary = `
+=== PA COMPLIANCE PACKAGE REQUEST ===
+Name: ${name}
+Company: ${company}
+Email: ${email}
+Phone: ${phone}
+Vehicles: ${vehicles || 'Not specified'}
+
+=== VEHICLE DETAILS ===
+Type: ${answers.vehicleType || 'Not specified'}
+GVWR: ${answers.gvwr || 'Not specified'}
+Operations: ${answers.ops.join(', ') || 'None selected'}
+States: ${answers.states.join(', ') || 'Not specified'}
+Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}
+
+=== REQUIRED MARKINGS ===
+${required.map(r => '• ' + r.service).join('\n')}
+
+=== RECOMMENDED ===
+${recommended.map(r => '• ' + r.service).join('\n')}
+      `.trim();
+
+      // Submit to Formspree
+      try {
+        await fetch('https://formspree.io/f/xeebonzd', {
+          method: 'POST',
+          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, company, email, phone, vehicles,
+            vehicle_type: answers.vehicleType,
+            gvwr: answers.gvwr,
+            operations: answers.ops.join(', '),
+            states: answers.states.join(', '),
+            hazmat_types: answers.hazmatTypes.join(', '),
+            required_markings: required.map(r => r.service).join(' | '),
+            recommended: recommended.map(r => r.service).join(' | '),
+            full_package_summary: packageSummary,
+            _subject: `PA Compliance Checker Lead — ${company} (${name})`
+          })
+        });
+      } catch(e) { /* continue to show results even if submission fails */ }
+
+      // Show results
+      showResults(required, recommended, name, email);
+    }
+
+    function showResults(required, recommended, name, email) {
+      document.getElementById('checker-form-wrap').style.display = 'none';
+      document.getElementById('results-wrap').classList.add('show');
+
+      document.getElementById('results-subtitle').textContent =
+        `Based on your answers, here is everything your vehicle is legally required to display — plus our recommendations.`;
+
+      // Required items
+      const reqEl = document.getElementById('results-required');
+      reqEl.innerHTML = '<div class="results-badge">■ Required by Law</div>';
+      required.forEach(r => {
+        reqEl.innerHTML += `
+          <div class="req-item">
+            <div class="req-item-icon">✔</div>
+            <div>
+              <div class="req-item-label">${r.label}</div>
+              <div class="req-item-detail">${r.detail}</div>
+            </div>
+          </div>`;
+      });
+
+      // Recommended items
+      if (recommended.length > 0) {
+        const recEl = document.getElementById('results-recommended');
+        recEl.innerHTML = '<div class="results-badge rec" style="margin-top:1.5rem;">○ Recommended</div>';
+        recommended.forEach(r => {
+          recEl.innerHTML += `
+            <div class="req-item recommended">
+              <div class="req-item-icon" style="color:#666;">→</div>
+              <div>
+                <div class="req-item-label">${r.label}</div>
+                <div class="req-item-detail">${r.detail}</div>
+              </div>
+            </div>`;
+        });
+      }
+
+      // Show confirmation
+      document.getElementById('confirm-email').textContent = email;
+      document.getElementById('submit-confirm').classList.add('show');
+
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+  </script>
+
+</body>
+</html>
