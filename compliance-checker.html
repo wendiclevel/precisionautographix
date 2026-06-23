@@ -800,7 +800,7 @@
           qty: 4,
           workNotes: placardSummary,
           placardSpecs: selectedSpecs,
-          placardPrint: 'Print on weatherproof, durable stock (min. 0.015" thick for rigid holders). Free placard PDFs at phmsa.dot.gov. Pre-made vinyl placards at labelmaster.com or grainger.com. Holders required on most bulk transport.',
+          placardPrint: 'DOT-compliant placards must be durable, weatherproof material — minimum 0.015" thick for rigid placard holders. Rigid holders are required on most bulk transport vehicles. Contact Precision Autographix for cut vinyl placards produced and installed on-site.',
           penalty: '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
         });
         // ERG
@@ -1003,7 +1003,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         const psEl = document.getElementById('placard-specs-wrap');
         psEl.innerHTML = `
           <div style="margin:1.5rem 0 0.75rem;">
-            <div class="results-badge" style="background:rgba(255,120,0,0.1);border-color:rgba(255,120,0,0.4);color:#ff9944;">⬛ Placard Specifications & Download/Print Guide</div>
+            <div class="results-badge" style="background:rgba(255,120,0,0.1);border-color:rgba(255,120,0,0.4);color:#ff9944;">◆ Placard Specifications & Ordering Guide</div>
           </div>`;
         placardItem.placardSpecs.forEach(spec => {
           const placardImg = spec.imgSrc ? `<img src="${spec.imgSrc}" alt="${spec.placardName} DOT placard" style="width:72px;height:72px;flex-shrink:0;border-radius:3px;" />` : '';
@@ -1017,7 +1017,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
                     <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Color / Design</div><div class="req-item-detail">${spec.color}</div></div>
                     <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Common UN Numbers</div><div class="req-item-detail">${spec.un}</div></div>
                     <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">ERG Reference</div><div class="req-item-detail">${spec.guide}</div></div>
-                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Official Placard Download</div><div class="req-item-detail" style="color:#5599ff;">${spec.download}</div></div>
+                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Get DOT-Compliant Placards</div><div class="req-item-detail" style="color:#ff6644;">Contact Precision Autographix — we cut and supply DOT-compliant vinyl placards</div></div>
                   </div>
                 </div>
                 ${placardImg}
@@ -1312,9 +1312,9 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             fy += 9;
           });
 
-          // Download note
-          doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...BLUE);
-          doc.text('Download: ' + spec.download, M+5, y+31);
+          // Supplier note
+          doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...RED);
+          doc.text('Contact Precision Autographix for DOT-compliant vinyl placards — on-site installation available', M+5, y+31);
 
           y += 37;
         });
