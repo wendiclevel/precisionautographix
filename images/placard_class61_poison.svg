@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <polygon points="100,4 196,100 100,196 4,100" fill="white"/>
+  <polygon points="100,4 196,100 100,196 4,100" fill="none" stroke="black" stroke-width="3"/>
+  <polygon points="100,14 186,100 100,186 14,100" fill="none" stroke="black" stroke-width="1.5"/>
+  <!-- Skull: cranium -->
+  <ellipse cx="100" cy="88" rx="22" ry="20" fill="black"/>
+  <!-- Skull: jaw area -->
+  <rect x="86" y="103" width="28" height="10" rx="3" fill="black"/>
+  <!-- Skull: eye sockets (white holes) -->
+  <ellipse cx="92" cy="88" rx="6" ry="6" fill="white"/>
+  <ellipse cx="108" cy="88" rx="6" ry="6" fill="white"/>
+  <!-- Skull: nose -->
+  <path d="M97,97 L100,93 L103,97Z" fill="white"/>
+  <!-- Jaw gaps -->
+  <rect x="88" y="105" width="6" height="6" rx="1" fill="white"/>
+  <rect x="97" y="105" width="6" height="6" rx="1" fill="white"/>
+  <rect x="106" y="105" width="6" height="6" rx="1" fill="white"/>
+  <!-- Crossbones -->
+  <line x1="72" y1="122" x2="128" y2="132" stroke="black" stroke-width="5" stroke-linecap="round"/>
+  <line x1="128" y1="122" x2="72" y2="132" stroke="black" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="72" cy="122" r="5" fill="black"/>
+  <circle cx="128" cy="122" r="5" fill="black"/>
+  <circle cx="72" cy="132" r="5" fill="black"/>
+  <circle cx="128" cy="132" r="5" fill="black"/>
+  <text x="100" y="155" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="black" text-anchor="middle" letter-spacing="1">POISON</text>
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="black" text-anchor="middle">6</text>
+</svg>

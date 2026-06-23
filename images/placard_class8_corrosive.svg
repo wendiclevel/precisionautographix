@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Full diamond white background first -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="white"/>
+  <!-- Top half black -->
+  <polygon points="100,4 196,100 100,100 4,100" fill="black"/>
+  <!-- Border -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="none" stroke="black" stroke-width="3"/>
+  <!-- Inner border top (white) -->
+  <polygon points="100,14 186,100 100,100 14,100" fill="none" stroke="white" stroke-width="1.5"/>
+  <!-- Inner border bottom (black) -->
+  <polygon points="100,100 186,100 100,186 14,100" fill="none" stroke="black" stroke-width="1.5"/>
+  <!-- Test tube left (white, dripping onto surface) -->
+  <rect x="72" y="55" width="10" height="22" rx="3" fill="white"/>
+  <path d="M72,75 L82,75 L79,85 Q76,90 74,88 Q70,85 72,82Z" fill="white"/>
+  <!-- Drip from left tube -->
+  <ellipse cx="76" cy="90" rx="3" ry="4" fill="white"/>
+  <!-- Corroded surface left (white on black) -->
+  <path d="M60,95 Q65,88 70,92 Q73,88 76,93 Q80,87 84,93 Q88,88 92,93 L92,100 L60,100Z" fill="white"/>
+  <!-- Test tube right (black, dripping onto surface - in white area) -->
+  <rect x="118" y="55" width="10" height="22" rx="3" fill="white"/>
+  <path d="M118,75 L128,75 L125,85 Q122,90 120,88 Q116,85 118,82Z" fill="white"/>
+  <!-- Drip right -->
+  <ellipse cx="122" cy="90" rx="3" ry="4" fill="white"/>
+  <!-- Surface right (white area, black corrosion marks) -->
+  <path d="M108,103 Q112,97 116,101 Q119,97 122,102 Q126,97 130,101 Q133,97 140,102 L140,110 Q133,105 130,109 Q126,105 122,108 Q119,104 116,108 Q112,104 108,107Z" fill="black"/>
+  <!-- Hand outline left (in white area) -->
+  <path d="M65,110 Q62,106 64,102 Q67,99 70,103 Q70,99 73,98 Q76,99 75,104 Q78,100 81,101 Q83,104 81,107 Q83,104 85,106 Q86,110 83,112 Q80,118 75,118 Q68,118 65,110Z" fill="black"/>
+  <text x="100" y="153" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="black" text-anchor="middle" letter-spacing="1">CORROSIVE</text>
+  <text x="100" y="174" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="black" text-anchor="middle">8</text>
+</svg>

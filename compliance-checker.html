@@ -563,8 +563,8 @@
 
       <div class="results-cta">
         <h3>Ready to Get These Done?</h3>
-        <p>Precision Autographix produces and installs every marking on this list — at <strong style="color:#e8e8e8;">your location</strong>, on your schedule. <strong style="color:#cc0000;">On-site installation available.</strong> No towing, no downtime, no hassle.</p>
-        <a href="index.html#contact" class="btn-primary">Request a Quote &amp; On-Site Install</a>
+        <p>Precision Autographix cuts and supplies every marking on this list. <strong style="color:#e8e8e8;">Primary service area: Baldwin County and Mobile County, AL</strong> — we come to you with on-site installation, no towing, no downtime. <strong style="color:#cc0000;">Outside our area?</strong> We can arrange installation with scheduling and travel — <a href="index.html#contact" style="color:#ff6666;">contact us for details and pricing</a>.</p>
+        <a href="index.html#contact" class="btn-primary">Request a Quote</a>
       </div>
 
       <div class="success-msg" id="submit-confirm">
@@ -782,12 +782,12 @@
       // Hazmat placards
       if (hasHazmat) {
         const hazSpecs = {
-          fuel:      { label: 'Class 3 — Flammable Liquid',  placardName: 'FLAMMABLE',      color: 'Red diamond, white border',                         unShort: '1203 / 1993 / 1863', un: 'UN 1203 (gasoline) · UN 1993 (diesel) · UN 1863 (jet fuel)', guide: 'ERG Guide 128', guideNum: '128', download: 'phmsa.dot.gov → Placards & Labels → Class 3' },
-          propane:   { label: 'Class 2.1 — Flammable Gas',   placardName: 'FLAMMABLE GAS',  color: 'Red diamond, "FLAMMABLE GAS"',                      unShort: '1075 / 1965',        un: 'UN 1075 (propane) · UN 1965 (LP gas mixture)',                guide: 'ERG Guide 115', guideNum: '115', download: 'phmsa.dot.gov → Placards & Labels → Class 2.1' },
-          pesticide: { label: 'Class 6.1 — Toxic / Poison',  placardName: 'POISON',         color: 'White diamond, skull & crossbones, "POISON"',       unShort: 'See SDS sheet',      un: 'Varies — check your product SDS sheet',                       guide: 'ERG Guide 151/153', guideNum: '151', download: 'phmsa.dot.gov → Placards & Labels → Class 6' },
-          pool:      { label: 'Class 8 — Corrosive',         placardName: 'CORROSIVE',      color: 'Black top / white bottom diamond, liquid dripping', unShort: '1760 / 1824',        un: 'UN 1760 (corrosive liquid) · UN 1824 (sodium hydroxide)',     guide: 'ERG Guide 154', guideNum: '154', download: 'phmsa.dot.gov → Placards & Labels → Class 8' },
-          oxidizer:  { label: 'Class 5.1 — Oxidizer',        placardName: 'OXIDIZER',       color: 'Yellow diamond, flame over circle',                 unShort: '1479 / 2014',        un: 'UN 1479 (oxidizing solid) · UN 2014 (hydrogen peroxide)',     guide: 'ERG Guide 140', guideNum: '140', download: 'phmsa.dot.gov → Placards & Labels → Class 5' },
-          other_haz: { label: answers.otherHazDesc ? `TBD — "${answers.otherHazDesc}"` : 'Class TBD', placardName: 'TBD', color: 'To be determined', unShort: 'TBD', un: 'Look up on phmsa.dot.gov', guide: 'ERG Index — identify material', guideNum: 'TBD', download: 'phmsa.dot.gov/hazmat/erg' }
+          fuel:      { label: 'Class 3 — Flammable Liquid',  placardName: 'FLAMMABLE',      color: 'Red diamond, white border',                         unShort: '1203 / 1993 / 1863', un: 'UN 1203 (gasoline) · UN 1993 (diesel) · UN 1863 (jet fuel)', guide: 'ERG Guide 128', guideNum: '128', download: 'phmsa.dot.gov → Placards & Labels → Class 3', imgSrc: 'images/placard_class3_flammable.svg',    hazType: 'fuel' },
+          propane:   { label: 'Class 2.1 — Flammable Gas',   placardName: 'FLAMMABLE GAS',  color: 'Red diamond, "FLAMMABLE GAS"',                      unShort: '1075 / 1965',        un: 'UN 1075 (propane) · UN 1965 (LP gas mixture)',                guide: 'ERG Guide 115', guideNum: '115', download: 'phmsa.dot.gov → Placards & Labels → Class 2.1', imgSrc: 'images/placard_class21_flammablegas.svg', hazType: 'propane' },
+          pesticide: { label: 'Class 6.1 — Toxic / Poison',  placardName: 'POISON',         color: 'White diamond, skull & crossbones, "POISON"',       unShort: 'See SDS sheet',      un: 'Varies — check your product SDS sheet',                       guide: 'ERG Guide 151/153', guideNum: '151', download: 'phmsa.dot.gov → Placards & Labels → Class 6', imgSrc: 'images/placard_class61_poison.svg',       hazType: 'pesticide' },
+          pool:      { label: 'Class 8 — Corrosive',         placardName: 'CORROSIVE',      color: 'Black top / white bottom diamond, liquid dripping', unShort: '1760 / 1824',        un: 'UN 1760 (corrosive liquid) · UN 1824 (sodium hydroxide)',     guide: 'ERG Guide 154', guideNum: '154', download: 'phmsa.dot.gov → Placards & Labels → Class 8', imgSrc: 'images/placard_class8_corrosive.svg',     hazType: 'pool' },
+          oxidizer:  { label: 'Class 5.1 — Oxidizer',        placardName: 'OXIDIZER',       color: 'Yellow diamond, flame over circle',                 unShort: '1479 / 2014',        un: 'UN 1479 (oxidizing solid) · UN 2014 (hydrogen peroxide)',     guide: 'ERG Guide 140', guideNum: '140', download: 'phmsa.dot.gov → Placards & Labels → Class 5', imgSrc: 'images/placard_class51_oxidizer.svg',     hazType: 'oxidizer' },
+          other_haz: { label: answers.otherHazDesc ? `TBD — "${answers.otherHazDesc}"` : 'Class TBD', placardName: 'TBD', color: 'To be determined', unShort: 'TBD', un: 'Look up on phmsa.dot.gov', guide: 'ERG Index — identify material', guideNum: 'TBD', download: 'phmsa.dot.gov/hazmat/erg', imgSrc: null, hazType: 'other_haz' }
         };
         const selectedSpecs = haz.length > 0 ? haz.map(h => hazSpecs[h] || hazSpecs.other_haz) : [hazSpecs.other_haz];
         const hazList = selectedSpecs.map(s => s.label).join('; ');
@@ -1006,17 +1006,21 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             <div class="results-badge" style="background:rgba(255,120,0,0.1);border-color:rgba(255,120,0,0.4);color:#ff9944;">⬛ Placard Specifications & Download/Print Guide</div>
           </div>`;
         placardItem.placardSpecs.forEach(spec => {
+          const placardImg = spec.imgSrc ? `<img src="${spec.imgSrc}" alt="${spec.placardName} DOT placard" style="width:72px;height:72px;flex-shrink:0;border-radius:3px;" />` : '';
           psEl.innerHTML += `
             <div class="req-item" style="border-left-color:#ff6600;margin-bottom:0.5rem;">
               <div class="req-item-icon" style="color:#ff6600;">◆</div>
-              <div style="width:100%;">
-                <div class="req-item-label">${spec.label}</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;margin-top:0.5rem;">
-                  <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Color / Design</div><div class="req-item-detail">${spec.color}</div></div>
-                  <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Common UN Numbers</div><div class="req-item-detail">${spec.un}</div></div>
-                  <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">ERG Reference</div><div class="req-item-detail">${spec.guide}</div></div>
-                  <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Where to Download</div><div class="req-item-detail" style="color:#5599ff;">${spec.download}</div></div>
+              <div style="width:100%;display:flex;gap:1rem;align-items:flex-start;">
+                <div style="flex:1;">
+                  <div class="req-item-label">${spec.label}</div>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem;margin-top:0.5rem;">
+                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Color / Design</div><div class="req-item-detail">${spec.color}</div></div>
+                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Common UN Numbers</div><div class="req-item-detail">${spec.un}</div></div>
+                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">ERG Reference</div><div class="req-item-detail">${spec.guide}</div></div>
+                    <div><div style="color:#555;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.2rem;">Official Placard Download</div><div class="req-item-detail" style="color:#5599ff;">${spec.download}</div></div>
+                  </div>
                 </div>
+                ${placardImg}
               </div>
             </div>`;
         });
@@ -1091,6 +1095,30 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         } catch(e) {}
       };
       img.src = 'images/logo.png';
+    })();
+
+    // ── PLACARD IMAGE PRELOAD (for PDF embedding) ──
+    const _placardImages = {};
+    (function() {
+      const _pmap = {
+        fuel:      'images/placard_class3_flammable.svg',
+        propane:   'images/placard_class21_flammablegas.svg',
+        pesticide: 'images/placard_class61_poison.svg',
+        pool:      'images/placard_class8_corrosive.svg',
+        oxidizer:  'images/placard_class51_oxidizer.svg'
+      };
+      Object.entries(_pmap).forEach(([key, src]) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const c = document.createElement('canvas');
+            c.width = 200; c.height = 200;
+            c.getContext('2d').drawImage(img, 0, 0, 200, 200);
+            _placardImages[key] = c.toDataURL('image/png');
+          } catch(e) {}
+        };
+        img.src = src;
+      });
     })();
 
     // ── PDF WORK ORDER ──
@@ -1249,6 +1277,11 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
           doc.rect(M, y, W-M*2, 34, 'F');
           doc.setDrawColor(...ORANGE); doc.rect(M, y, W-M*2, 34, 'S');
           doc.setFillColor(...ORANGE); doc.rect(M, y, 3, 34, 'F');
+
+          // Placard image (right side of card)
+          if (spec.hazType && _placardImages[spec.hazType]) {
+            try { doc.addImage(_placardImages[spec.hazType], 'PNG', W-M-33, y+2, 30, 30); } catch(e) {}
+          }
 
           // Placard name badge
           doc.setFillColor(...ORANGE); doc.rect(M+5, y+3, 55, 7, 'F');

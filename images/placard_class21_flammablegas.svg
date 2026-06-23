@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <polygon points="100,4 196,100 100,196 4,100" fill="#CC0000"/>
+  <polygon points="100,14 186,100 100,186 14,100" fill="none" stroke="white" stroke-width="2"/>
+  <path d="M85,108 Q80,93 88,83 Q86,93 92,88 Q88,78 95,68 Q98,78 95,86 Q100,73 105,68 Q102,80 108,76 Q112,83 108,93 Q115,83 112,98 Q118,90 115,108 Q110,123 100,126 Q90,123 85,108Z" fill="white"/>
+  <text x="100" y="147" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="0.5">FLAMMABLE</text>
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="0.5">GAS</text>
+  <text x="100" y="178" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">2</text>
+</svg>

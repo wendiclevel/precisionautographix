@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Red diamond background -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="#CC0000"/>
+  <!-- Inner white border -->
+  <polygon points="100,14 186,100 100,186 14,100" fill="none" stroke="white" stroke-width="2"/>
+  <!-- Flame symbol (white) -->
+  <path d="M85,110 Q80,95 88,85 Q86,95 92,90 Q88,80 95,70 Q98,80 95,88 Q100,75 105,70 Q102,82 108,78 Q112,85 108,95 Q115,85 112,100 Q118,92 115,110 Q110,125 100,128 Q90,125 85,110Z" fill="white"/>
+  <!-- FLAMMABLE text -->
+  <text x="100" y="152" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="1">FLAMMABLE</text>
+  <!-- Class number -->
+  <text x="100" y="175" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">3</text>
+</svg>
