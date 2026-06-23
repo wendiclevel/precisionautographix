@@ -41,7 +41,7 @@ header {
 }
 
 .logo-wrap { display: flex; align-items: center; text-decoration: none; }
-.logo-img { height: 130px; width: auto; display: block; }
+.logo-img { height: 170px; width: auto; display: block; }
 
 .nav-links { list-style: none; display: flex; gap: 2rem; align-items: center; }
 
@@ -175,7 +175,7 @@ section h2::after {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 1.5rem;
   max-width: 1200px;
   margin: 0 auto;
