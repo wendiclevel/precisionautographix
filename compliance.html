@@ -216,7 +216,10 @@
       <a href="index.html" class="logo-wrap">
         <img src="images/logo.png" alt="Precision Autographix" class="logo-img" />
       </a>
-      <ul class="nav-links">
+      <button class="nav-hamburger" id="nav-hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
         <li><a href="index.html#services">Services</a></li>
         <li><a href="index.html#gallery">Gallery</a></li>
         <li><a href="index.html#about">About</a></li>
@@ -225,6 +228,22 @@
       </ul>
     </nav>
   </header>
+  <script>
+    (function() {
+      const ham = document.getElementById('nav-hamburger');
+      const nav = document.getElementById('nav-links');
+      ham.addEventListener('click', () => {
+        ham.classList.toggle('open');
+        nav.classList.toggle('open');
+      });
+      nav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+          ham.classList.remove('open');
+          nav.classList.remove('open');
+        });
+      });
+    })();
+  </script>
 
   <!-- HERO -->
   <section class="compliance-hero">
