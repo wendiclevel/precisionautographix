@@ -65,132 +65,139 @@
   <section id="gallery" class="gallery">
     <h2>Our Work</h2>
     <p class="section-sub">Precision craftsmanship on every job.</p>
+
+    <div class="gallery-filters">
+      <button class="gf-btn active" data-filter="all">All</button>
+      <button class="gf-btn" data-filter="fleet">Fleet Branding</button>
+      <button class="gf-btn" data-filter="compliance">Compliance</button>
+      <button class="gf-btn" data-filter="onsite">On-Site Install</button>
+      <button class="gf-btn" data-filter="boat">Boat Graphics</button>
+      <button class="gf-btn" data-filter="custom">Custom Design</button>
+    </div>
+
     <div class="gallery-grid">
 
-      <!-- 1: Van Side Panel Full Branding -->
-      <div class="gallery-item gi-vanside">
-        <div class="mockup-overlay"><span class="mockup-label">Fleet Van Branding</span></div>
-        <div class="mockup-scene">
-          <div class="gvs-wrap">
-            <div class="gvs-windows">
-              <div class="gvs-win gvs-win1"></div>
-              <div class="gvs-win gvs-win2"></div>
-            </div>
-            <div class="gvs-body">
-              <div class="gvs-logo-box">
-                <div class="gvs-logo-inner">PA</div>
-              </div>
-              <div class="gvs-info">
-                <div class="gvs-company">APEX LOGISTICS</div>
-                <div class="gvs-services">FREIGHT · DELIVERY · DISTRIBUTION</div>
-                <div class="gvs-phone">(503) 541-1400</div>
-                <div class="gvs-url">apexlogistics.com</div>
-              </div>
-              <div class="gvs-stripe"></div>
-            </div>
-            <div class="gvs-wheels">
-              <div class="gvs-wheel gvs-w1"></div>
-              <div class="gvs-wheel gvs-w2"></div>
-            </div>
-          </div>
-        </div>
+      <!-- Fleet Branding -->
+      <div class="gallery-item" data-cat="fleet">
+        <img src="images/fleetbranding_pickupvan.png" alt="Fleet pickup van vinyl branding" />
+        <div class="mockup-overlay"><span class="mockup-label">Fleet Pickup Van</span></div>
+      </div>
+      <div class="gallery-item" data-cat="fleet">
+        <img src="images/fleetbranding_van.png" alt="Fleet van vinyl graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Fleet Van</span></div>
+      </div>
+      <div class="gallery-item" data-cat="fleet">
+        <img src="images/fleetbranding_truck.png" alt="Fleet truck vinyl branding" />
+        <div class="mockup-overlay"><span class="mockup-label">Fleet Truck</span></div>
+      </div>
+      <div class="gallery-item" data-cat="fleet">
+        <img src="images/fleetbranding_trailer.png" alt="Fleet trailer vinyl graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Fleet Trailer</span></div>
+      </div>
+      <div class="gallery-item" data-cat="fleet">
+        <img src="images/fleetbranding_bus.png" alt="Fleet bus vinyl branding" />
+        <div class="mockup-overlay"><span class="mockup-label">Fleet Bus</span></div>
       </div>
 
-      <!-- 2: SUV Door Logo Decal -->
-      <div class="gallery-item gi-suv">
-        <div class="mockup-overlay"><span class="mockup-label">Door Logo Decal</span></div>
-        <div class="mockup-scene">
-          <div class="gsuv-door">
-            <div class="gsuv-window"></div>
-            <div class="gsuv-panel">
-              <div class="gsuv-decal">
-                <div class="gsuv-circle">
-                  <div class="gsuv-icon">⚙</div>
-                </div>
-                <div class="gsuv-name">CASCADE HVAC</div>
-                <div class="gsuv-sub">COMMERCIAL · RESIDENTIAL</div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <!-- Compliance -->
+      <div class="gallery-item" data-cat="compliance">
+        <img src="images/compliance_usdotnumbers.png" alt="USDOT compliance numbers" />
+        <div class="mockup-overlay"><span class="mockup-label">USDOT Numbers</span></div>
+      </div>
+      <div class="gallery-item" data-cat="compliance">
+        <img src="images/compliance_hazardplacard.png" alt="Hazard placard decals" />
+        <div class="mockup-overlay"><span class="mockup-label">Hazard Placards</span></div>
+      </div>
+      <div class="gallery-item" data-cat="compliance">
+        <img src="images/compliance_safetymarking.png" alt="Safety marking decals" />
+        <div class="mockup-overlay"><span class="mockup-label">Safety Markings</span></div>
       </div>
 
-      <!-- 3: Truck Door Compliance Stack -->
-      <div class="gallery-item gi-cabdoor">
-        <div class="mockup-overlay"><span class="mockup-label">Truck Door Lettering</span></div>
-        <div class="mockup-scene">
-          <div class="gcd-door">
-            <div class="gcd-window"></div>
-            <div class="gcd-panel">
-              <div class="gcd-company">NORTHWEST HAULING</div>
-              <div class="gcd-bar">
-                <span>Tel. (503) 555-0182</span>
-              </div>
-              <div class="gcd-city">Portland, OR  97201</div>
-              <div class="gcd-dot">US DOT  3451 2378</div>
-              <div class="gcd-mc">MC  9451 2378</div>
-            </div>
-          </div>
-        </div>
+      <!-- On-Site Installation -->
+      <div class="gallery-item" data-cat="onsite">
+        <img src="images/onsiteinstallation_van.png" alt="On-site van installation" />
+        <div class="mockup-overlay"><span class="mockup-label">On-Site Van Install</span></div>
+      </div>
+      <div class="gallery-item" data-cat="onsite">
+        <img src="images/onsiteinstallation_truck.png" alt="On-site truck installation" />
+        <div class="mockup-overlay"><span class="mockup-label">On-Site Truck Install</span></div>
+      </div>
+      <div class="gallery-item" data-cat="onsite">
+        <img src="images/onsiteinstallation_boxtruck.png" alt="On-site box truck installation" />
+        <div class="mockup-overlay"><span class="mockup-label">On-Site Box Truck Install</span></div>
       </div>
 
-      <!-- 4: Fleet DOT Compliance -->
-      <div class="gallery-item gi-dotfleet">
-        <div class="mockup-overlay"><span class="mockup-label">Fleet DOT Compliance</span></div>
-        <div class="mockup-scene">
-          <div class="gdf-panel">
-            <div class="gdf-company">YOUR COMPANY NAME</div>
-            <div class="gdf-row">
-              <span class="gdf-field">USDOT#</span>
-              <span class="gdf-value">1234567</span>
-            </div>
-            <div class="gdf-row">
-              <span class="gdf-field">MC#</span>
-              <span class="gdf-value">1234567</span>
-            </div>
-            <div class="gdf-note">Applied on-site · All vehicle types</div>
-          </div>
-        </div>
+      <!-- Boat Graphics -->
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnames_stern.png" alt="Boat name stern lettering" />
+        <div class="mockup-overlay"><span class="mockup-label">Boat Name — Stern</span></div>
+      </div>
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnames_registration.png" alt="Boat name registration" />
+        <div class="mockup-overlay"><span class="mockup-label">Boat Name — Registration</span></div>
+      </div>
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnames_custom.png" alt="Custom boat name lettering" />
+        <div class="mockup-overlay"><span class="mockup-label">Custom Boat Name</span></div>
+      </div>
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnumbers_hull.png" alt="Boat hull registration numbers" />
+        <div class="mockup-overlay"><span class="mockup-label">Hull Numbers</span></div>
+      </div>
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnumbers_nameport.png" alt="Boat name and hailing port" />
+        <div class="mockup-overlay"><span class="mockup-label">Name &amp; Hailing Port</span></div>
+      </div>
+      <div class="gallery-item" data-cat="boat">
+        <img src="images/boatnumbers_registration.png" alt="Boat registration numbers" />
+        <div class="mockup-overlay"><span class="mockup-label">Registration Numbers</span></div>
       </div>
 
-      <!-- 5: Van Rear Door Stack -->
-      <div class="gallery-item gi-vanrear">
-        <div class="mockup-overlay"><span class="mockup-label">Van Rear Door Graphics</span></div>
-        <div class="mockup-scene">
-          <div class="gvr-door">
-            <div class="gvr-handle"></div>
-            <div class="gvr-content">
-              <div class="gvr-icon">
-                <div class="gvr-house"></div>
-              </div>
-              <div class="gvr-company">PACIFIC<br>WATERPROOFING</div>
-              <div class="gvr-city">Portland, OR</div>
-              <div class="gvr-dot">US DOT  1234567</div>
-            </div>
-          </div>
-        </div>
+      <!-- Custom Design -->
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_business.png" alt="Custom business vehicle graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Business Graphics</span></div>
       </div>
-
-      <!-- 6: Boat Names & Numbers -->
-      <div class="gallery-item gi-boat">
-        <div class="mockup-overlay"><span class="mockup-label">Boat Names &amp; Numbers</span></div>
-        <div class="mockup-scene">
-          <div class="gbt-scene">
-            <div class="gbt-hull">
-              <div class="gbt-waterline"></div>
-              <div class="gbt-vinyl">
-                <div class="gbt-name">SEA RANGER</div>
-                <div class="gbt-hail">Portland, OR</div>
-                <div class="gbt-number">OR 1234 AB</div>
-              </div>
-            </div>
-            <div class="gbt-water"></div>
-          </div>
-        </div>
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_adventure.png" alt="Custom adventure vehicle graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Adventure Graphics</span></div>
+      </div>
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_foodtrailer.png" alt="Custom food trailer graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Food Trailer</span></div>
+      </div>
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_trailer.png" alt="Custom trailer vinyl graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Custom Trailer</span></div>
+      </div>
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_van.png" alt="Custom van vinyl graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Custom Van</span></div>
+      </div>
+      <div class="gallery-item" data-cat="custom">
+        <img src="images/customdesign_truck.png" alt="Custom truck vinyl graphics" />
+        <div class="mockup-overlay"><span class="mockup-label">Custom Truck</span></div>
       </div>
 
     </div>
   </section>
+
+  <script>
+    document.querySelectorAll('.gf-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.gallery-item').forEach(item => {
+          if (filter === 'all' || item.dataset.cat === filter) {
+            item.classList.remove('hidden');
+          } else {
+            item.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
 
   <section id="about" class="about">
     <div class="about-content">

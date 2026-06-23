@@ -246,222 +246,37 @@ section h2::after {
   letter-spacing: 0.1em;
 }
 
-.mockup-scene { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 
-/* ===== GALLERY MOCKUPS ===== */
-
-/* --- 1: Fleet Van Side Panel --- */
-.gi-vanside { background: linear-gradient(160deg, #8898b0 0%, #667088 100%); }
-
-.gvs-wrap { width: 92%; height: 78%; position: relative; }
-
-.gvs-windows {
-  position: absolute; top: 0; left: 5%; right: 5%; height: 33%;
-  background: linear-gradient(160deg, #1a2030, #0d1420);
-  border-radius: 4px 4px 0 0;
-  display: flex; gap: 3%; padding: 6px 8px 0;
-}
-.gvs-win { height: 80%; border-radius: 3px 3px 0 0; background: linear-gradient(160deg, #1e3050, #0a1828); border: 1px solid #2a4060; }
-.gvs-win1 { flex: 1.2; }
-.gvs-win2 { flex: 2.2; }
-
-.gvs-body {
-  position: absolute; top: 33%; left: 0; right: 0; bottom: 18%;
-  background: linear-gradient(180deg, #f6f6f6 0%, #ededed 100%);
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  display: flex; align-items: center; gap: 10px; padding: 0 14px;
-  overflow: hidden;
+/* ===== GALLERY FILTERS ===== */
+.gallery-filters {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.6rem; max-width: 1200px; margin: 0 auto 2.5rem;
 }
 
-.gvs-stripe {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 22%;
-  background: #111;
-}
-.gvs-stripe::after {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-  background: var(--red);
-}
-
-.gvs-logo-box {
-  flex-shrink: 0; width: 48px; height: 48px;
-  background: #111; border: 2px solid var(--red);
-  display: flex; align-items: center; justify-content: center; border-radius: 3px;
-}
-.gvs-logo-inner { font-size: 1.1rem; font-weight: 900; color: #fff; letter-spacing: -0.05em; }
-
-.gvs-info { flex: 1; overflow: hidden; }
-.gvs-company { font-size: 0.82rem; font-weight: 900; color: #111; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
-.gvs-services { font-size: 0.3rem; font-weight: 700; color: #555; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
-.gvs-phone { font-size: 0.48rem; font-weight: 700; color: #111; margin-top: 4px; letter-spacing: 0.08em; }
-.gvs-url { font-size: 0.36rem; color: var(--red); letter-spacing: 0.1em; margin-top: 1px; }
-
-.gvs-wheels {
-  position: absolute; bottom: 0; left: 0; right: 0; height: 18%;
-  display: flex; justify-content: space-between; padding: 0 10%; align-items: flex-end;
-}
-.gvs-wheel {
-  width: 15%; aspect-ratio: 1;
-  background: radial-gradient(circle at 38% 38%, #444, #111 60%, #000);
-  border-radius: 50%; border: 2px solid #333;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+.gf-btn {
+  background: transparent; border: 1px solid #333;
+  color: var(--silver); padding: 0.5rem 1.2rem;
+  border-radius: 3px; font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  cursor: pointer; transition: all 0.2s; font-family: inherit;
 }
 
+.gf-btn:hover { border-color: var(--silver); color: var(--white); }
+.gf-btn.active { background: var(--red); border-color: var(--red); color: var(--white); }
 
-/* --- 2: SUV Door Logo Decal --- */
-.gi-suv { background: linear-gradient(160deg, #c0c8d8 0%, #9098b0 100%); }
+/* ===== GALLERY IMAGE ITEMS ===== */
 
-.gsuv-door {
-  width: 58%; height: 82%;
-  background: linear-gradient(160deg, #f8f8f8 0%, #eaeaea 100%);
-  border-radius: 6px 6px 4px 4px;
-  border: 1px solid #ccc;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.9);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.gsuv-window {
-  height: 30%;
-  background: linear-gradient(160deg, #1a2838, #0d1520);
-  border-bottom: 2px solid #555;
-}
-.gsuv-panel { flex: 1; display: flex; align-items: center; justify-content: center; }
-.gsuv-decal { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 7px; }
-.gsuv-circle {
-  width: 54px; height: 54px;
-  border: 3px solid #111; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center; position: relative;
-}
-.gsuv-circle::before {
-  content: ''; position: absolute; inset: 4px;
-  border: 1px solid #333; border-radius: 50%;
-}
-.gsuv-icon { font-size: 1.4rem; color: #111; }
-.gsuv-name { font-size: 0.65rem; font-weight: 900; color: #111; letter-spacing: 0.12em; text-transform: uppercase; }
-.gsuv-sub { font-size: 0.32rem; font-weight: 700; color: var(--red); letter-spacing: 0.15em; text-transform: uppercase; }
-
-
-/* --- 3: Truck Cab Door Compliance Stack --- */
-.gi-cabdoor { background: linear-gradient(160deg, #909aa8 0%, #606870 100%); }
-
-.gcd-door {
-  width: 56%; height: 84%;
-  background: linear-gradient(170deg, #f8f8f8 0%, #f0f0f0 100%);
-  border-radius: 4px 4px 3px 3px;
-  border: 1px solid #ccc;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.95);
-  display: flex; flex-direction: column; overflow: hidden;
-}
-.gcd-window {
-  height: 28%;
-  background: linear-gradient(160deg, #1a2838, #0d1520);
-  border-bottom: 2px solid #444;
-}
-.gcd-panel {
-  flex: 1; display: flex; flex-direction: column;
-  justify-content: center; padding: 8px 12px; gap: 4px;
-}
-.gcd-company { font-size: 0.66rem; font-weight: 900; color: #111; letter-spacing: 0.05em; text-transform: uppercase; }
-.gcd-bar { background: #111; padding: 2px 6px; display: inline-block; width: fit-content; margin: 1px 0; }
-.gcd-bar span { font-size: 0.4rem; font-weight: 700; color: var(--red); letter-spacing: 0.1em; }
-.gcd-city { font-size: 0.4rem; color: #444; letter-spacing: 0.06em; }
-.gcd-dot { font-size: 0.46rem; font-weight: 900; color: #111; letter-spacing: 0.05em; text-transform: uppercase; margin-top: 3px; }
-.gcd-mc { font-size: 0.46rem; font-weight: 900; color: #111; letter-spacing: 0.05em; text-transform: uppercase; }
-
-
-/* --- 4: Fleet DOT Compliance Card --- */
-.gi-dotfleet { background: linear-gradient(160deg, #9aa4b8 0%, #7080a0 100%); }
-
-.gdf-panel {
-  width: 68%; padding: 16px 18px;
-  background: #f5f5f5;
-  border-radius: 3px; border: 1px solid #ddd;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.45);
-  display: flex; flex-direction: column; gap: 7px;
-}
-.gdf-company {
-  font-size: 0.6rem; font-weight: 900; color: #111; letter-spacing: 0.08em;
-  text-transform: uppercase; text-align: center;
-  border-bottom: 2px solid #111; padding-bottom: 7px;
-}
-.gdf-row { display: flex; align-items: baseline; gap: 8px; }
-.gdf-field { font-size: 0.48rem; font-weight: 900; color: #111; letter-spacing: 0.07em; text-transform: uppercase; min-width: 42px; }
-.gdf-value { font-size: 0.88rem; font-weight: 900; color: #111; letter-spacing: 0.04em; font-family: 'Arial Black', Arial, sans-serif; }
-.gdf-note { font-size: 0.3rem; color: #999; letter-spacing: 0.1em; text-align: center; margin-top: 3px; font-style: italic; }
-
-
-/* --- 5: Van Rear Door Stack --- */
-.gi-vanrear { background: linear-gradient(160deg, #a0a8b8 0%, #787888 100%); }
-
-.gvr-door {
-  width: 54%; height: 84%;
-  background: linear-gradient(180deg, #f5f5f5 0%, #eeeeee 100%);
-  border-radius: 3px; border: 1px solid #ccc;
-  box-shadow: 0 6px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.95);
-  display: flex; align-items: center; justify-content: center;
-  position: relative;
-}
-.gvr-handle {
-  position: absolute; right: -6px; top: 50%;
-  width: 6px; height: 24px; background: #888;
-  border-radius: 3px; transform: translateY(-50%);
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.4);
-}
-.gvr-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-.gvr-icon { position: relative; width: 32px; height: 28px; margin: 0 auto 2px; }
-.gvr-house {
-  width: 26px; height: 18px; border: 2.5px solid #111;
-  border-top: none; position: absolute; bottom: 0; left: 3px;
-}
-.gvr-house::before {
-  content: ''; position: absolute; top: -13px; left: -6px; right: -6px;
-  border-left: 19px solid transparent; border-right: 19px solid transparent;
-  border-bottom: 14px solid #111;
-}
-.gvr-company { font-size: 0.76rem; font-weight: 900; color: #111; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.1; }
-.gvr-city { font-size: 0.38rem; color: #555; letter-spacing: 0.15em; text-transform: uppercase; }
-.gvr-dot { font-size: 0.38rem; font-weight: 700; color: #333; letter-spacing: 0.1em; text-transform: uppercase; }
-
-
-/* --- 6: Boat Names & Numbers --- */
-.gi-boat { background: linear-gradient(180deg, #0a1828 0%, #102848 50%, #081828 100%); }
-
-.gbt-scene {
-  width: 90%; height: 82%;
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s;
 }
 
-.gbt-hull {
-  width: 90%; height: 54%;
-  background: linear-gradient(160deg, #f2f2f2 0%, #e8e8e8 60%, #dcdcdc 100%);
-  border-radius: 6px 6px 50px 50px / 6px 6px 24px 24px;
-  border: 1px solid #ccc;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.95);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
+.gallery-item:hover img { transform: scale(1.04); }
 
-.gbt-waterline {
-  position: absolute; bottom: 20%; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, transparent 2%, var(--red) 10%, var(--red-hot) 50%, var(--red) 90%, transparent 98%);
-}
+.gallery-item.hidden { display: none; }
 
-.gbt-vinyl { text-align: center; position: relative; z-index: 2; margin-bottom: 12%; }
-.gbt-name {
-  font-size: 1.05rem; font-weight: 900; color: #111; letter-spacing: 0.16em;
-  text-transform: uppercase; font-family: 'Arial Black', Arial, sans-serif; line-height: 1;
-}
-.gbt-hail { font-size: 0.38rem; color: #555; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 4px; }
-.gbt-number { font-size: 0.44rem; font-weight: 700; color: #333; letter-spacing: 0.12em; margin-top: 3px; }
-
-.gbt-water {
-  width: 100%; height: 20%;
-  background: linear-gradient(180deg, #0e3468 0%, #0a2248 100%);
-  border-radius: 0 0 4px 4px;
-}
-.gbt-water::before {
-  content: ''; display: block; height: 4px;
-  background: repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(255,255,255,0.07) 8px, rgba(255,255,255,0.07) 16px);
-}
 
 /* ===== ABOUT ===== */
 .about { background: var(--dark); }
