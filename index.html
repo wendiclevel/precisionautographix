@@ -213,14 +213,14 @@
   <section id="contact" class="contact">
     <h2>Get a Free Quote</h2>
     <p class="section-sub">Tell us about your project and we'll get back to you within 24 hours.</p>
-    <form class="contact-form" action="https://formspree.io/f/xrewbgnv" method="POST">
+    <form class="contact-form" id="quote-form" action="https://formspree.io/f/xrewbgnv" method="POST">
       <div class="form-row">
-        <input type="text" placeholder="Your Name" required />
-        <input type="email" placeholder="Email Address" required />
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Email Address" required />
       </div>
       <div class="form-row">
-        <input type="tel" placeholder="Phone Number" />
-        <select>
+        <input type="tel" name="phone" placeholder="Phone Number" />
+        <select name="service">
           <option value="">Service Needed</option>
           <option>Fleet Branding</option>
           <option>Compliance Graphics</option>
@@ -229,9 +229,29 @@
           <option>Custom Design</option>
         </select>
       </div>
-      <textarea placeholder="Tell us about your project..." rows="5"></textarea>
+      <textarea name="message" placeholder="Tell us about your project..." rows="5"></textarea>
       <button type="submit" class="btn-primary">Send Message</button>
     </form>
+
+    <div id="form-thanks" style="display:none; text-align:center; padding: 3rem 1rem;">
+      <div style="font-size:2.5rem; margin-bottom:1rem;">✔</div>
+      <h3 style="color:#e8e8e8; font-size:1.4rem; margin-bottom:0.75rem;">Message Sent!</h3>
+      <p style="color:#c0c0c0;">Thank you for your interest in Precision Autographix. We'll be in touch within 24 hours.</p>
+    </div>
+
+    <script>
+      const form = document.getElementById('quote-form');
+      const thanks = document.getElementById('form-thanks');
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        if (res.ok) {
+          form.style.display = 'none';
+          thanks.style.display = 'block';
+        }
+      });
+    </script>
   </section>
 
   <footer>
