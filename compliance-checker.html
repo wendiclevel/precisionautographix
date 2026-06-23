@@ -741,11 +741,12 @@
       // Always: Company name
       required.push({
         label: 'Company Name Lettering',
-        detail: 'Legal company name or DBA must appear on both sides of any commercial vehicle. Minimum 2-inch contrasting letters.',
+        detail: 'Legal company name or DBA must appear on both sides of any commercial vehicle — interstate and intrastate. Minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
         service: 'Company Name — Both Sides',
         placement: 'Both sides of vehicle',
         qty: 2,
-        workNotes: 'Legal name or DBA — min. 2" contrasting letters'
+        workNotes: 'Legal name or DBA — min. 2" contrasting letters',
+        penalty: '$1,000 – $10,000 per violation (49 CFR 390.21) — applies interstate and intrastate'
       });
 
       // USDOT Number
@@ -756,11 +757,12 @@
       if (needsUSDOT) {
         required.push({
           label: 'USDOT Number',
-          detail: 'Required on both sides of the vehicle — must be preceded by "USDOT", minimum 2-inch letters, contrasting color. Fines up to $16,000/day for non-compliance.',
+          detail: 'Required on both sides of the vehicle — interstate and intrastate (hazmat, passengers, for-hire, or state-mandated operations). Must be preceded by "USDOT", minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
           service: 'USDOT Number — Both Sides',
           placement: 'Both sides of vehicle',
           qty: 2,
-          workNotes: 'Prefix "USDOT" required — min. 2" letters, contrasting color'
+          workNotes: 'Prefix "USDOT" required — min. 2" letters, contrasting color',
+          penalty: '$1,000 – $10,000 per violation (49 CFR 390.21); vehicle may be placed out of service — applies interstate and intrastate'
         });
       }
 
@@ -768,11 +770,12 @@
       if (isForHire && isInterstate) {
         required.push({
           label: 'MC Number (Operating Authority)',
-          detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides.',
+          detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides. Operating without proper authority is a separate violation from missing markings. Regulated under 49 USC 13902.',
           service: 'MC Number — Both Sides',
           placement: 'Both sides of vehicle',
           qty: 2,
-          workNotes: 'Display alongside USDOT number'
+          workNotes: 'Display alongside USDOT number',
+          penalty: '$11,000 – $25,000 per offense for operating without authority (49 USC 14901); repeat violations up to $25,000 per day'
         });
       }
 
@@ -791,23 +794,25 @@
         const placardSummary = selectedSpecs.map(s => `${s.placardName} (${s.unShort}) ERG ${s.guideNum}`).join(' | ');
         required.push({
           label: 'Hazmat Placards',
-          detail: `Required on all four sides of the vehicle. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. ${hazList}.`,
+          detail: `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504. ${hazList}.`,
           service: 'Hazmat Placards — All 4 Sides: ' + hazList,
           placement: 'All 4 sides of vehicle',
           qty: 4,
           workNotes: placardSummary,
           placardSpecs: selectedSpecs,
-          placardPrint: 'Print on weatherproof, durable stock (min. 0.015" thick for rigid holders). Free placard PDFs at phmsa.dot.gov. Pre-made vinyl placards at labelmaster.com or grainger.com. Holders required on most bulk transport.'
+          placardPrint: 'Print on weatherproof, durable stock (min. 0.015" thick for rigid holders). Free placard PDFs at phmsa.dot.gov. Pre-made vinyl placards at labelmaster.com or grainger.com. Holders required on most bulk transport.',
+          penalty: '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
         });
         // ERG
         if (answers.wantsERG) {
           required.push({
             label: 'Emergency Response Guide (ERG)',
-            detail: `Federal law requires current ERG edition in every hazmat vehicle cab. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
+            detail: `Federal law (49 CFR 172.602) requires the current ERG edition in every hazmat vehicle cab — interstate and intrastate. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
             service: 'Emergency Response Guide — ERG Reference Package: ' + hazList,
             placement: 'Vehicle cab',
             qty: 1,
             workNotes: 'Current edition required — 2024 ERG. Guide pages: ' + selectedSpecs.map(s => s.guideNum).join(', '),
+            penalty: '$481 – $87,006 per violation per day (49 USC 5123) — same penalty schedule as hazmat placards, applies interstate and intrastate',
             ergSpecs: selectedSpecs
           });
         }
@@ -817,11 +822,12 @@
       if (isOversize || vt === 'flatbed') {
         required.push({
           label: 'OVERSIZE LOAD Banner',
-          detail: 'Required front and rear when load exceeds legal dimensions. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum.',
+          detail: 'Required front and rear when load exceeds legal dimensions — intrastate and interstate. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum. Regulated by state DOT in each operating state.',
           service: 'Oversize Load Banners — Front & Rear',
           placement: 'Front & rear of vehicle',
           qty: 2,
-          workNotes: '84"W × 18"H min — black on yellow, 10" letters'
+          workNotes: '84"W × 18"H min — black on yellow, 10" letters',
+          penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation; escort and permit violations may result in load being stopped'
         });
       }
 
@@ -829,11 +835,12 @@
       if (vt === 'boat') {
         required.push({
           label: 'Hull Registration Numbers',
-          detail: 'Alabama requires registration numbers on both sides of the bow — minimum 3-inch block letters, contrasting color. Format: AL XXXX XX.',
+          detail: 'Alabama law requires registration numbers on both sides of the bow — minimum 3-inch block letters, contrasting color, plain vertical block. Format: AL XXXX XX. Required on all Alabama-registered vessels when underway.',
           service: 'Hull Registration Numbers — Both Sides of Bow',
           placement: 'Both sides of bow',
           qty: 2,
-          workNotes: 'Format: AL XXXX XX — min. 3" block letters, contrasting color'
+          workNotes: 'Format: AL XXXX XX — min. 3" block letters, contrasting color',
+          penalty: 'Alabama Marine Police: up to $250 fine; vessel may be ordered off water — intrastate regulation'
         });
         recommended.push({
           label: 'Vessel Name & Hailing Port',
@@ -849,11 +856,12 @@
       if (states.includes('fl') && isForHire) {
         required.push({
           label: 'Florida PSC Number',
-          detail: 'For-hire carriers operating intrastate in Florida must display their Florida Public Service Commission number on both sides of the vehicle.',
+          detail: 'For-hire carriers operating intrastate in Florida must display their Florida Public Service Commission (PSC) number on both sides of the vehicle. Regulated under Florida Statute 316.070 and FDOT rules.',
           service: 'Florida PSC Number — Both Sides',
           placement: 'Both sides of vehicle',
           qty: 2,
-          workNotes: 'FL Public Service Commission number'
+          workNotes: 'FL Public Service Commission number',
+          penalty: 'Florida: $500 – $5,000 per violation (FL Statute 316.070); intrastate regulation — applies to for-hire carriers operating within Florida'
         });
       }
 
@@ -861,11 +869,12 @@
       if (states.includes('ga') && isForHire) {
         required.push({
           label: 'Georgia PSC Number',
-          detail: 'For-hire carriers operating intrastate in Georgia must display their Georgia Public Service Commission number on both sides.',
+          detail: 'For-hire carriers operating intrastate in Georgia must display their Georgia Public Service Commission (PSC) number on both sides of the vehicle. Regulated by the Georgia PSC under OCGA Title 46.',
           service: 'Georgia PSC Number — Both Sides',
           placement: 'Both sides of vehicle',
           qty: 2,
-          workNotes: 'GA Public Service Commission number'
+          workNotes: 'GA Public Service Commission number',
+          penalty: 'Georgia: $100 – $5,000 per violation (OCGA 46-7-15); intrastate regulation — applies to for-hire carriers operating within Georgia'
         });
       }
 
@@ -972,12 +981,18 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       const reqEl = document.getElementById('results-required');
       reqEl.innerHTML = '<div class="results-badge">■ Required by Law</div>';
       required.forEach(r => {
+        const penaltyBadge = r.penalty ? `
+          <div style="margin-top:0.5rem;display:inline-flex;align-items:flex-start;gap:0.4rem;background:rgba(204,0,0,0.07);border:1px solid rgba(204,0,0,0.18);padding:0.3rem 0.65rem;border-radius:2px;max-width:100%;">
+            <span style="color:#cc0000;font-size:0.68rem;font-weight:700;white-space:nowrap;padding-top:0.05rem;">⚠ PENALTY</span>
+            <span style="color:#777;font-size:0.72rem;line-height:1.4;">${r.penalty}</span>
+          </div>` : '';
         reqEl.innerHTML += `
           <div class="req-item">
             <div class="req-item-icon">✔</div>
-            <div>
+            <div style="width:100%;">
               <div class="req-item-label">${r.label}</div>
               <div class="req-item-detail">${r.detail}</div>
+              ${penaltyBadge}
             </div>
           </div>`;
       });
@@ -1190,7 +1205,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         req.label,
         req.placement || '—',
         (req.qty || 1).toString(),
-        req.workNotes || '—'
+        (req.workNotes || '—') + (req.penalty ? '\n⚠ ' + req.penalty : '')
       ]);
 
       doc.autoTable({
