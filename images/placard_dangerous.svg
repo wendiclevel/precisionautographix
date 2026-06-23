@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- White diamond -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="white"/>
+  <!-- Black border -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="none" stroke="black" stroke-width="3"/>
+  <!-- Inner border -->
+  <polygon points="100,15 185,100 100,185 15,100" fill="none" stroke="black" stroke-width="1.5"/>
+  <!-- Red diagonal stripe top-left to center -->
+  <polygon points="100,35 130,65 100,80 70,65" fill="#CC0000"/>
+  <!-- Red diagonal stripe center to bottom-right -->
+  <polygon points="100,120 130,135 100,165 70,135" fill="#CC0000"/>
+  <!-- DANGEROUS text -->
+  <text x="100" y="108" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#CC0000" text-anchor="middle" letter-spacing="0.5">DANGEROUS</text>
+</svg>
