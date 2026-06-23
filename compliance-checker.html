@@ -496,6 +496,9 @@
             <div><div class="check-label">Other / Not Sure</div></div>
           </label>
         </div>
+        <div id="other-haz-field" style="display:none;margin-bottom:1.5rem;">
+          <input class="checker-input" type="text" id="other-haz-desc" placeholder="Briefly describe what you haul (e.g. pool acid, dry ice, compressed oxygen)..." oninput="answers.otherHazDesc = this.value" />
+        </div>
         <div class="step-nav">
           <button class="btn-back" onclick="goBack(4)">← Back</button>
           <button class="btn-next" onclick="goGate()">See My Requirements →</button>
@@ -517,6 +520,18 @@
             <input class="checker-input input-full" type="number" id="g-vehicles" placeholder="How many vehicles need marking?" min="1" />
           </div>
         </div>
+
+        <!-- ERG Add-On — only shown if hazmat selected -->
+        <div id="erg-offer" style="display:none;background:#0d0d0d;border:1px solid #333;border-left:4px solid #cc0000;border-radius:4px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+          <label style="display:flex;align-items:flex-start;gap:1rem;cursor:pointer;" onclick="toggleERG(this)">
+            <div id="erg-box" style="width:20px;height:20px;border:2px solid #444;border-radius:2px;flex-shrink:0;margin-top:0.15rem;display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:#cc0000;transition:border-color 0.2s;"></div>
+            <div>
+              <div style="color:#e8e8e8;font-size:0.92rem;font-weight:700;">Include Emergency Response Guide (ERG) recommendation</div>
+              <div style="color:#666;font-size:0.8rem;margin-top:0.25rem;">Required in every hazmat vehicle cab — we'll identify the correct DOT ERG book edition and placard reference pages for your specific cargo class. Free with your compliance report.</div>
+            </div>
+          </label>
+        </div>
+
         <div class="step-nav">
           <button class="btn-back" onclick="goBackFromGate()">← Back</button>
           <button class="btn-next" onclick="submitAndShow()">Get My Compliance Report →</button>
@@ -563,7 +578,9 @@
       gvwr: null,
       ops: [],
       states: [],
-      hazmatTypes: []
+      hazmatTypes: [],
+      otherHazDesc: '',
+      wantsERG: false
     };
 
     let prevHazmatStep = 4;
@@ -600,6 +617,25 @@
       } else if (name === 'hazmatType') {
         if (isChecked) { if (!answers.hazmatTypes.includes(value)) answers.hazmatTypes.push(value); }
         else { answers.hazmatTypes = answers.hazmatTypes.filter(v => v !== value); }
+        // Show/hide "other" description field
+        if (value === 'other_haz') {
+          document.getElementById('other-haz-field').style.display = isChecked ? 'block' : 'none';
+          if (!isChecked) answers.otherHazDesc = '';
+        }
+      }
+    }
+
+    function toggleERG(el) {
+      answers.wantsERG = !answers.wantsERG;
+      const box = document.getElementById('erg-box');
+      if (answers.wantsERG) {
+        box.textContent = '✓';
+        box.style.borderColor = '#cc0000';
+        box.style.background = 'rgba(204,0,0,0.2)';
+      } else {
+        box.textContent = '';
+        box.style.borderColor = '#444';
+        box.style.background = 'transparent';
       }
     }
 
@@ -642,6 +678,8 @@
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       document.getElementById('step-gate').classList.add('active');
       updateProgress(6);
+      // Show ERG offer only if hazmat selected
+      document.getElementById('erg-offer').style.display = answers.ops.includes('hazmat') ? 'block' : 'none';
     }
 
     // Skip state step if not interstate
@@ -727,7 +765,7 @@
           pesticide: 'Class 6 — Toxic / Poison (white placard)',
           pool: 'Class 8 — Corrosive (black & white placard)',
           oxidizer: 'Class 5 — Oxidizer (yellow placard)',
-          other_haz: 'Hazmat class to be determined'
+          other_haz: answers.otherHazDesc ? `Class TBD — "${answers.otherHazDesc}"` : 'Hazmat class to be determined'
         };
         const hazList = haz.length > 0 ? haz.map(h => hazLabels[h] || h).join('; ') : 'Hazmat class to be determined';
         required.push({
@@ -735,6 +773,14 @@
           detail: `Required on all four sides of the vehicle. 250mm diamond shape. ${hazList}. Must remain legible throughout transport.`,
           service: 'Hazmat Placards — All 4 Sides: ' + hazList
         });
+        // ERG
+        if (answers.wantsERG) {
+          required.push({
+            label: 'Emergency Response Guide (ERG)',
+            detail: `DOT requires the current ERG book be kept in the cab of every hazmat vehicle. Your cargo class(es): ${hazList}. We will identify the correct ERG guide pages and placard reference numbers for your load.`,
+            service: 'Emergency Response Guide — ERG Reference Package: ' + hazList
+          });
+        }
       }
 
       // Oversize
@@ -829,7 +875,8 @@ Type: ${answers.vehicleType || 'Not specified'}
 GVWR: ${answers.gvwr || 'Not specified'}
 Operations: ${answers.ops.join(', ') || 'None selected'}
 States: ${answers.states.join(', ') || 'Not specified'}
-Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}
+Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}${answers.otherHazDesc ? '\nOther Hazmat Description: ' + answers.otherHazDesc : ''}
+ERG Requested: ${answers.wantsERG ? 'YES' : 'No'}
 
 === REQUIRED MARKINGS ===
 ${required.map(r => '• ' + r.service).join('\n')}
@@ -850,6 +897,8 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             operations: answers.ops.join(', '),
             states: answers.states.join(', '),
             hazmat_types: answers.hazmatTypes.join(', '),
+            other_hazmat_description: answers.otherHazDesc || 'N/A',
+            erg_requested: answers.wantsERG ? 'YES' : 'No',
             required_markings: required.map(r => r.service).join(' | '),
             recommended: recommended.map(r => r.service).join(' | '),
             full_package_summary: packageSummary,
