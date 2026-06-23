@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Commercial Vehicle Compliance Guide | Precision Autographix</title>
+  <meta name="description" content="Commercial vehicle marking requirements for Baldwin County, AL — USDOT numbers, hazmat placards, boat registration, oversize loads, and industry-specific signage rules."/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* ── COMPLIANCE PAGE STYLES ── */
+    .compliance-hero {
+      padding: 10rem 2rem 5rem;
+      background: linear-gradient(135deg, #000 0%, #1a0000 50%, #000 100%);
+      position: relative;
+    }
+    .compliance-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px);
+    }
+    .compliance-hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .compliance-hero h1 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #e8e8e8;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+    .compliance-hero p {
+      font-size: 1.1rem;
+      color: #c0c0c0;
+      max-width: 640px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(204,0,0,0.15);
+      border: 1px solid #cc0000;
+      color: #ff6666;
+      padding: 0.5rem 1rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── TABS ── */
+    .compliance-section { background: var(--dark); padding: 4rem 2rem; }
+    .tab-wrap { max-width: 1200px; margin: 0 auto; }
+
+    .tab-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      border-bottom: 2px solid #222;
+      padding-bottom: 0;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: #888;
+      padding: 0.75rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: -2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .tab-btn:hover { color: #e8e8e8; }
+    .tab-btn.active { color: #cc0000; border-bottom-color: #cc0000; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── REQUIREMENT CARDS ── */
+    .req-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    .req-card {
+      background: #111;
+      border: 1px solid #222;
+      border-left: 4px solid var(--red);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+    .req-card h4 {
+      color: #e8e8e8;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+    }
+    .req-card p, .req-card li {
+      color: #999;
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    .req-card ul { list-style: none; padding: 0; }
+    .req-card ul li { padding-left: 1rem; position: relative; margin-bottom: 0.4rem; }
+    .req-card ul li::before { content: '›'; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+
+    .req-alert {
+      background: rgba(204,0,0,0.08);
+      border: 1px solid rgba(204,0,0,0.3);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      color: #ff8888;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .req-alert strong { color: #ffaaaa; }
+
+    .req-note {
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      color: #777;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+    .req-note strong { color: #c0c0c0; }
+
+    /* ── HAZMAT TABLE ── */
+    .hazmat-table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.88rem; }
+    .hazmat-table th {
+      background: var(--red);
+      color: #fff;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .hazmat-table td { padding: 0.6rem 0.9rem; border-bottom: 1px solid #1a1a1a; color: #aaa; vertical-align: top; }
+    .hazmat-table tr:nth-child(even) td { background: #0a0a0a; }
+    .hazmat-table .class-badge {
+      display: inline-block;
+      background: rgba(204,0,0,0.15);
+      border: 1px solid rgba(204,0,0,0.4);
+      color: #ff6666;
+      padding: 0.15rem 0.5rem;
+      border-radius: 2px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── SECTION LABEL ── */
+    .tab-section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--red);
+      margin-bottom: 0.5rem;
+      margin-top: 2rem;
+    }
+    .tab-section-label:first-child { margin-top: 0; }
+    .tab-intro { color: #999; font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.75rem; max-width: 760px; }
+
+    /* ── CTA ── */
+    .compliance-cta {
+      background: #0d0d0d;
+      border-top: 1px solid #1a1a1a;
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    .compliance-cta h2 {
+      font-size: 1.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #e8e8e8;
+      margin-bottom: 0.75rem;
+    }
+    .compliance-cta p { color: #999; margin-bottom: 2rem; font-size: 1rem; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 768px) {
+      .tab-nav { gap: 0.25rem; }
+      .tab-btn { padding: 0.6rem 0.8rem; font-size: 0.75rem; }
+      .hazmat-table { font-size: 0.8rem; }
+      .hazmat-table th, .hazmat-table td { padding: 0.5rem 0.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <nav class="navbar">
+      <a href="index.html" class="logo-wrap">
+        <img src="images/logo.png" alt="Precision Autographix" class="logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html#services">Services</a></li>
+        <li><a href="index.html#gallery">Gallery</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="compliance.html" style="color:#cc0000;">Compliance Guide</a></li>
+        <li><a href="index.html#contact" class="btn-nav">Get a Quote</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="compliance-hero">
+    <div class="compliance-hero-inner">
+      <div class="hero-badge">⚠ Required by Federal & State Law</div>
+      <h1>Commercial Vehicle<br><span class="accent">Compliance Guide</span></h1>
+      <p>Operating a commercial vehicle in Alabama without proper markings puts you at risk of fines, failed inspections, and being placed out of service. Here's what the law requires — and how Precision Autographix keeps your fleet legal and on the road.</p>
+      <a href="index.html#contact" class="btn-primary">Get Compliant — Free Quote</a>
+    </div>
+  </section>
+
+  <!-- TABS -->
+  <section class="compliance-section">
+    <div class="tab-wrap">
+
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="usdot">USDOT Numbers</button>
+        <button class="tab-btn" data-tab="hazmat">Hazmat Placards</button>
+        <button class="tab-btn" data-tab="boats">Boat Registration</button>
+        <button class="tab-btn" data-tab="oversize">Oversize Loads</button>
+        <button class="tab-btn" data-tab="industry">By Industry</button>
+      </div>
+
+      <!-- TAB 1: USDOT -->
+      <div class="tab-panel active" id="tab-usdot">
+        <p class="tab-intro">Any commercial motor vehicle operating in interstate commerce is required by federal law (49 CFR 390.21) to display USDOT identification markings on both sides of the vehicle. Non-compliance results in fines up to <strong style="color:#e8e8e8">$16,000 per violation per day</strong> and immediate Out of Service orders at roadside inspections.</p>
+
+        <div class="req-alert">
+          <strong>Penalty:</strong> Up to $16,000 per violation per day. Vehicles found non-compliant at a roadside inspection can be placed Out of Service on the spot — costing you far more than the markings ever would.
+        </div>
+
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>What Must Be Displayed</h4>
+            <ul>
+              <li>Legal company name or single trade name (DBA)</li>
+              <li>USDOT number preceded by the letters "USDOT"</li>
+              <li>Must appear on BOTH sides of the vehicle</li>
+              <li>Contrasting color — legible from 50 feet in daylight</li>
+              <li>Minimum 2-inch letter height</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Who Needs It</h4>
+            <ul>
+              <li>Vehicles over 10,001 lbs GVWR in interstate commerce</li>
+              <li>Vehicles transporting 9+ passengers for compensation</li>
+              <li>Vehicles transporting 16+ passengers (non-compensated)</li>
+              <li>Any size vehicle transporting placarded hazardous materials</li>
+              <li>For-hire carriers also need an MC number displayed</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Alabama Intrastate Rules</h4>
+            <ul>
+              <li>Alabama mirrors federal regulations for most CMVs</li>
+              <li>Vehicles under 26,000 lbs GVWR operating purely intrastate may be exempt if not hauling hazmat</li>
+              <li>Intrastate operating authority managed by ALDOT</li>
+              <li>When in doubt — mark it. The fine for being wrong is steep.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="req-note">
+          <strong>Precision Autographix handles this:</strong> We cut USDOT and company name markings to FMCSA spec — correct letter height, contrasting color, and durable enough to pass any roadside inspection. We come to your location so your fleet stays on the road.
+        </div>
+      </div>
+
+      <!-- TAB 2: HAZMAT -->
+      <div class="tab-panel" id="tab-hazmat">
+        <p class="tab-intro">Any vehicle transporting hazardous materials must display DOT placards on all four sides of the vehicle or container. Placards are diamond-shaped, minimum 250mm (9.84 inches) per side. The hazard class of the material determines the placard type, color, and symbol required.</p>
+
+        <div class="req-alert">
+          <strong>Table 1 materials</strong> require placards in ANY quantity. <strong>Table 2 materials</strong> require placards at 1,001 lbs aggregate or more. If you're unsure which table your materials fall under, call us — we know the classifications.
+        </div>
+
+        <p class="tab-section-label">Hazmat Classes Quick Reference</p>
+        <table class="hazmat-table">
+          <thead>
+            <tr>
+              <th>Class</th>
+              <th>Material Type</th>
+              <th>Placard Color</th>
+              <th>Common Baldwin County Example</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="class-badge">Class 1</span></td>
+              <td>Explosives</td>
+              <td>Orange</td>
+              <td>Construction demolition contractors</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 2.1</span></td>
+              <td>Flammable Gas</td>
+              <td>Red</td>
+              <td>Propane delivery (CMC Gas, Suburban Propane)</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 2.2</span></td>
+              <td>Non-Flammable Gas</td>
+              <td>Green</td>
+              <td>Compressed gas cylinders, CO₂ delivery</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 3</span></td>
+              <td>Flammable Liquids</td>
+              <td>Red</td>
+              <td>Fuel & petroleum tankers (gasoline, diesel, heating oil)</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 4</span></td>
+              <td>Flammable Solids</td>
+              <td>Red/White stripes</td>
+              <td>Certain industrial materials</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 5</span></td>
+              <td>Oxidizers</td>
+              <td>Yellow</td>
+              <td>Pool chemical delivery, agricultural supply</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 6</span></td>
+              <td>Toxic / Poison</td>
+              <td>White</td>
+              <td>Pest control vehicles with concentrated pesticides</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 8</span></td>
+              <td>Corrosives</td>
+              <td>Black & White</td>
+              <td>Pool service, industrial cleaning, chemical delivery</td>
+            </tr>
+            <tr>
+              <td><span class="class-badge">Class 9</span></td>
+              <td>Miscellaneous Hazmat</td>
+              <td>White & Black stripes</td>
+              <td>Lithium batteries, dry ice, magnetized materials</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Placard Requirements</h4>
+            <ul>
+              <li>Must be displayed on all four sides of the vehicle</li>
+              <li>Minimum 250mm (9.84 inches) per side, diamond shape</li>
+              <li>Must remain legible and securely attached throughout transport</li>
+              <li>UV-resistant, weather-durable material required</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Multi-Hazmat Loads</h4>
+            <ul>
+              <li>Vehicles with two or more hazmat categories may use a DANGEROUS placard</li>
+              <li>Exception: if 2,205 lbs or more of one category is loaded, that specific placard is required</li>
+              <li>When in doubt, use category-specific placards</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="req-note">
+          <strong>Precision Autographix handles this:</strong> We cut and supply DOT-compliant hazmat placards to spec. Permanent cut vinyl outlasts paper and magnetic placards and won't peel or fade in the Gulf Coast heat.
+        </div>
+      </div>
+
+      <!-- TAB 3: BOATS -->
+      <div class="tab-panel" id="tab-boats">
+        <p class="tab-intro">Alabama law requires registration numbers to be displayed on every motorized vessel. Whether you're running a charter fleet out of Orange Beach or naming a private vessel, the state has specific requirements for size, placement, and format.</p>
+
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Hull Registration Numbers</h4>
+            <ul>
+              <li>Required on ALL motorized vessels in Alabama</li>
+              <li>Displayed on both sides of the bow (front)</li>
+              <li>Minimum 3-inch tall block letters</li>
+              <li>Must contrast with the hull color</li>
+              <li>Format: AL + number + letter suffix (e.g., AL 1234 AB)</li>
+              <li>Numbers and letters separated by hyphens or spaces</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Vessel Name & Hailing Port</h4>
+            <ul>
+              <li>Displayed on the stern (rear) of the vessel</li>
+              <li>Name and hailing port required on documented vessels</li>
+              <li>No specific minimum size requirement for private vessels, but must be legible</li>
+              <li>Charter and commercial vessels should use bold, high-contrast lettering for visibility</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Charter & Commercial Fleets</h4>
+            <ul>
+              <li>Each vessel in a charter fleet must display individual registration numbers</li>
+              <li>Consistent lettering style across a fleet projects professionalism</li>
+              <li>Marine-grade vinyl is required — standard vinyl fails in saltwater and UV exposure</li>
+              <li>Annual inspections may be triggered by faded or peeling numbers</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="req-note">
+          <strong>Precision Autographix handles this:</strong> We use marine-grade cut vinyl rated for saltwater and extended UV exposure. We letter boat names, hailing ports, and hull registration numbers. Gulf Shores and Orange Beach charter fleets — call us before peak season.
+        </div>
+      </div>
+
+      <!-- TAB 4: OVERSIZE -->
+      <div class="tab-panel" id="tab-oversize">
+        <p class="tab-intro">Any vehicle or load that exceeds Alabama's legal width, height, length, or weight limits becomes an oversize load and must display required signage and obtain permits before moving on public roads.</p>
+
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Required Signage</h4>
+            <ul>
+              <li>"OVERSIZE LOAD" banner required front and rear</li>
+              <li>Minimum dimensions: 7 feet wide × 18 inches tall</li>
+              <li>Letters minimum 10 inches tall</li>
+              <li>Visible from 500 feet</li>
+              <li>Black lettering on yellow background — standard</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Safety Flags & Lights</h4>
+            <ul>
+              <li>Red or orange safety flags minimum 18 inches at each corner of the load</li>
+              <li>Amber warning lights required during movement</li>
+              <li>Flags required any time load exceeds vehicle width</li>
+              <li>Pilot or escort vehicles required for extreme widths</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>Alabama Permit Requirements</h4>
+            <ul>
+              <li>Alabama permit required for loads exceeding legal limits</li>
+              <li>Permit specifies route, time of travel, and escort requirements</li>
+              <li>ALDOT manages oversize/overweight permits for state routes</li>
+              <li>Local jurisdictions may require separate municipal permits</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="req-note">
+          <strong>Who needs this in Baldwin County:</strong> Construction equipment haulers, modular home transporters, heavy material delivery, and the active Gulf Coast building industry. If your business moves equipment, this applies.
+        </div>
+      </div>
+
+      <!-- TAB 5: INDUSTRY -->
+      <div class="tab-panel" id="tab-industry">
+        <p class="tab-intro">Certain industries have additional signage requirements beyond standard USDOT markings — either by federal regulation, Alabama law, or industry standard. Below are the most common in Baldwin County.</p>
+
+        <p class="tab-section-label">Fuel & Petroleum Delivery</p>
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>Class 3 Flammable Liquid placard required on all four sides</li>
+              <li>"FUEL OIL," "DIESEL," or "GASOLINE" marking often required on tank body</li>
+              <li>Emergency response information panel required on bulk tanks</li>
+              <li>USDOT number required for interstate carriers</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tab-section-label">Propane & LP Gas Delivery</p>
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>Class 2.1 Flammable Gas placard required</li>
+              <li>"PROPANE" or "LP-GAS" marking on tank body</li>
+              <li>Bobtail trucks are a common target in roadside inspections</li>
+              <li>USDOT markings required — inspectors check these closely</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tab-section-label">Pest Control & Lawn Chemical Services</p>
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>Vehicles transporting concentrated Class 6 pesticides require toxic/poison placards</li>
+              <li>Alabama requires "Pesticide" marking on service vehicles even below full placard thresholds</li>
+              <li>USDOT number required if vehicle exceeds 10,001 lbs GVWR</li>
+              <li>Fleet branding plus compliance markings typically needed on same vehicle</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tab-section-label">Food Trucks — Baldwin County Specific</p>
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>Alabama ADPH requires business name and contact information displayed on the vehicle — minimum 1-inch letters</li>
+              <li>ADPH health permit decal must be visible on the vehicle at all times while in operation</li>
+              <li>Gulf Shores and Orange Beach have Mobile Food Unit programs with additional local permit requirements</li>
+              <li>No statewide "Food Service Vehicle" mandate, but individual municipalities may require additional ID signage</li>
+            </ul>
+          </div>
+          <div class="req-card">
+            <h4>The Practical Reality</h4>
+            <ul>
+              <li>Gulf Shores / Orange Beach runs May–September with heavy tourist traffic</li>
+              <li>A plain white truck is invisible in a competitive food corridor</li>
+              <li>A fully branded truck gets photographed and shared on social media</li>
+              <li>Visual identity in a tourist market is survival, not decoration</li>
+            </ul>
+          </div>
+        </div>
+
+        <p class="tab-section-label">Construction & Heavy Equipment</p>
+        <div class="req-grid">
+          <div class="req-card">
+            <h4>Requirements</h4>
+            <ul>
+              <li>USDOT numbers required on vehicles exceeding GVWR thresholds</li>
+              <li>Oversize load banners required when hauling equipment exceeding legal dimensions</li>
+              <li>Vehicles carrying certain construction chemicals may require hazmat placards</li>
+              <li>Baldwin County's building boom means active enforcement at job site ingress/egress points</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="req-note">
+          <strong>Not sure what your vehicles need?</strong> Call us or use the quote form below. We know the regs, we've done this across Baldwin County, and we'll tell you exactly what's required — no guessing, no over-selling.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="compliance-cta">
+    <h2>Get Your Fleet <span class="accent">Inspection-Ready</span></h2>
+    <p>We come to your location. Your vehicles stay on the road. Compliance installed right the first time.</p>
+    <div class="cta-buttons">
+      <a href="index.html#contact" class="btn-primary">Get a Free Quote</a>
+      <a href="index.html#gallery" class="btn-secondary">See Our Work</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 Precision Autographix. All rights reserved. | Branding in Motion</p>
+    <p style="margin-top:0.5rem;">Serving Baldwin County, AL and surrounding areas.</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
