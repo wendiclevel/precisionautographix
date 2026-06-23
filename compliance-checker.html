@@ -7,6 +7,7 @@
   <meta name="description" content="Find out exactly what markings your commercial vehicle legally requires. Free compliance checker for Baldwin County, AL and Gulf Coast operators." />
   <link rel="stylesheet" href="css/style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
     .checker-hero {
       padding: 10rem 2rem 4rem;
@@ -562,8 +563,8 @@
 
       <div class="results-cta">
         <h3>Ready to Get These Done?</h3>
-        <p>Precision Autographix installs everything on this list — at your location, on your schedule. No downtime.</p>
-        <a href="index.html#contact" class="btn-primary">Request a Quote for My Vehicle</a>
+        <p>Precision Autographix produces and installs every marking on this list — at <strong style="color:#e8e8e8;">your location</strong>, on your schedule. <strong style="color:#cc0000;">On-site installation available.</strong> No towing, no downtime, no hassle.</p>
+        <a href="index.html#contact" class="btn-primary">Request a Quote &amp; On-Site Install</a>
       </div>
 
       <div class="success-msg" id="submit-confirm">
@@ -741,7 +742,10 @@
       required.push({
         label: 'Company Name Lettering',
         detail: 'Legal company name or DBA must appear on both sides of any commercial vehicle. Minimum 2-inch contrasting letters.',
-        service: 'Company Name — Both Sides'
+        service: 'Company Name — Both Sides',
+        placement: 'Both sides of vehicle',
+        qty: 2,
+        workNotes: 'Legal name or DBA — min. 2" contrasting letters'
       });
 
       // USDOT Number
@@ -753,7 +757,10 @@
         required.push({
           label: 'USDOT Number',
           detail: 'Required on both sides of the vehicle — must be preceded by "USDOT", minimum 2-inch letters, contrasting color. Fines up to $16,000/day for non-compliance.',
-          service: 'USDOT Number — Both Sides'
+          service: 'USDOT Number — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'Prefix "USDOT" required — min. 2" letters, contrasting color'
         });
       }
 
@@ -762,35 +769,45 @@
         required.push({
           label: 'MC Number (Operating Authority)',
           detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides.',
-          service: 'MC Number — Both Sides'
+          service: 'MC Number — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'Display alongside USDOT number'
         });
       }
 
       // Hazmat placards
       if (hasHazmat) {
         const hazSpecs = {
-          fuel:      { label: 'Class 3 — Flammable Liquid',  color: 'Red diamond, white border',                          un: 'UN 1203 (gasoline) · UN 1993 (diesel) · UN 1863 (jet fuel)', guide: 'ERG Guide 128', download: 'phmsa.dot.gov → Placards & Labels → Class 3 Flammable Liquid' },
-          propane:   { label: 'Class 2.1 — Flammable Gas',   color: 'Red diamond, "FLAMMABLE GAS"',                       un: 'UN 1075 (propane) · UN 1965 (LP gas mixture)',                 guide: 'ERG Guide 115', download: 'phmsa.dot.gov → Placards & Labels → Class 2.1 Flammable Gas' },
-          pesticide: { label: 'Class 6.1 — Toxic / Poison',  color: 'White diamond, skull & crossbones, "POISON"',        un: 'Varies — check your product SDS sheet',                       guide: 'ERG Guide 151 or 153', download: 'phmsa.dot.gov → Placards & Labels → Class 6 Poison' },
-          pool:      { label: 'Class 8 — Corrosive',         color: 'Black top / white bottom diamond, liquid dripping',  un: 'UN 1760 (corrosive liquid) · UN 1824 (sodium hydroxide)',     guide: 'ERG Guide 154', download: 'phmsa.dot.gov → Placards & Labels → Class 8 Corrosive' },
-          oxidizer:  { label: 'Class 5.1 — Oxidizer',        color: 'Yellow diamond, flame over circle, "OXIDIZER"',      un: 'UN 1479 (oxidizing solid) · UN 2014 (hydrogen peroxide)',     guide: 'ERG Guide 140', download: 'phmsa.dot.gov → Placards & Labels → Class 5 Oxidizer' },
-          other_haz: { label: answers.otherHazDesc ? `TBD — "${answers.otherHazDesc}"` : 'Class TBD', color: 'To be determined', un: 'Look up specific UN number on phmsa.dot.gov', guide: 'Check ERG index for your material', download: 'phmsa.dot.gov → ERG → Identify your material in the index' }
+          fuel:      { label: 'Class 3 — Flammable Liquid',  placardName: 'FLAMMABLE',      color: 'Red diamond, white border',                         unShort: '1203 / 1993 / 1863', un: 'UN 1203 (gasoline) · UN 1993 (diesel) · UN 1863 (jet fuel)', guide: 'ERG Guide 128', guideNum: '128', download: 'phmsa.dot.gov → Placards & Labels → Class 3' },
+          propane:   { label: 'Class 2.1 — Flammable Gas',   placardName: 'FLAMMABLE GAS',  color: 'Red diamond, "FLAMMABLE GAS"',                      unShort: '1075 / 1965',        un: 'UN 1075 (propane) · UN 1965 (LP gas mixture)',                guide: 'ERG Guide 115', guideNum: '115', download: 'phmsa.dot.gov → Placards & Labels → Class 2.1' },
+          pesticide: { label: 'Class 6.1 — Toxic / Poison',  placardName: 'POISON',         color: 'White diamond, skull & crossbones, "POISON"',       unShort: 'See SDS sheet',      un: 'Varies — check your product SDS sheet',                       guide: 'ERG Guide 151/153', guideNum: '151', download: 'phmsa.dot.gov → Placards & Labels → Class 6' },
+          pool:      { label: 'Class 8 — Corrosive',         placardName: 'CORROSIVE',      color: 'Black top / white bottom diamond, liquid dripping', unShort: '1760 / 1824',        un: 'UN 1760 (corrosive liquid) · UN 1824 (sodium hydroxide)',     guide: 'ERG Guide 154', guideNum: '154', download: 'phmsa.dot.gov → Placards & Labels → Class 8' },
+          oxidizer:  { label: 'Class 5.1 — Oxidizer',        placardName: 'OXIDIZER',       color: 'Yellow diamond, flame over circle',                 unShort: '1479 / 2014',        un: 'UN 1479 (oxidizing solid) · UN 2014 (hydrogen peroxide)',     guide: 'ERG Guide 140', guideNum: '140', download: 'phmsa.dot.gov → Placards & Labels → Class 5' },
+          other_haz: { label: answers.otherHazDesc ? `TBD — "${answers.otherHazDesc}"` : 'Class TBD', placardName: 'TBD', color: 'To be determined', unShort: 'TBD', un: 'Look up on phmsa.dot.gov', guide: 'ERG Index — identify material', guideNum: 'TBD', download: 'phmsa.dot.gov/hazmat/erg' }
         };
         const selectedSpecs = haz.length > 0 ? haz.map(h => hazSpecs[h] || hazSpecs.other_haz) : [hazSpecs.other_haz];
         const hazList = selectedSpecs.map(s => s.label).join('; ');
+        const placardSummary = selectedSpecs.map(s => `${s.placardName} (${s.unShort}) ERG ${s.guideNum}`).join(' | ');
         required.push({
           label: 'Hazmat Placards',
           detail: `Required on all four sides of the vehicle. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. ${hazList}.`,
           service: 'Hazmat Placards — All 4 Sides: ' + hazList,
+          placement: 'All 4 sides of vehicle',
+          qty: 4,
+          workNotes: placardSummary,
           placardSpecs: selectedSpecs,
-          placardPrint: 'Print on weatherproof, durable stock (minimum 0.015" thick for rigid holders). Free placard PDFs available at phmsa.dot.gov. Pre-made vinyl placards available at labelmaster.com or w.w. grainger.com. Holders required on most bulk transport — placards must be removable and replaceable by first responders.'
+          placardPrint: 'Print on weatherproof, durable stock (min. 0.015" thick for rigid holders). Free placard PDFs at phmsa.dot.gov. Pre-made vinyl placards at labelmaster.com or grainger.com. Holders required on most bulk transport.'
         });
         // ERG
         if (answers.wantsERG) {
           required.push({
             label: 'Emergency Response Guide (ERG)',
-            detail: `Federal law requires the current ERG edition in every hazmat vehicle cab. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
+            detail: `Federal law requires current ERG edition in every hazmat vehicle cab. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
             service: 'Emergency Response Guide — ERG Reference Package: ' + hazList,
+            placement: 'Vehicle cab',
+            qty: 1,
+            workNotes: 'Current edition required — 2024 ERG. Guide pages: ' + selectedSpecs.map(s => s.guideNum).join(', '),
             ergSpecs: selectedSpecs
           });
         }
@@ -801,7 +818,10 @@
         required.push({
           label: 'OVERSIZE LOAD Banner',
           detail: 'Required front and rear when load exceeds legal dimensions. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum.',
-          service: 'Oversize Load Banners — Front & Rear'
+          service: 'Oversize Load Banners — Front & Rear',
+          placement: 'Front & rear of vehicle',
+          qty: 2,
+          workNotes: '84"W × 18"H min — black on yellow, 10" letters'
         });
       }
 
@@ -810,12 +830,18 @@
         required.push({
           label: 'Hull Registration Numbers',
           detail: 'Alabama requires registration numbers on both sides of the bow — minimum 3-inch block letters, contrasting color. Format: AL XXXX XX.',
-          service: 'Hull Registration Numbers — Both Sides of Bow'
+          service: 'Hull Registration Numbers — Both Sides of Bow',
+          placement: 'Both sides of bow',
+          qty: 2,
+          workNotes: 'Format: AL XXXX XX — min. 3" block letters, contrasting color'
         });
         recommended.push({
           label: 'Vessel Name & Hailing Port',
           detail: 'Required on documented vessels. Displayed on the stern. Marine-grade vinyl rated for saltwater and UV exposure.',
-          service: 'Vessel Name & Hailing Port — Stern'
+          service: 'Vessel Name & Hailing Port — Stern',
+          placement: 'Stern',
+          qty: 1,
+          workNotes: 'Marine-grade vinyl — saltwater/UV rated'
         });
       }
 
@@ -824,7 +850,10 @@
         required.push({
           label: 'Florida PSC Number',
           detail: 'For-hire carriers operating intrastate in Florida must display their Florida Public Service Commission number on both sides of the vehicle.',
-          service: 'Florida PSC Number — Both Sides'
+          service: 'Florida PSC Number — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'FL Public Service Commission number'
         });
       }
 
@@ -833,7 +862,10 @@
         required.push({
           label: 'Georgia PSC Number',
           detail: 'For-hire carriers operating intrastate in Georgia must display their Georgia Public Service Commission number on both sides.',
-          service: 'Georgia PSC Number — Both Sides'
+          service: 'Georgia PSC Number — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'GA Public Service Commission number'
         });
       }
 
@@ -1031,232 +1063,308 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
-    // ── PDF GENERATION ──
+    // ── LOGO PRELOAD ──
+    let _logoBase64 = null;
+    (function() {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          const c = document.createElement('canvas');
+          c.width = img.naturalWidth; c.height = img.naturalHeight;
+          c.getContext('2d').drawImage(img, 0, 0);
+          _logoBase64 = c.toDataURL('image/png');
+        } catch(e) {}
+      };
+      img.src = 'images/logo.png';
+    })();
+
+    // ── PDF WORK ORDER ──
     function generatePDF() {
       if (!window.jspdf) { alert('PDF generator is loading, please try again in a moment.'); return; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
       const { required, recommended, name, company, email, phone } = _pdfData;
 
-      const RED = [204, 0, 0], DARK = [20, 20, 20], GRAY = [110, 110, 110], LGRAY = [220, 220, 220], ORANGE = [200, 90, 0], BLUE = [30, 100, 180];
-      const W = 215.9, M = 15;
-
-      // ── HEADER ──
-      doc.setFillColor(...RED);
-      doc.rect(0, 0, W, 22, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(15);
-      doc.text('PRECISION AUTOGRAPHIX', M, 10);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.text('precisionautographix.com  |  Baldwin County, AL  |  Fleet Branding & Compliance Graphics', M, 16);
-
-      // ── TITLE ──
-      doc.setTextColor(...DARK);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(18);
-      doc.text('Vehicle Compliance Report', M, 34);
-      doc.setFillColor(...RED);
-      doc.rect(M, 36.5, 90, 1, 'F');
-
-      // Date & disclaimer
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(8);
-      doc.setTextColor(...GRAY);
+      const RED=[204,0,0], DARK=[20,20,20], GRAY=[100,100,100], LGRAY=[220,220,220], ORANGE=[190,80,0], BLUE=[20,80,170], WHITE=[255,255,255], YELLOW=[255,200,0];
+      const W=215.9, M=15;
       const now = new Date();
-      doc.text(`Generated: ${now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}   |   For informational purposes — verify with FMCSA and state agencies.`, M, 42);
+      const woNum = 'WO-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+      const woDate = now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
-      // ── CLIENT BOX ──
-      doc.setFillColor(248, 248, 248);
-      doc.rect(M, 46, W - M*2, 26, 'F');
-      doc.setDrawColor(...LGRAY);
-      doc.rect(M, 46, W - M*2, 26, 'S');
-      doc.setTextColor(...GRAY);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
-      doc.text('PREPARED FOR', M + 5, 53);
-      doc.setTextColor(...DARK);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(12);
-      doc.text(name, M + 5, 60);
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(...GRAY);
-      doc.text(company, M + 5, 66);
-      doc.text(`${email}   |   ${phone}`, M + 5, 71);
+      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other / Not Specified' };
+      const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001 – 26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
 
-      // ── VEHICLE PROFILE ──
-      let y = 84;
-      const sectionHeader = (title, color = RED) => {
-        doc.setTextColor(...color);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
-        doc.text(title, M, y);
-        doc.setFillColor(...LGRAY);
-        doc.rect(M, y + 1.5, W - M*2, 0.4, 'F');
-        y += 7;
+      // ── PAGE FOOTER (called for each page) ──
+      const addFooter = () => {
+        const pg = doc.getNumberOfPages();
+        doc.setPage(pg);
+        doc.setFillColor(...DARK);
+        doc.rect(0, 267, W, 9, 'F');
+        doc.setTextColor(160,160,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
+        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin County, AL  |  On-Site Installation Available', M, 272.5);
+        doc.text(`${woNum}  —  Page ${pg}`, W-32, 272.5);
       };
 
-      sectionHeader('VEHICLE PROFILE');
-      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other' };
-      const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001 – 26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
-      const profileRows = [
-        ['Vehicle Type', vtLabels[answers.vehicleType] || 'Not specified'],
-        ['GVWR', gwLabels[answers.gvwr] || 'Not specified'],
-        ['Operations', answers.ops.join(', ') || 'Not specified'],
-        ['States', answers.states.join(', ').toUpperCase() || 'Not specified']
+      // ══════════════════ PAGE 1 ══════════════════
+      // ── HEADER BAR ──
+      doc.setFillColor(...DARK);
+      doc.rect(0, 0, W, 28, 'F');
+      doc.setFillColor(...RED);
+      doc.rect(0, 0, 4, 28, 'F');
+
+      // Logo
+      if (_logoBase64) {
+        try { doc.addImage(_logoBase64, 'PNG', 8, 2, 38, 24); } catch(e) {}
+      } else {
+        doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+        doc.text('PRECISION AUTOGRAPHIX', 10, 13);
+        doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.text('precisionautographix.com  |  Baldwin County, AL', 10, 19);
+      }
+
+      // WO # and status in header
+      doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text('WORK ORDER', W-55, 10);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(woNum, W-55, 16);
+      doc.text(woDate, W-55, 21);
+      // PENDING badge
+      doc.setFillColor(...ORANGE);
+      doc.rect(W-55, 23, 42, 4, 'F');
+      doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+      doc.text('PENDING CUSTOMER APPROVAL', W-54, 26);
+
+      // ── WORK ORDER TITLE ──
+      doc.setTextColor(...DARK); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+      doc.text('Vehicle Graphics Work Order', M, 40);
+      doc.setFillColor(...RED); doc.rect(M, 42, 100, 0.8, 'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...GRAY);
+      doc.text('Prepared by Precision Autographix  —  Not authorized for production until customer approval is received.', M, 47);
+
+      // ── INFO BOX (2 columns) ──
+      const boxY = 51, boxH = 32;
+      doc.setFillColor(248,248,248); doc.rect(M, boxY, W-M*2, boxH, 'F');
+      doc.setDrawColor(...LGRAY); doc.rect(M, boxY, W-M*2, boxH, 'S');
+      // divider
+      doc.setDrawColor(...LGRAY); doc.line(W/2+5, boxY, W/2+5, boxY+boxH);
+
+      // Left: customer
+      doc.setTextColor(...GRAY); doc.setFont('helvetica','bold'); doc.setFontSize(6.5);
+      doc.text('CUSTOMER', M+4, boxY+6);
+      doc.setTextColor(...DARK); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text(name, M+4, boxY+12);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...GRAY);
+      doc.text(company, M+4, boxY+18);
+      doc.text(email, M+4, boxY+23);
+      doc.text(phone, M+4, boxY+28);
+
+      // Right: vehicle
+      const rx = W/2+9;
+      doc.setTextColor(...GRAY); doc.setFont('helvetica','bold'); doc.setFontSize(6.5);
+      doc.text('VEHICLE PROFILE', rx, boxY+6);
+      const vRows = [
+        ['Type:', vtLabels[answers.vehicleType] || 'Not specified'],
+        ['GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
+        ['Operations:', answers.ops.join(', ') || '—'],
+        ['States:', answers.states.join(', ').toUpperCase() || '—']
       ];
-      profileRows.forEach(([label, val]) => {
-        if (y > 240) { doc.addPage(); y = 20; }
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...GRAY);
-        doc.text(label + ':', M + 2, y);
-        doc.setFont('helvetica', 'bold'); doc.setTextColor(...DARK);
-        doc.text(val, M + 42, y);
-        y += 5;
+      vRows.forEach(([l, v], i) => {
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        doc.text(l, rx, boxY+12+i*5);
+        doc.setFont('helvetica','bold'); doc.setTextColor(...DARK);
+        const vl = doc.splitTextToSize(v, 70);
+        doc.text(vl[0], rx+22, boxY+12+i*5);
       });
-      y += 4;
 
-      // ── REQUIRED MARKINGS ──
-      sectionHeader('REQUIRED MARKINGS BY LAW');
-      required.forEach((req, i) => {
-        if (y > 240) { doc.addPage(); y = 20; }
-        // Red bullet square
-        doc.setFillColor(...RED);
-        doc.rect(M, y - 3, 2.5, 2.5, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(10); doc.setTextColor(...DARK);
-        doc.text(req.label, M + 5, y);
-        y += 4.5;
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
-        const dlines = doc.splitTextToSize(req.detail, W - M*2 - 5);
-        if (y + dlines.length * 3.5 > 265) { doc.addPage(); y = 20; }
-        doc.text(dlines, M + 5, y);
-        y += dlines.length * 3.5 + 5;
+      let y = boxY + boxH + 8;
+
+      // ── WORK ORDER ITEMS TABLE ──
+      doc.setTextColor(...RED); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text('WORK ORDER ITEMS', M, y);
+      doc.setFillColor(...LGRAY); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
+      y += 5;
+
+      const tableBody = required.map((req, i) => [
+        (i+1).toString(),
+        req.label,
+        req.placement || '—',
+        (req.qty || 1).toString(),
+        req.workNotes || '—'
+      ]);
+
+      doc.autoTable({
+        startY: y,
+        head: [['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
+        body: tableBody,
+        styles: { fontSize: 7.5, cellPadding: 2.5, textColor: DARK, lineColor: LGRAY, lineWidth: 0.2 },
+        headStyles: { fillColor: RED, textColor: WHITE, fontStyle: 'bold', fontSize: 7.5 },
+        columnStyles: {
+          0: { cellWidth: 8, halign: 'center' },
+          1: { cellWidth: 48, fontStyle: 'bold' },
+          2: { cellWidth: 38 },
+          3: { cellWidth: 10, halign: 'center' },
+          4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+        },
+        alternateRowStyles: { fillColor: [250,250,250] },
+        margin: { left: M, right: M },
+        didDrawPage: addFooter
       });
-      y += 2;
 
-      // ── PLACARD SPECS ──
+      y = doc.lastAutoTable.finalY + 8;
+
+      // ══════════════════ HAZMAT PLACARD SPECS ══════════════════
       const placardReq = required.find(r => r.placardSpecs);
       if (placardReq) {
-        if (y > 210) { doc.addPage(); y = 20; }
-        sectionHeader('PLACARD SPECIFICATIONS & DOWNLOAD GUIDE', ORANGE);
+        if (y > 210) { doc.addPage(); addFooter(); y = 20; }
+
+        doc.setTextColor(...ORANGE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+        doc.text('HAZMAT PLACARD SPECIFICATIONS  —  DOT REQUIRED GRAPHICS', M, y);
+        doc.setFillColor(...ORANGE); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
+        y += 5;
+
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        const pIntro = 'The following placard name, class, UN number, and ERG guide are required to produce the correct DOT-compliant graphic. Placards must be 250mm × 250mm (9.84") diamond, placed on all 4 sides of the vehicle.';
+        const piLines = doc.splitTextToSize(pIntro, W-M*2);
+        doc.text(piLines, M, y); y += piLines.length * 4 + 4;
 
         placardReq.placardSpecs.forEach(spec => {
-          if (y > 225) { doc.addPage(); y = 20; }
-          doc.setFillColor(255, 248, 240);
-          const specH = 28;
-          doc.rect(M, y - 3, W - M*2, specH, 'F');
-          doc.setDrawColor(...ORANGE);
-          doc.rect(M, y - 3, 2, specH, 'F');
+          if (y > 225) { doc.addPage(); addFooter(); y = 20; }
+          // Card background
+          doc.setFillColor(255, 248, 242);
+          doc.rect(M, y, W-M*2, 34, 'F');
+          doc.setDrawColor(...ORANGE); doc.rect(M, y, W-M*2, 34, 'S');
+          doc.setFillColor(...ORANGE); doc.rect(M, y, 3, 34, 'F');
 
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...ORANGE);
-          doc.text(spec.label, M + 5, y + 1);
+          // Placard name badge
+          doc.setFillColor(...ORANGE); doc.rect(M+5, y+3, 55, 7, 'F');
+          doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+          doc.text(spec.placardName, M+7, y+8);
 
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
-          doc.setTextColor(...GRAY);
-          doc.text('Color/Design:', M + 5, y + 7); doc.setTextColor(...DARK); doc.text(spec.color, M + 35, y + 7);
-          doc.setTextColor(...GRAY);
-          doc.text('UN Numbers:', M + 5, y + 12); doc.setTextColor(...DARK);
-          const unLines = doc.splitTextToSize(spec.un, W - M*2 - 40);
-          doc.text(unLines, M + 35, y + 12);
-          doc.setTextColor(...GRAY);
-          doc.text('ERG Reference:', M + 5, y + 18); doc.setTextColor(...BLUE); doc.text(spec.guide, M + 35, y + 18);
-          doc.setTextColor(...GRAY);
-          doc.text('Download From:', M + 5, y + 23); doc.setTextColor(...BLUE);
-          const dlLines = doc.splitTextToSize(spec.download, W - M*2 - 40);
-          doc.text(dlLines, M + 35, y + 23);
-          y += specH + 3;
+          doc.setTextColor(...ORANGE); doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+          doc.text(spec.label.toUpperCase(), M+63, y+8);
+
+          // Grid of spec fields
+          const fields = [
+            ['DOT Placard Name', spec.placardName, ORANGE],
+            ['UN Number(s)', spec.unShort, DARK],
+            ['ERG Guide #', spec.guideNum, BLUE],
+            ['ERG Full Reference', spec.guide, BLUE],
+            ['Placard Color / Design', spec.color, DARK],
+            ['Common UN Details', spec.un, GRAY]
+          ];
+          let fx = M+5, fy = y+14;
+          fields.forEach(([label, val, color], fi) => {
+            if (fi === 3) { fx = M+5+95; fy = y+14; } // second column
+            doc.setFont('helvetica','normal'); doc.setFontSize(6); doc.setTextColor(...GRAY);
+            doc.text(label.toUpperCase(), fx, fy);
+            doc.setFont('helvetica','bold'); doc.setFontSize(7.5); doc.setTextColor(...color);
+            const vl = doc.splitTextToSize(val, 85);
+            doc.text(vl[0], fx, fy+4);
+            fy += 9;
+          });
+
+          // Download note
+          doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...BLUE);
+          doc.text('Download: ' + spec.download, M+5, y+31);
+
+          y += 37;
         });
 
-        // Print requirements box
-        if (y > 235) { doc.addPage(); y = 20; }
-        doc.setFillColor(245, 245, 245);
-        doc.rect(M, y, W - M*2, 22, 'F');
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
-        doc.text('PRINT & MOUNT REQUIREMENTS', M + 3, y + 5);
-        doc.setFont('helvetica', 'normal'); doc.setTextColor(...GRAY);
-        const printLines = doc.splitTextToSize(placardReq.placardPrint, W - M*2 - 6);
-        doc.text(printLines.slice(0, 4), M + 3, y + 10);
-        y += 26;
+        // Print requirements note
+        if (y > 240) { doc.addPage(); addFooter(); y = 20; }
+        doc.setFillColor(245,245,245); doc.rect(M, y, W-M*2, 18, 'F');
+        doc.setDrawColor(...LGRAY); doc.rect(M, y, W-M*2, 18, 'S');
+        doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...DARK);
+        doc.text('PRINT & MOUNT REQUIREMENTS:', M+3, y+5);
+        doc.setFont('helvetica','normal'); doc.setTextColor(...GRAY);
+        const pm = doc.splitTextToSize(placardReq.placardPrint, W-M*2-6);
+        doc.text(pm.slice(0,3), M+3, y+10);
+        y += 22;
       }
 
-      // ── ERG ──
+      // ══════════════════ ERG SECTION ══════════════════
       const ergReq = required.find(r => r.ergSpecs);
       if (ergReq) {
-        if (y > 200) { doc.addPage(); y = 20; }
+        if (y > 210) { doc.addPage(); addFooter(); y = 20; }
         y += 2;
-        sectionHeader('EMERGENCY RESPONSE GUIDE (ERG)', BLUE);
-        doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...DARK);
-        const ergIntro = 'The DOT Emergency Response Guidebook (ERG) is required in every hazmat vehicle cab. The 2024 edition is available as a free PDF download from PHMSA.';
-        const ergLines = doc.splitTextToSize(ergIntro, W - M*2);
-        doc.text(ergLines, M, y); y += ergLines.length * 4 + 3;
-
-        doc.setFont('helvetica', 'bold'); doc.setTextColor(...BLUE);
-        doc.text('Download Free 2024 ERG:', M, y);
-        doc.setFont('helvetica', 'normal');
-        doc.text('https://www.phmsa.dot.gov/hazmat/erg/emergency-response-guidebook-erg', M + 50, y);
+        doc.setTextColor(...BLUE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+        doc.text('EMERGENCY RESPONSE GUIDE (ERG)  —  REQUIRED IN CAB', M, y);
+        doc.setFillColor(...BLUE); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
         y += 6;
 
-        doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
-        doc.text('Your Cargo Guide Pages:', M, y); y += 5;
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...DARK);
+        doc.text('49 CFR 172.602 requires a current ERG in every hazmat vehicle cab. Download free 2024 edition:', M, y); y += 5;
+        doc.setTextColor(...BLUE);
+        doc.text('https://www.phmsa.dot.gov/hazmat/erg/emergency-response-guidebook-erg', M, y); y += 7;
 
         ergReq.ergSpecs.forEach(spec => {
-          if (y > 255) { doc.addPage(); y = 20; }
-          doc.setFillColor(240, 245, 255);
-          doc.rect(M, y - 3, W - M*2, 14, 'F');
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...DARK);
-          doc.text(spec.label, M + 3, y + 1);
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
-          doc.text(`ERG Reference: `, M + 3, y + 6);
-          doc.setTextColor(...BLUE); doc.setFont('helvetica', 'bold');
-          doc.text(spec.guide, M + 32, y + 6);
-          doc.setFont('helvetica', 'normal'); doc.setTextColor(...GRAY);
-          doc.text('— Find your UN number in the ERG yellow index pages, then turn to the orange guide page for emergency response procedures.', M + 3, y + 10);
-          y += 17;
+          if (y > 252) { doc.addPage(); addFooter(); y = 20; }
+          doc.setFillColor(240,245,255); doc.rect(M, y, W-M*2, 16, 'F');
+          doc.setDrawColor(...BLUE); doc.rect(M, y, W-M*2, 16, 'S');
+          doc.setFillColor(...BLUE); doc.rect(M, y, 3, 16, 'F');
+          doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...DARK);
+          doc.text(spec.label, M+5, y+6);
+          doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+          doc.text('ERG Orange Guide Page: ', M+5, y+12);
+          doc.setFont('helvetica','bold'); doc.setTextColor(...BLUE);
+          doc.text(spec.guide, M+47, y+12);
+          doc.setFont('helvetica','normal'); doc.setTextColor(...GRAY);
+          doc.text('  —  Look up UN# in yellow index, turn to orange guide page for emergency procedures.', M+47+doc.getTextWidth(spec.guide), y+12);
+          y += 19;
         });
       }
 
-      // ── RECOMMENDED ──
-      if (recommended.length > 0) {
-        if (y > 220) { doc.addPage(); y = 20; }
-        y += 3;
-        sectionHeader('RECOMMENDED', [100, 100, 100]);
-        recommended.forEach(rec => {
-          if (y > 250) { doc.addPage(); y = 20; }
-          doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...GRAY);
-          doc.text('→  ' + rec.label, M, y); y += 4.5;
-          doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5);
-          const rlines = doc.splitTextToSize(rec.detail, W - M*2);
-          doc.text(rlines, M + 5, y);
-          y += rlines.length * 3.5 + 5;
-        });
-      }
+      // ══════════════════ APPROVAL BLOCK ══════════════════
+      if (y > 210) { doc.addPage(); addFooter(); y = 20; }
+      y += 6;
 
-      // ── CTA BAR ──
-      if (y > 240) { doc.addPage(); y = 20; }
-      y = Math.max(y + 6, 240);
-      if (y > 260) { doc.addPage(); y = 240; }
-      doc.setFillColor(...RED);
-      doc.rect(0, y, W, 22, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-      doc.text('Ready to Get These Done?', M, y + 8);
-      doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-      doc.text('We install everything on this list at your location — no downtime, no hassle.  |  precisionautographix.com', M, y + 15);
+      doc.setFillColor(255,245,245); doc.rect(M, y, W-M*2, 52, 'F');
+      doc.setDrawColor(...RED); doc.setLineWidth(0.6); doc.rect(M, y, W-M*2, 52, 'S'); doc.setLineWidth(0.2);
 
-      // ── PAGE FOOTERS ──
-      const pages = doc.getNumberOfPages();
-      for (let p = 1; p <= pages; p++) {
+      // Warning stripe header
+      doc.setFillColor(...RED); doc.rect(M, y, W-M*2, 8, 'F');
+      doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+      doc.text('APPROVAL REQUIRED  —  NOT AUTHORIZED FOR PRODUCTION UNTIL SIGNED', M+4, y+5.5);
+      y += 12;
+
+      doc.setTextColor(...DARK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct and authorizes Precision Autographix to produce and install the listed graphics.';
+      const atLines = doc.splitTextToSize(approvalText, W-M*2-8);
+      doc.text(atLines, M+4, y); y += atLines.length*4.5 + 5;
+
+      // Signature lines
+      const sigY1 = y;
+      doc.setDrawColor(...DARK); doc.setLineWidth(0.4);
+      doc.line(M+4, sigY1+8, M+80, sigY1+8);
+      doc.line(M+90, sigY1+8, M+155, sigY1+8);
+      doc.setTextColor(...GRAY); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text('Customer Signature', M+4, sigY1+12);
+      doc.text('Print Name', M+90, sigY1+12);
+      y = sigY1 + 18;
+
+      const sigY2 = y;
+      doc.setDrawColor(...DARK);
+      doc.line(M+4, sigY2+8, M+80, sigY2+8);
+      doc.line(M+90, sigY2+8, M+130, sigY2+8);
+      doc.setTextColor(...GRAY); doc.setFontSize(7);
+      doc.text('Authorized by (Precision Autographix)', M+4, sigY2+12);
+      doc.text('Date', M+90, sigY2+12);
+      doc.setLineWidth(0.2);
+
+      // ── ADD FOOTERS TO ALL PAGES ──
+      const totalPages = doc.getNumberOfPages();
+      for (let p = 1; p <= totalPages; p++) {
         doc.setPage(p);
-        doc.setFillColor(30, 30, 30);
-        doc.rect(0, 271, W, 8, 'F');
-        doc.setTextColor(150, 150, 150);
-        doc.setFontSize(7);
-        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin County, AL', M, 276);
-        doc.text(`Page ${p} of ${pages}`, W - 25, 276);
+        // Only add footer if not already drawn by autoTable
+        doc.setFillColor(...DARK);
+        doc.rect(0, 267, W, 9, 'F');
+        doc.setTextColor(160,160,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
+        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin County, AL  |  On-Site Installation Available', M, 272.5);
+        doc.text(`${woNum}  —  Page ${p} of ${totalPages}`, W-40, 272.5);
       }
 
-      const fn = `PA-Compliance-Report-${(company || 'Report').replace(/[^a-z0-9]/gi,'_')}.pdf`;
+      const fn = `PA-WorkOrder-${(company||'Client').replace(/[^a-z0-9]/gi,'_')}-${woNum}.pdf`;
       doc.save(fn);
     }
   </script>
