@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Green diamond background -->
+  <polygon points="100,4 196,100 100,196 4,100" fill="#007340"/>
+  <!-- White inner border -->
+  <polygon points="100,14 186,100 100,186 14,100" fill="none" stroke="white" stroke-width="2"/>
+  <!-- Gas cylinder icon (compressed gas tank) -->
+  <!-- Valve/nozzle on top -->
+  <rect x="92" y="58" width="16" height="5" rx="2" fill="white"/>
+  <rect x="96" y="53" width="8" height="7" rx="1" fill="white"/>
+  <!-- Cylinder body -->
+  <rect x="85" y="63" width="30" height="42" rx="4" fill="white"/>
+  <!-- Cylinder top cap ellipse -->
+  <ellipse cx="100" cy="63" rx="15" ry="4" fill="white"/>
+  <!-- Cylinder bottom cap ellipse -->
+  <ellipse cx="100" cy="105" rx="15" ry="4" fill="white"/>
+  <!-- Text labels -->
+  <text x="100" y="128" font-family="Arial, sans-serif" font-size="10.5" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="0.3">NON-FLAMMABLE</text>
+  <text x="100" y="141" font-family="Arial, sans-serif" font-size="10.5" font-weight="bold" fill="white" text-anchor="middle" letter-spacing="0.3">GAS</text>
+  <text x="100" y="160" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="white" text-anchor="middle">2</text>
+</svg>
