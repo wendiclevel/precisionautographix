@@ -382,24 +382,28 @@
 
       <!-- STEP 2: GVWR -->
       <div class="checker-step" id="step-2">
-        <p class="step-question">What is the vehicle's GVWR?</p>
-        <p class="step-sub">Gross Vehicle Weight Rating — found on the door jamb sticker. This determines which federal rules apply.</p>
+        <p class="step-question" id="gvwr-question">What is the vehicle's GVWR?</p>
+        <p class="step-sub" id="gvwr-sub">Gross Vehicle Weight Rating — found on the door jamb sticker. This determines which federal rules apply. <span id="gvwr-hint" style="color:#cc0000;font-weight:600;"></span></p>
+        <!-- Trailer combined-weight callout — shown only when hasTrailer = yes -->
+        <div id="gvwr-trl-note" style="display:none;background:#1a0d00;border:1px solid #663300;border-left:4px solid #cc6600;border-radius:4px;padding:0.9rem 1.1rem;margin-bottom:1rem;font-size:0.82rem;color:#ddaa77;">
+          <strong style="color:#ff9944;">Trailer detected:</strong> Add your truck's GVWR + your trailer's GVWR to get the Gross Combination Weight Rating (GCWR). That combined number is what federal DOT rules measure — find the trailer's plate on the tongue or A-frame. If you are not sure, select the closest range and we'll note it.
+        </div>
         <div class="option-grid" style="grid-template-columns:1fr;">
           <label class="option-card" onclick="selectOption(this,'gvwr','under10k')">
             <input type="radio" name="gvwr" value="under10k"/>
-            <div><div class="option-label">Under 10,001 lbs</div><div class="option-desc">Light duty — most pickups, vans, small trucks</div></div>
+            <div><div class="option-label" id="gvwr-lbl-under10k">Under 10,001 lbs</div><div class="option-desc" id="gvwr-desc-under10k">Light duty — most pickups, vans, small trucks</div></div>
           </label>
           <label class="option-card" onclick="selectOption(this,'gvwr','10k26k')">
             <input type="radio" name="gvwr" value="10k26k"/>
-            <div><div class="option-label">10,001 – 26,000 lbs</div><div class="option-desc">Medium duty — most cargo vans, box trucks, service vehicles</div></div>
+            <div><div class="option-label" id="gvwr-lbl-10k26k">10,001 – 26,000 lbs</div><div class="option-desc" id="gvwr-desc-10k26k">Medium duty — most cargo vans, box trucks, service vehicles</div></div>
           </label>
           <label class="option-card" onclick="selectOption(this,'gvwr','over26k')">
             <input type="radio" name="gvwr" value="over26k"/>
-            <div><div class="option-label">Over 26,000 lbs</div><div class="option-desc">Heavy duty — semis, large straight trucks, tankers</div></div>
+            <div><div class="option-label" id="gvwr-lbl-over26k">Over 26,000 lbs</div><div class="option-desc" id="gvwr-desc-over26k">Heavy duty — semis, large straight trucks, tankers</div></div>
           </label>
           <label class="option-card" onclick="selectOption(this,'gvwr','unknown')">
             <input type="radio" name="gvwr" value="unknown"/>
-            <div><div class="option-label">I'm not sure</div><div class="option-desc">We can help determine this</div></div>
+            <div><div class="option-label">I'm not sure / need help</div><div class="option-desc">We'll help determine the right classification</div></div>
           </label>
         </div>
         <div class="step-nav">
@@ -481,7 +485,7 @@
         </div>
         <div class="step-nav">
           <button class="btn-back" onclick="goBack(3)">← Back</button>
-          <button class="btn-next" onclick="goNext(5)">Next →</button>
+          <button class="btn-next" onclick="goGate()">Next →</button>
         </div>
       </div>
 
@@ -525,8 +529,8 @@
           <input class="checker-input" type="text" id="other-haz-desc" placeholder="Briefly describe what you haul (e.g. pool acid, dry ice, compressed oxygen)..." oninput="answers.otherHazDesc = this.value" />
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack(4)">← Back</button>
-          <button class="btn-next" onclick="goGate()">See My Requirements →</button>
+          <button class="btn-back" onclick="goBack(answers.ops.includes('interstate') ? 4 : 3)">← Back</button>
+          <button class="btn-next" onclick="showGate(5)">See My Requirements →</button>
         </div>
       </div>
 
@@ -617,6 +621,89 @@
 
     let prevHazmatStep = 4;
 
+    // ── GVWR STEP UPDATER ──
+    // Called whenever vehicle type or trailer status changes.
+    // Pre-selects the most likely GVWR (or GCWR for combinations) and updates step-2 UI.
+    function updateGVWRStep() {
+      const hasTrl = answers.hasTrailer === 'yes';
+      const vt = answers.vehicleType;
+
+      // Question / sub text
+      const qEl = document.getElementById('gvwr-question');
+      const subEl = document.getElementById('gvwr-sub');
+      const hintEl = document.getElementById('gvwr-hint');
+      const noteEl = document.getElementById('gvwr-trl-note');
+
+      if (qEl) qEl.textContent = hasTrl ? 'What is the combined weight? (Truck + Trailer GCWR)' : 'What is the vehicle\'s GVWR?';
+      if (subEl) {
+        if (hasTrl) {
+          subEl.innerHTML = 'Gross Combination Weight Rating — add your truck\'s GVWR + your trailer\'s GVWR. Found on the door jamb and trailer plate. <span id="gvwr-hint" style="color:#cc0000;font-weight:600;"></span>';
+        } else {
+          subEl.innerHTML = 'Gross Vehicle Weight Rating — found on the door jamb sticker. This determines which federal rules apply. <span id="gvwr-hint" style="color:#cc0000;font-weight:600;"></span>';
+        }
+      }
+      if (noteEl) noteEl.style.display = hasTrl ? 'block' : 'none';
+
+      // Option labels / descriptions
+      const lblU = document.getElementById('gvwr-lbl-under10k');
+      const dscU = document.getElementById('gvwr-desc-under10k');
+      const lbl10 = document.getElementById('gvwr-lbl-10k26k');
+      const dsc10 = document.getElementById('gvwr-desc-10k26k');
+      const lblO = document.getElementById('gvwr-lbl-over26k');
+      const dscO = document.getElementById('gvwr-desc-over26k');
+      if (hasTrl) {
+        if (lblU) lblU.textContent = 'Under 10,001 lbs combined';
+        if (dscU) dscU.textContent = 'Very light combo — small pickup + utility trailer';
+        if (lbl10) lbl10.textContent = '10,001 – 26,000 lbs combined';
+        if (dsc10) dsc10.textContent = 'Medium combo — pickup/van + equipment or landscape trailer';
+        if (lblO) lblO.textContent = 'Over 26,000 lbs combined';
+        if (dscO) dscO.textContent = 'Heavy combo — semi, tanker, box truck + trailer, or any large towed unit';
+      } else {
+        if (lblU) lblU.textContent = 'Under 10,001 lbs';
+        if (dscU) dscU.textContent = 'Light duty — most pickups, vans, small trucks';
+        if (lbl10) lbl10.textContent = '10,001 – 26,000 lbs';
+        if (dsc10) dsc10.textContent = 'Medium duty — most cargo vans, box trucks, service vehicles';
+        if (lblO) lblO.textContent = 'Over 26,000 lbs';
+        if (dscO) dscO.textContent = 'Heavy duty — semis, large straight trucks, tankers';
+      }
+
+      // Pre-select most likely weight based on vehicle type + trailer status
+      if (vt) {
+        const defaults = hasTrl ? {
+          pickup:   '10k26k',   // pickup + trailer — medium combo most common
+          van:      '10k26k',   // van + trailer
+          boxtruck: 'over26k',  // box truck + any trailer almost always over 26k combined
+          semi:     'over26k',
+          tanker:   'over26k',
+          flatbed:  'over26k',
+          boat:     'under10k',
+          other:    'unknown'
+        } : {
+          pickup:   'under10k',
+          van:      '10k26k',
+          boxtruck: '10k26k',
+          semi:     'over26k',
+          tanker:   'over26k',
+          flatbed:  'over26k',
+          boat:     'under10k',
+          other:    'unknown'
+        };
+        const dg = defaults[vt];
+        if (dg) {
+          answers.gvwr = dg;
+          document.querySelectorAll(`[onclick*="'gvwr'"]`).forEach(c => c.classList.remove('selected'));
+          const inp = document.querySelector(`input[name="gvwr"][value="${dg}"]`);
+          if (inp) inp.closest('label').classList.add('selected');
+          const btn2 = document.getElementById('next-2');
+          if (btn2) btn2.disabled = false;
+          const hint = document.getElementById('gvwr-hint');
+          if (hint) hint.textContent = hasTrl
+            ? 'Estimated combined weight — verify against truck door jamb + trailer plate.'
+            : 'Estimated from vehicle type — confirm against door jamb sticker.';
+        }
+      }
+    }
+
     // ── OPTION SELECT (radio) ──
     function selectOption(el, field, value) {
       document.querySelectorAll(`[onclick*="'${field}'"]`).forEach(c => c.classList.remove('selected'));
@@ -625,12 +712,16 @@
       const nextBtn = document.getElementById('next-' + document.querySelector('.checker-step.active').id.replace('step-',''));
       if (nextBtn) nextBtn.disabled = false;
 
-      // Auto-advance radio steps after short delay
+      // Update GVWR step whenever vehicle type or trailer status changes
+      if (field === 'vehicleType' || field === 'hasTrailer') {
+        updateGVWRStep();
+      }
+
+      // Auto-advance step-1 and step-1b (quick route questions); GVWR requires explicit Next click
       setTimeout(() => {
         const activeStep = document.querySelector('.checker-step.active');
         if (activeStep.id === 'step-1') goNext('1b');
         else if (activeStep.id === 'step-1b') goNext(2);
-        else if (activeStep.id === 'step-2') goNext(3);
       }, 300);
     }
 
@@ -688,22 +779,28 @@
     }
 
     function goGate() {
-      // Skip hazmat step if not hauling hazmat
-      if (!answers.ops.includes('hazmat')) {
-        showGate(4);
+      // If hazmat selected, go to hazmat types step first; otherwise go straight to gate
+      if (answers.ops.includes('hazmat')) {
+        document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step-5').classList.add('active');
+        updateProgress(5);
+        window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
       } else {
-        showGate(5);
+        showGate(answers.ops.includes('interstate') ? 4 : 3);
       }
     }
 
     function goBackFromGate() {
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
-      if (!answers.ops.includes('hazmat')) {
+      if (answers.ops.includes('hazmat')) {
+        document.getElementById('step-5').classList.add('active');
+        updateProgress(5);
+      } else if (answers.ops.includes('interstate')) {
         document.getElementById('step-4').classList.add('active');
         updateProgress(4);
       } else {
-        document.getElementById('step-5').classList.add('active');
-        updateProgress(5);
+        document.getElementById('step-3').classList.add('active');
+        updateProgress(3);
       }
     }
 
@@ -1292,7 +1389,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       const vRows = [
         ['Type:', vtLabels[answers.vehicleType] || 'Not specified'],
         ['Trailer:', answers.hasTrailer === 'yes' ? 'Tractor + Separate Trailer' : 'Single Unit'],
-        ['GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
+        [answers.hasTrailer === 'yes' ? 'GCWR:' : 'GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
         ['Operations:', answers.ops.join(', ') || '—'],
         ['States:', answers.states.join(', ').toUpperCase() || '—']
       ];
