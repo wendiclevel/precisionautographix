@@ -349,11 +349,6 @@
             <span class="option-icon">🏗️</span>
             <div><div class="option-label">Flatbed / Lowboy</div><div class="option-desc">Equipment or oversize hauling</div></div>
           </label>
-          <label class="option-card" onclick="selectOption(this,'vehicleType','boat')">
-            <input type="radio" name="vehicleType" value="boat"/>
-            <span class="option-icon">⛵</span>
-            <div><div class="option-label">Boat / Vessel</div><div class="option-desc">Hull numbers or vessel name</div></div>
-          </label>
           <label class="option-card" onclick="selectOption(this,'vehicleType','other')">
             <input type="radio" name="vehicleType" value="other"/>
             <span class="option-icon">🔧</span>
@@ -414,7 +409,7 @@
           </label>
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack(answers.vehicleType === 'boat' ? 1 : '1b')">← Back</button>
+          <button class="btn-back" onclick="goBack('1b')">← Back</button>
           <button class="btn-next" id="next-2" onclick="goNext(3)" disabled>Next →</button>
         </div>
       </div>
@@ -789,13 +784,7 @@
 
       // Auto-advance: field-based so it's not affected by any other state changes
       if (field === 'vehicleType') {
-        // Boats don't have tractors/trailers — skip step 1b entirely
-        if (value === 'boat') {
-          answers.hasTrailer = 'no';
-          setTimeout(() => goNext(2), 350);
-        } else {
-          setTimeout(() => goNext('1b'), 350);
-        }
+        setTimeout(() => goNext('1b'), 350);
       } else if (field === 'hasTrailer') {
         setTimeout(() => goNext(2), 350);
       } else if (field === 'hazmatPackaging') {
