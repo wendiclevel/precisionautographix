@@ -354,7 +354,29 @@
           </label>
         </div>
         <div class="step-nav">
-          <button class="btn-next" id="next-1" onclick="goNext(2)" disabled>Next →</button>
+          <button class="btn-next" id="next-1" onclick="goNext('1b')" disabled>Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 1b: TRAILER -->
+      <div class="checker-step" id="step-1b">
+        <p class="step-question">Does your rig include a separate towed trailer or trailer unit?</p>
+        <p class="step-sub">This applies to any vehicle towing a separate unit — semi + trailer, truck + equipment trailer, pickup + chip trailer, tanker + pup, flatbed + rear trailer, etc. DOT placement rules differ for the towing unit vs. the trailer.</p>
+        <div class="option-grid" style="grid-template-columns:1fr;">
+          <label class="option-card" onclick="selectOption(this,'hasTrailer','yes')">
+            <input type="radio" name="hasTrailer" value="yes"/>
+            <span class="option-icon">🚛</span>
+            <div><div class="option-label">Yes — Tractor / Truck + Separate Trailer</div><div class="option-desc">Semi-trailer · Tank trailer · Equipment trailer · Chip/wood trailer · Flatbed/drop-deck trailer · Pup trailer · Gooseneck · Any towed separate unit</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'hasTrailer','no')">
+            <input type="radio" name="hasTrailer" value="no"/>
+            <span class="option-icon">🚚</span>
+            <div><div class="option-label">No — Single Unit Only</div><div class="option-desc">Box truck · Straight truck · Van · Pickup running solo · Tank truck (cab & tank are one unit) · Boat/vessel</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(1)">← Back</button>
+          <button class="btn-next" id="next-1b" onclick="goNext(2)" disabled>Next →</button>
         </div>
       </div>
 
@@ -381,7 +403,7 @@
           </label>
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack(1)">← Back</button>
+          <button class="btn-back" onclick="goBack('1b')">← Back</button>
           <button class="btn-next" id="next-2" onclick="goNext(3)" disabled>Next →</button>
         </div>
       </div>
@@ -584,6 +606,7 @@
     // ── STATE ──
     const answers = {
       vehicleType: null,
+      hasTrailer: 'no',
       gvwr: null,
       ops: [],
       states: [],
@@ -605,7 +628,8 @@
       // Auto-advance radio steps after short delay
       setTimeout(() => {
         const activeStep = document.querySelector('.checker-step.active');
-        if (activeStep.id === 'step-1') goNext(2);
+        if (activeStep.id === 'step-1') goNext('1b');
+        else if (activeStep.id === 'step-1b') goNext(2);
         else if (activeStep.id === 'step-2') goNext(3);
       }, 300);
     }
@@ -660,7 +684,7 @@
     function goBack(stepNum) {
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       document.getElementById('step-' + stepNum).classList.add('active');
-      updateProgress(stepNum);
+      updateProgress(stepNum === '1b' ? 1 : stepNum);
     }
 
     function goGate() {
@@ -692,8 +716,15 @@
       document.getElementById('erg-offer').style.display = answers.ops.includes('hazmat') ? 'block' : 'none';
     }
 
-    // Skip state step if not interstate
+    // Skip state step if not interstate; handle step 1b
     function goNext(n) {
+      if (n === '1b') {
+        document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step-1b').classList.add('active');
+        updateProgress(1);
+        window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
+        return;
+      }
       if (n === 4 && !answers.ops.includes('interstate')) {
         // Skip state selection, go to hazmat or gate
         if (answers.ops.includes('hazmat')) {
@@ -738,16 +769,31 @@
       const isHeavy = gvwr === 'over26k';
       const isMedium = gvwr === '10k26k';
 
-      // Always: Company name
+      const hasTrl = answers.hasTrailer === 'yes';
+
+      // Always: Company name (tractor/power unit)
       required.push({
-        label: 'Company Name Lettering',
-        detail: 'Legal company name or DBA must appear on both sides of any commercial vehicle — interstate and intrastate. Minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
-        service: 'Company Name — Both Sides',
-        placement: 'Both sides of vehicle',
+        label: hasTrl ? 'Company Name Lettering — Tractor / Power Unit' : 'Company Name Lettering',
+        detail: 'Legal company name or DBA must appear on both sides of the power unit — interstate and intrastate. Minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
+        service: hasTrl ? 'Company Name — Tractor Both Sides' : 'Company Name — Both Sides',
+        placement: hasTrl ? 'Both sides of tractor' : 'Both sides of vehicle',
         qty: 2,
         workNotes: 'Legal name or DBA — min. 2" contrasting letters',
         penalty: '$1,000 – $10,000 per violation (49 CFR 390.21) — applies interstate and intrastate'
       });
+
+      // Trailer company name (when separate trailer is towed)
+      if (hasTrl) {
+        required.push({
+          label: 'Company Name Lettering — Trailer',
+          detail: 'Company name must also appear on both sides of the trailer. Required under 49 CFR 390.21 when the trailer is operated as part of a commercial combination — especially when trailer operates with multiple tractors. Penalty applies per unit.',
+          service: 'Company Name — Trailer Both Sides',
+          placement: 'Both sides of trailer',
+          qty: 2,
+          workNotes: 'Match tractor lettering — min. 2" contrasting letters',
+          penalty: '$1,000 – $10,000 per violation per trailer (49 CFR 390.21); vehicle combination may be placed out of service'
+        });
+      }
 
       // USDOT Number
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
@@ -756,23 +802,33 @@
                           vt === 'tanker' || vt === 'semi';
       if (needsUSDOT) {
         required.push({
-          label: 'USDOT Number',
-          detail: 'Required on both sides of the vehicle — interstate and intrastate (hazmat, passengers, for-hire, or state-mandated operations). Must be preceded by "USDOT", minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
-          service: 'USDOT Number — Both Sides',
-          placement: 'Both sides of vehicle',
+          label: hasTrl ? 'USDOT Number — Tractor / Power Unit' : 'USDOT Number',
+          detail: 'Required on both sides of the power unit — interstate and intrastate (hazmat, passengers, for-hire, or state-mandated operations). Must be preceded by "USDOT", minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
+          service: hasTrl ? 'USDOT Number — Tractor Both Sides' : 'USDOT Number — Both Sides',
+          placement: hasTrl ? 'Both sides of tractor' : 'Both sides of vehicle',
           qty: 2,
           workNotes: 'Prefix "USDOT" required — min. 2" letters, contrasting color',
           penalty: '$1,000 – $10,000 per violation (49 CFR 390.21); vehicle may be placed out of service — applies interstate and intrastate'
         });
+        if (hasTrl) {
+          recommended.push({
+            label: 'USDOT Number — Trailer (Strongly Recommended)',
+            detail: 'Trailers are not self-propelled so 49 CFR 390.21 technically applies to the tractor, not the trailer. However, displaying your USDOT on both sides of the trailer is strongly recommended — it speeds up roadside inspections, helps identify the trailer if separated, and is required by many shippers and brokers.',
+            service: 'USDOT Number — Trailer Both Sides',
+            placement: 'Both sides of trailer',
+            qty: 2,
+            workNotes: 'Recommended — match tractor USDOT number and format'
+          });
+        }
       }
 
       // MC Number
       if (isForHire && isInterstate) {
         required.push({
           label: 'MC Number (Operating Authority)',
-          detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides. Operating without proper authority is a separate violation from missing markings. Regulated under 49 USC 13902.',
-          service: 'MC Number — Both Sides',
-          placement: 'Both sides of vehicle',
+          detail: 'For-hire interstate carriers must display their MC operating authority number alongside the USDOT number on both sides of the power unit. Operating without proper authority is a separate violation from missing markings. Regulated under 49 USC 13902.',
+          service: hasTrl ? 'MC Number — Tractor Both Sides' : 'MC Number — Both Sides',
+          placement: hasTrl ? 'Both sides of tractor' : 'Both sides of vehicle',
           qty: 2,
           workNotes: 'Display alongside USDOT number',
           penalty: '$11,000 – $25,000 per offense for operating without authority (49 USC 14901); repeat violations up to $25,000 per day'
@@ -793,15 +849,19 @@
         const hazList = selectedSpecs.map(s => s.label).join('; ');
         const placardSummary = selectedSpecs.map(s => `${s.placardName} (${s.unShort}) ERG ${s.guideNum}`).join(' | ');
         required.push({
-          label: 'Hazmat Placards',
-          detail: `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504. ${hazList}.`,
-          service: 'Hazmat Placards — All 4 Sides: ' + hazList,
-          placement: 'All 4 sides of vehicle',
+          label: hasTrl ? 'Hazmat Placards — Trailer (All 4 Sides)' : 'Hazmat Placards',
+          detail: hasTrl
+            ? `Required on all four sides of the TRAILER — the cargo-carrying unit is the regulated transport unit for placard placement. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders or direct-apply vinyl. Regulated under 49 CFR 172.504. ${hazList}.`
+            : `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504. ${hazList}.`,
+          service: (hasTrl ? 'Hazmat Placards — Trailer All 4 Sides: ' : 'Hazmat Placards — All 4 Sides: ') + hazList,
+          placement: hasTrl ? 'All 4 sides of trailer (cargo unit)' : 'All 4 sides of vehicle',
           qty: 4,
           workNotes: placardSummary,
           placardSpecs: selectedSpecs,
           placardPrint: 'DOT-compliant placards must be durable, weatherproof material — minimum 0.015" thick for rigid placard holders. Rigid holders are required on most bulk transport vehicles. Contact Precision Autographix for cut vinyl placards produced and installed on-site.',
-          penalty: '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
+          penalty: hasTrl
+            ? '$481 – $87,006 per violation per day per unit (49 USC 5123, 2024 inflation-adjusted) — trailer and tractor can each be cited separately; criminal violations with injury/death up to $500,000 + 5 years imprisonment'
+            : '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
         });
         // ERG
         if (answers.wantsERG) {
@@ -820,15 +880,36 @@
 
       // Oversize
       if (isOversize || vt === 'flatbed') {
-        required.push({
-          label: 'OVERSIZE LOAD Banner',
-          detail: 'Required front and rear when load exceeds legal dimensions — intrastate and interstate. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum. Regulated by state DOT in each operating state.',
-          service: 'Oversize Load Banners — Front & Rear',
-          placement: 'Front & rear of vehicle',
-          qty: 2,
-          workNotes: '84"W × 18"H min — black on yellow, 10" letters',
-          penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation; escort and permit violations may result in load being stopped'
-        });
+        if (hasTrl) {
+          required.push({
+            label: 'OVERSIZE LOAD Banner — Tractor Front',
+            detail: 'Required on the front of the tractor when load exceeds legal dimensions. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum.',
+            service: 'Oversize Load Banner — Tractor Front',
+            placement: 'Front of tractor',
+            qty: 1,
+            workNotes: '84"W × 18"H min — black on yellow, 10" letters',
+            penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation — cited per violation per unit; missing front banner is a separate citation from missing rear'
+          });
+          required.push({
+            label: 'OVERSIZE LOAD Banner — Trailer Rear',
+            detail: 'Required on the rear of the trailer when load exceeds legal dimensions. Same spec as tractor front banner. Both banners are required — front on tractor, rear on trailer — each is independently cited.',
+            service: 'Oversize Load Banner — Trailer Rear',
+            placement: 'Rear of trailer',
+            qty: 1,
+            workNotes: '84"W × 18"H min — black on yellow, 10" letters',
+            penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation — each missing banner is a separate violation'
+          });
+        } else {
+          required.push({
+            label: 'OVERSIZE LOAD Banner',
+            detail: 'Required front and rear when load exceeds legal dimensions — intrastate and interstate. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum. Regulated by state DOT in each operating state.',
+            service: 'Oversize Load Banners — Front & Rear',
+            placement: 'Front & rear of vehicle',
+            qty: 2,
+            workNotes: '84"W × 18"H min — black on yellow, 10" letters',
+            penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation; escort and permit violations may result in load being stopped'
+          });
+        }
       }
 
       // Boat
@@ -926,6 +1007,7 @@ Vehicles: ${vehicles || 'Not specified'}
 
 === VEHICLE DETAILS ===
 Type: ${answers.vehicleType || 'Not specified'}
+Trailer: ${answers.hasTrailer === 'yes' ? 'YES — Tractor + Separate Trailer' : 'No — Single Unit'}
 GVWR: ${answers.gvwr || 'Not specified'}
 Operations: ${answers.ops.join(', ') || 'None selected'}
 States: ${answers.states.join(', ') || 'Not specified'}
@@ -947,6 +1029,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
           body: JSON.stringify({
             name, company, email, phone, vehicles,
             vehicle_type: answers.vehicleType,
+            has_trailer: answers.hasTrailer === 'yes' ? 'YES — Tractor + Separate Trailer' : 'No — Single Unit',
             gvwr: answers.gvwr,
             operations: answers.ops.join(', '),
             states: answers.states.join(', '),
@@ -1186,7 +1269,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('Prepared by Precision Autographix  —  Not authorized for production until customer approval is received.', M, 47);
 
       // ── INFO BOX (2 columns) ──
-      const boxY = 51, boxH = 32;
+      const boxY = 51, boxH = 37;
       doc.setFillColor(248,248,248); doc.rect(M, boxY, W-M*2, boxH, 'F');
       doc.setDrawColor(...LGRAY); doc.rect(M, boxY, W-M*2, boxH, 'S');
       // divider
@@ -1208,6 +1291,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('VEHICLE PROFILE', rx, boxY+6);
       const vRows = [
         ['Type:', vtLabels[answers.vehicleType] || 'Not specified'],
+        ['Trailer:', answers.hasTrailer === 'yes' ? 'Tractor + Separate Trailer' : 'Single Unit'],
         ['GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
         ['Operations:', answers.ops.join(', ') || '—'],
         ['States:', answers.states.join(', ').toUpperCase() || '—']
