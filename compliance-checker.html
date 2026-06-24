@@ -437,7 +437,7 @@
           <label class="check-card" onclick="toggleCheck(event,this,'hazmat')">
             <input type="checkbox" name="ops" value="hazmat"/>
             <div class="check-box"></div>
-            <div><div class="check-label">We haul hazardous materials</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Fuel, propane, refrigerants, chemicals, pesticides, etc.</div></div>
+            <div><div class="check-label">We haul hazardous materials</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Fuel, propane, refrigerants, welding gases, chemicals, pesticides, etc.</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(event,this,'oversize')">
             <input type="checkbox" name="ops" value="oversize"/>
@@ -530,6 +530,16 @@
             <input type="checkbox" name="hazmatType" value="refrigerant"/>
             <div class="check-box"></div>
             <div><div class="check-label">Refrigerants / HVAC Gas</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 2.2 — Non-Flammable Gas (R-410A, R-22, etc.)</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(event,this,'acetylene')">
+            <input type="checkbox" name="hazmatType" value="acetylene"/>
+            <div class="check-box"></div>
+            <div><div class="check-label">Acetylene / Welding Fuel Gas</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 2.1 — Flammable Gas (welding, cutting, brazing)</div></div>
+          </label>
+          <label class="check-card" onclick="toggleCheck(event,this,'compressed_gas')">
+            <input type="checkbox" name="hazmatType" value="compressed_gas"/>
+            <div class="check-box"></div>
+            <div><div class="check-label">Compressed Inert Gases</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Class 2.2 — Non-Flammable Gas (oxygen, argon, CO2, nitrogen)</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(event,this,'other_haz')">
             <input type="checkbox" name="hazmatType" value="other_haz"/>
@@ -991,7 +1001,9 @@
           pesticide: { label: 'Class 6.1 — Toxic / Poison',  placardName: 'POISON',         color: 'White diamond, skull & crossbones, "POISON"',       unShort: 'See SDS sheet',      un: 'Varies — check your product SDS sheet',                       guide: 'ERG Guide 151/153', guideNum: '151', download: 'phmsa.dot.gov → Placards & Labels → Class 6', imgSrc: 'images/placard_class61_poison.svg',       hazType: 'pesticide' },
           pool:      { label: 'Class 8 — Corrosive',         placardName: 'CORROSIVE',      color: 'Black top / white bottom diamond, liquid dripping', unShort: '1760 / 1824',        un: 'UN 1760 (corrosive liquid) · UN 1824 (sodium hydroxide)',     guide: 'ERG Guide 154', guideNum: '154', download: 'phmsa.dot.gov → Placards & Labels → Class 8', imgSrc: 'images/placard_class8_corrosive.svg',     hazType: 'pool' },
           oxidizer:  { label: 'Class 5.1 — Oxidizer',        placardName: 'OXIDIZER',       color: 'Yellow diamond, flame over circle',                 unShort: '1479 / 2014',        un: 'UN 1479 (oxidizing solid) · UN 2014 (hydrogen peroxide)',     guide: 'ERG Guide 140', guideNum: '140', download: 'phmsa.dot.gov → Placards & Labels → Class 5', imgSrc: 'images/placard_class51_oxidizer.svg',     hazType: 'oxidizer' },
-          refrigerant: { label: 'Class 2.2 — Non-Flammable Gas', placardName: 'NON-FLAMMABLE GAS', color: 'Green diamond, white text — "NON-FLAMMABLE GAS"', unShort: '1018 / 3163 / 3159', un: 'UN 1018 (R-22) · UN 3163 (R-410A/refrigerant gas) · UN 3159 (R-134a) — verify your specific refrigerant UN number on your cylinder label or SDS', guide: 'ERG Guide 126', guideNum: '126', download: 'phmsa.dot.gov → Placards & Labels → Class 2.2', imgSrc: 'images/placard_class22_nonflammablegas.svg', hazType: 'refrigerant' },
+          refrigerant:    { label: 'Class 2.2 — Non-Flammable Gas', placardName: 'NON-FLAMMABLE GAS',  color: 'Green diamond, white text — "NON-FLAMMABLE GAS"',          unShort: '1018 / 3163 / 3159',    un: 'UN 1018 (R-22) · UN 3163 (R-410A/refrigerant gas) · UN 3159 (R-134a) — verify your specific refrigerant UN number on your cylinder label or SDS', guide: 'ERG Guide 126',     guideNum: '126', download: 'phmsa.dot.gov → Placards & Labels → Class 2.2', imgSrc: 'images/placard_class22_nonflammablegas.svg', hazType: 'refrigerant' },
+          acetylene:      { label: 'Class 2.1 — Flammable Gas (Acetylene)', placardName: 'FLAMMABLE GAS', color: 'Red diamond — "FLAMMABLE GAS"',                          unShort: '1001',                  un: 'UN 1001 (acetylene, dissolved) — verify with your cylinder label and SDS. Acetylene cylinders must remain upright at all times.', guide: 'ERG Guide 116',     guideNum: '116', download: 'phmsa.dot.gov → Placards & Labels → Class 2.1', imgSrc: 'images/placard_class21_flammablegas.svg', hazType: 'acetylene' },
+          compressed_gas: { label: 'Class 2.2 — Non-Flammable Gas (Compressed)', placardName: 'NON-FLAMMABLE GAS', color: 'Green diamond, white text — "NON-FLAMMABLE GAS"', unShort: '1006 / 1013 / 1066 / 1072', un: 'UN 1006 (argon) · UN 1013 (CO2) · UN 1066 (nitrogen) · UN 1072 (oxygen) — verify each cylinder label. Note: oxygen supports combustion; handle separately from flammables.', guide: 'ERG Guide 121/122', guideNum: '121', download: 'phmsa.dot.gov → Placards & Labels → Class 2.2', imgSrc: 'images/placard_class22_nonflammablegas.svg', hazType: 'compressed_gas' },
           other_haz: { label: answers.otherHazDesc ? `TBD — "${answers.otherHazDesc}"` : 'Class TBD', placardName: 'DANGEROUS', color: 'White diamond, red diagonal stripes — used for mixed/unclassified loads (49 CFR 172.504(f))', unShort: 'TBD', un: 'Look up on phmsa.dot.gov — identify your material class before transport', guide: 'ERG Index — identify material first', guideNum: 'TBD', download: 'phmsa.dot.gov/hazmat/erg', imgSrc: 'images/placard_dangerous.svg', hazType: 'other_haz' }
         };
         const selectedSpecs = haz.length > 0 ? haz.map(h => hazSpecs[h] || hazSpecs.other_haz) : [hazSpecs.other_haz];
