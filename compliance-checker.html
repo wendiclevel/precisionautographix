@@ -1579,12 +1579,12 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.text(piLines, M, y); y += piLines.length * 4 + 4;
 
         placardReq.placardSpecs.forEach(spec => {
-          if (y > 225) { doc.addPage(); addFooter(); y = 20; }
+          if (y > 215) { doc.addPage(); addFooter(); y = 20; }
           // Card background
           doc.setFillColor(255, 248, 242);
-          doc.rect(M, y, W-M*2, 34, 'F');
-          doc.setDrawColor(...ORANGE); doc.rect(M, y, W-M*2, 34, 'S');
-          doc.setFillColor(...ORANGE); doc.rect(M, y, 3, 34, 'F');
+          doc.rect(M, y, W-M*2, 46, 'F');
+          doc.setDrawColor(...ORANGE); doc.rect(M, y, W-M*2, 46, 'S');
+          doc.setFillColor(...ORANGE); doc.rect(M, y, 3, 46, 'F');
 
           // Placard image (right side of card)
           if (spec.hazType && _placardImages[spec.hazType]) {
@@ -1621,9 +1621,9 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
 
           // Supplier note
           doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...RED);
-          doc.text('Contact Precision Autographix for DOT-compliant vinyl placards — on-site installation available', M+5, y+31);
+          doc.text('Contact Precision Autographix for DOT-compliant vinyl placards — on-site installation available', M+5, y+43);
 
-          y += 37;
+          y += 49;
         });
 
         // Print requirements note
