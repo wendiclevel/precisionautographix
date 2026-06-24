@@ -354,6 +354,11 @@
             <span class="option-icon">🚌</span>
             <div><div class="option-label">Bus / Passenger Van</div><div class="option-desc">Charter, shuttle, tour, school, church, airport</div></div>
           </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','rv')">
+            <input type="radio" name="vehicleType" value="rv"/>
+            <span class="option-icon">🚐</span>
+            <div><div class="option-label">RV / Motorhome</div><div class="option-desc">Personal recreational vehicle — Class A, B, C, or converted bus</div></div>
+          </label>
           <label class="option-card" onclick="selectOption(this,'vehicleType','other')">
             <input type="radio" name="vehicleType" value="other"/>
             <span class="option-icon">🔧</span>
@@ -414,7 +419,7 @@
           </label>
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack(answers.vehicleType === 'bus' ? 1 : '1b')">← Back</button>
+          <button class="btn-back" onclick="goBack((answers.vehicleType === 'bus' || answers.vehicleType === 'rv') ? 1 : '1b')">← Back</button>
           <button class="btn-next" id="next-2" onclick="goNext(3)" disabled>Next →</button>
         </div>
       </div>
@@ -724,6 +729,7 @@
           tanker:   'over26k',
           flatbed:  'over26k',
           bus:      'over26k',  // full-size buses; shuttle vans can adjust down
+          rv:       '10k26k',  // most Class A/B/C motorhomes
           boat:     'under10k',
           other:    'unknown'
         } : {
@@ -735,6 +741,7 @@
           tanker:   'over26k',
           flatbed:  'over26k',
           bus:      'over26k',  // large bus default; shuttle vans adjust down
+          rv:       '10k26k',  // most Class A/B/C motorhomes
           boat:     'under10k',
           other:    'unknown'
         };
@@ -791,7 +798,7 @@
 
       // Auto-advance: field-based so it's not affected by any other state changes
       if (field === 'vehicleType') {
-        if (value === 'bus') {
+        if (value === 'bus' || value === 'rv') {
           answers.hasTrailer = 'no';
           setTimeout(() => goNext(2), 350);
         } else {
@@ -941,6 +948,10 @@
 
       const hasTrl = answers.hasTrailer === 'yes';
 
+      // Personal-use exemption: RVs and motorhomes used for personal/recreational purposes
+      // are exempt from FMCSR under 49 CFR 390.3(f)(1) — unless operated for hire.
+      const isPersonalRV = vt === 'rv' && !isForHire && !hasHazmat;
+
       // CMV determination — company name + USDOT only apply to vehicles that qualify as CMVs
       // under 49 CFR 390.5: 10,001+ lbs, for-hire, hazmat requiring placards, or 9+ passengers
       // Passenger vehicle CMV threshold: 9+ passengers FOR HIRE, 16+ passengers NOT for hire
@@ -950,10 +961,12 @@
       // Non-hire (church, non-profit): USDOT required at 16+ passengers — we conservatively flag it
       const passengerCMV = isForHirePassenger || (isNonHirePassenger && isHeavy);
 
-      const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
+      const needsUSDOT = !isPersonalRV && (
+                          (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
                           hazmatRequiresPlacards || passengerCMV ||
-                          vt === 'tanker' || vt === 'semi' || vt === 'dump';
+                          vt === 'tanker' || vt === 'semi' || vt === 'dump'
+                        );
 
       // Company name required only when vehicle is a CMV (same threshold as USDOT)
       // 49 CFR 390.21 — not required for private light vehicles below CMV thresholds
@@ -1371,7 +1384,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         reader.onloadend = async () => {
           try {
             const { required, recommended, conditional, name, company, email, phone, vehicles } = _pdfData;
-            const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', bus:'Bus / Passenger Van', boat:'Boat / Vessel', other:'Other / Not Specified' };
+            const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', bus:'Bus / Passenger Van', rv:'RV / Motorhome', boat:'Boat / Vessel', other:'Other / Not Specified' };
             const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001–26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
             const vehicleProfile = [
               'Type: ' + (vtLabels[answers.vehicleType] || 'Not specified'),
@@ -1419,7 +1432,16 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
 
       // Required items
       const reqEl = document.getElementById('results-required');
-      reqEl.innerHTML = '<div class="results-badge">■ Required by Law</div>';
+      if (required.length === 0 && conditional.length === 0) {
+        reqEl.innerHTML = `
+          <div style="background:#0d1f0d;border:1px solid #2a5c2a;border-left:4px solid #3a9c3a;border-radius:4px;padding:1.1rem 1.3rem;margin-bottom:1rem;">
+            <div style="color:#5fcc5f;font-size:0.8rem;font-weight:700;letter-spacing:0.07em;margin-bottom:0.4rem;">✔ EXCLUDED — NO DOT MARKINGS REQUIRED</div>
+            <div style="color:#aaa;font-size:0.85rem;line-height:1.5;">Based on your answers, this vehicle does not meet the threshold for federal DOT marking requirements. No USDOT number or company name lettering is required for this configuration.</div>
+            <div style="color:#777;font-size:0.78rem;margin-top:0.5rem;">If your operations change (adding for-hire service, crossing state lines commercially, or carrying hazmat), re-run the checker — requirements may apply.</div>
+          </div>`;
+      } else {
+        reqEl.innerHTML = '<div class="results-badge">■ Required by Law</div>';
+      }
       required.forEach(r => {
         const penaltyBadge = r.penalty ? `
           <div style="margin-top:0.5rem;display:inline-flex;align-items:flex-start;gap:0.4rem;background:rgba(204,0,0,0.07);border:1px solid rgba(204,0,0,0.18);padding:0.3rem 0.65rem;border-radius:2px;max-width:100%;">
