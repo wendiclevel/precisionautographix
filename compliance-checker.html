@@ -924,6 +924,11 @@
       const hasHazmat = ops.includes('hazmat');
       const isOversize = ops.includes('oversize');
       const hasPassengers = ops.includes('passengers');
+      // Bulk = placards always required; nonbulk = threshold-dependent (1,001 lbs/class)
+      // USDOT and CDL-H are only triggered by hazmat that requires placards
+      const isBulkHazEarly = hasHazmat && answers.hazmatPackaging === 'bulk';
+      const isNonBulkHazEarly = hasHazmat && answers.hazmatPackaging === 'nonbulk';
+      const hazmatRequiresPlacards = isBulkHazEarly || (hasHazmat && !isNonBulkHazEarly); // conservative if packaging unknown
       const isHeavy = gvwr === 'over26k';
       const isMedium = gvwr === '10k26k';
 
@@ -956,7 +961,7 @@
       // USDOT Number
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
-                          hasHazmat || hasPassengers ||
+                          hazmatRequiresPlacards || hasPassengers ||
                           vt === 'tanker' || vt === 'semi' || vt === 'dump';
       if (needsUSDOT) {
         required.push({
@@ -1224,11 +1229,11 @@
         });
       }
 
-      // CDL requirement flag
-      if (isHeavy || hasHazmat) {
+      // CDL requirement flag — CDL-H endorsement only applies when placards are actually required
+      if (isHeavy || hazmatRequiresPlacards) {
         recommended.push({
           label: 'CDL Requirement — Verify Driver Credentials',
-          detail: isHeavy && hasHazmat
+          detail: isHeavy && hazmatRequiresPlacards
             ? 'Vehicles over 26,001 lbs GVWR require a Commercial Driver\'s License (CDL). Hauling hazmat requiring placards additionally requires a CDL with a Hazmat (H) endorsement, which includes a TSA security threat assessment and federal background check. Verify at fmcsa.dot.gov or ALEA (alea.gov).'
             : isHeavy
               ? 'Vehicles over 26,001 lbs GVWR require a Commercial Driver\'s License (CDL). Verify all drivers hold a valid Class A or Class B CDL appropriate for the vehicle combination. Contact ALEA (alea.gov) or FMCSA (fmcsa.dot.gov) to verify.'
