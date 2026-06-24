@@ -608,6 +608,7 @@
       <div id="results-required"></div>
       <div id="placard-specs-wrap"></div>
       <div id="erg-specs-wrap"></div>
+      <div id="results-conditional"></div>
       <div id="results-recommended"></div>
 
       <div style="margin-top:1.5rem;display:flex;gap:1rem;flex-wrap:wrap;">
@@ -893,6 +894,7 @@
     function generateRequirements() {
       const required = [];
       const recommended = [];
+      const conditional = [];
 
       const vt = answers.vehicleType;
       const gvwr = answers.gvwr;
@@ -994,33 +996,79 @@
           : isNonBulkHaz
             ? ' NON-BULK CONTAINERS: Placards required when aggregate gross weight of each hazmat class on the vehicle reaches 1,001 lbs (454 kg) per 49 CFR 172.504 Table 2. Below threshold per class, placards are not required — but if total mixed hazmat exceeds 1,001 lbs combined, a DANGEROUS placard may be used instead.'
             : '';
-        required.push({
-          label: hasTrl ? 'Hazmat Placards — Trailer (All 4 Sides)' : 'Hazmat Placards',
-          detail: hasTrl
-            ? `Required on all four sides of the TRAILER — the cargo-carrying unit is the regulated transport unit for placard placement. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders or direct-apply vinyl. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`
-            : `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`,
+        const placardItem = {
           service: (hasTrl ? 'Hazmat Placards — Trailer All 4 Sides: ' : 'Hazmat Placards — All 4 Sides: ') + hazList,
           placement: hasTrl ? 'All 4 sides of trailer (cargo unit)' : 'All 4 sides of vehicle',
           qty: 4,
           workNotes: placardSummary,
           placardSpecs: selectedSpecs,
-          placardPrint: 'DOT-compliant placards must be durable, weatherproof material — minimum 0.015" thick for rigid placard holders. Rigid holders are required on most bulk transport vehicles. Contact Precision Autographix for cut vinyl placards produced and installed on-site.',
-          penalty: hasTrl
-            ? '$481 – $87,006 per violation per day per unit (49 USC 5123, 2024 inflation-adjusted) — trailer and tractor can each be cited separately; criminal violations with injury/death up to $500,000 + 5 years imprisonment'
-            : '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
-        });
-        // ERG
-        if (answers.wantsERG) {
+          placardPrint: 'DOT-compliant placards must be durable, weatherproof material — minimum 0.015" thick for rigid placard holders. Rigid holders are required on most bulk transport vehicles. Contact Precision Autographix for cut vinyl placards produced and installed on-site.'
+        };
+        const ergItem = answers.wantsERG ? {
+          service: 'Emergency Response Guide — ERG Reference Package: ' + hazList,
+          placement: 'Vehicle cab',
+          qty: 1,
+          workNotes: 'Current edition required — 2024 ERG. Guide pages: ' + selectedSpecs.map(s => s.guideNum).join(', '),
+          ergSpecs: selectedSpecs
+        } : null;
+
+        if (isBulkHaz) {
+          // Bulk tank: placards ALWAYS required — goes in required
           required.push({
-            label: 'Emergency Response Guide (ERG)',
-            detail: `Federal law (49 CFR 172.602) requires the current ERG edition in every hazmat vehicle cab — interstate and intrastate. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
-            service: 'Emergency Response Guide — ERG Reference Package: ' + hazList,
-            placement: 'Vehicle cab',
-            qty: 1,
-            workNotes: 'Current edition required — 2024 ERG. Guide pages: ' + selectedSpecs.map(s => s.guideNum).join(', '),
-            penalty: 'Missing emergency response information: $481 – $87,006/day (49 USC 5123 hazmat violation schedule). The ERG satisfies 49 CFR 172.602 — typically cited as a correctable violation at roadside inspection; applies interstate and intrastate.',
-            ergSpecs: selectedSpecs
+            ...placardItem,
+            label: hasTrl ? 'Hazmat Placards — Trailer (All 4 Sides)' : 'Hazmat Placards',
+            detail: hasTrl
+              ? `Required on all four sides of the TRAILER — bulk tank transport. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders. BULK TANK: Placards required regardless of quantity (49 CFR 172.504). ${hazList}.`
+              : `Required on all four sides of the vehicle — bulk tank transport. 250mm (9.84") diamond shape — rigid placard holders. BULK TANK: Placards required regardless of quantity (49 CFR 172.504). ${hazList}.`,
+            penalty: hasTrl
+              ? '$481 – $87,006 per violation per day per unit (49 USC 5123, 2024 inflation-adjusted) — trailer and tractor can each be cited separately; criminal violations with injury/death up to $500,000 + 5 years imprisonment'
+              : '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
           });
+          if (ergItem) {
+            required.push({
+              ...ergItem,
+              label: 'Emergency Response Guide (ERG)',
+              detail: `Federal law (49 CFR 172.602) requires the current ERG edition in every hazmat vehicle cab — interstate and intrastate. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
+              penalty: 'Missing emergency response information: $481 – $87,006/day (49 USC 5123 hazmat violation schedule). The ERG satisfies 49 CFR 172.602 — typically cited as a correctable violation at roadside inspection; applies interstate and intrastate.'
+            });
+          }
+        } else if (isNonBulkHaz) {
+          // Non-bulk containers: 1,001 lb threshold applies — goes in conditional
+          conditional.push({
+            ...placardItem,
+            label: hasTrl ? 'Hazmat Placards — Trailer (Required Above 1,001 lbs/Class)' : 'Hazmat Placards (Required Above 1,001 lbs/Class)',
+            detail: hasTrl
+              ? `For non-bulk containers (drums, jugs, totes, cylinders), placards are required on all four sides of the TRAILER only when the aggregate gross weight of each hazmat class reaches 1,001 lbs (454 kg) per 49 CFR 172.504 Table 2. A typical service trailer with product jugs is well under this threshold — verify your actual cargo weight. If threshold is met: 250mm (9.84") diamond, rigid holders. Classes: ${hazList}.`
+              : `For non-bulk containers (drums, jugs, totes, cylinders), placards are required only when the aggregate gross weight of each hazmat class on your vehicle reaches 1,001 lbs (454 kg) per 49 CFR 172.504 Table 2. A typical pest control or service van with a few gallons of concentrate is well under this threshold — verify your actual cargo weight before each trip. If threshold is met: all four sides, 250mm (9.84") diamond. Classes: ${hazList}.`,
+            workNotes: placardSummary + ' — INSTALL ONLY IF 1,001 LB/CLASS THRESHOLD IS MET',
+            penalty: '$481 – $87,006 per violation per day (49 USC 5123) — applies only when load requires placards'
+          });
+          if (ergItem) {
+            conditional.push({
+              ...ergItem,
+              label: 'Emergency Response Guide (ERG) — Required If Placards Apply',
+              detail: `The ERG is required (49 CFR 172.602) when carrying hazmat in quantities requiring placards. For non-bulk loads under the 1,001 lb threshold, placards are not required and the ERG is not legally mandated — though keeping one in the cab is strongly recommended. If your load exceeds the threshold: current 2024 ERG required in cab. Guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
+              penalty: '$481 – $87,006/day if placards are required and ERG is missing (49 USC 5123)'
+            });
+          }
+        } else {
+          // Packaging not specified — conservative default, stays in required
+          required.push({
+            ...placardItem,
+            label: hasTrl ? 'Hazmat Placards — Trailer (All 4 Sides)' : 'Hazmat Placards',
+            detail: hasTrl
+              ? `Required on all four sides of the TRAILER. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders or direct-apply vinyl. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`
+              : `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`,
+            penalty: '$481 – $87,006 per violation per day (49 USC 5123, 2024 inflation-adjusted); criminal violations with injury/death up to $500,000 + 5 years imprisonment — applies interstate and intrastate'
+          });
+          if (ergItem) {
+            required.push({
+              ...ergItem,
+              label: 'Emergency Response Guide (ERG)',
+              detail: `Federal law (49 CFR 172.602) requires the current ERG edition in every hazmat vehicle cab — interstate and intrastate. Download free 2024 ERG at phmsa.dot.gov/hazmat/erg. Your cargo guide pages: ${selectedSpecs.map(s => s.guide).join(', ')}.`,
+              penalty: 'Missing emergency response information: $481 – $87,006/day (49 USC 5123 hazmat violation schedule). Typically cited as a correctable violation at roadside inspection.'
+            });
+          }
         }
       }
 
@@ -1178,7 +1226,7 @@
         });
       }
 
-      return { required, recommended };
+      return { required, recommended, conditional };
     }
 
     // ── SUBMIT & SHOW ──
@@ -1194,7 +1242,7 @@
         return;
       }
 
-      const { required, recommended } = generateRequirements();
+      const { required, recommended, conditional } = generateRequirements();
       const allServices = [...required, ...recommended].map(r => r.service).join('\n');
 
       // Build package summary
@@ -1218,7 +1266,7 @@ ERG Requested: ${answers.wantsERG ? 'YES' : 'No'}
 === REQUIRED MARKINGS ===
 ${required.map(r => '• ' + r.service).join('\n')}
 
-=== RECOMMENDED ===
+${conditional.length > 0 ? `=== THRESHOLD-DEPENDENT (apply if 1,001+ lbs/class) ===\n${conditional.map(r => '• ' + r.service).join('\n')}\n\n` : ''}=== RECOMMENDED ===
 ${recommended.map(r => '• ' + r.service).join('\n')}
       `.trim();
 
@@ -1239,6 +1287,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             other_hazmat_description: answers.otherHazDesc || 'N/A',
             erg_requested: answers.wantsERG ? 'YES' : 'No',
             required_markings: required.map(r => r.service).join(' | '),
+            threshold_dependent: conditional.length > 0 ? conditional.map(r => r.service).join(' | ') : 'None',
             recommended: recommended.map(r => r.service).join(' | '),
             full_package_summary: packageSummary,
             _subject: `PA Compliance Checker Lead — ${company} (${name})`
@@ -1247,20 +1296,20 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       } catch(e) { /* continue to show results even if submission fails */ }
 
       // Show results
-      showResults(required, recommended, name, company, email, phone, vehicles);
+      showResults(required, recommended, conditional, name, company, email, phone, vehicles);
     }
 
     // Store for PDF generation
     let _pdfData = {};
 
-    function showResults(required, recommended, name, company, email, phone, vehicles) {
+    function showResults(required, recommended, conditional, name, company, email, phone, vehicles) {
       document.getElementById('checker-form-wrap').style.display = 'none';
       document.getElementById('results-wrap').classList.add('show');
       document.getElementById('results-subtitle').textContent =
         `Based on your answers, here is everything your vehicle is legally required to display — plus our recommendations.`;
 
       // Store for PDF
-      _pdfData = { required, recommended, name, company, email, phone, vehicles };
+      _pdfData = { required, recommended, conditional, name, company, email, phone, vehicles };
 
       // Required items
       const reqEl = document.getElementById('results-required');
@@ -1341,6 +1390,35 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
           </div>`;
       }
 
+      // Threshold-dependent (conditional) items
+      if (conditional.length > 0) {
+        const condEl = document.getElementById('results-conditional');
+        condEl.innerHTML = `
+          <div style="margin:1.5rem 0 0.5rem;">
+            <div class="results-badge" style="background:rgba(180,120,0,0.12);border-color:rgba(200,140,0,0.45);color:#cc9900;">⚠ Threshold-Dependent Requirements</div>
+          </div>
+          <div style="background:rgba(180,120,0,0.07);border:1px solid rgba(200,140,0,0.3);border-radius:4px;padding:0.75rem 1.1rem;margin-bottom:0.75rem;">
+            <div style="color:#cc9900;font-size:0.8rem;font-weight:700;margin-bottom:0.2rem;">NON-BULK CONTAINERS — 49 CFR 172.504 TABLE 2</div>
+            <div style="color:#aaa;font-size:0.82rem;line-height:1.5;">These items apply <strong style="color:#e8e8e8;">only if</strong> the aggregate gross weight of each hazmat class on your vehicle reaches <strong style="color:#e8e8e8;">1,001 lbs (454 kg)</strong>. A typical service van or pest control truck with a few jugs or drums is well under this threshold. Verify your actual cargo weight before each trip.</div>
+          </div>`;
+        conditional.forEach(r => {
+          const penaltyBadge = r.penalty ? `
+            <div style="margin-top:0.5rem;display:inline-flex;align-items:flex-start;gap:0.4rem;background:rgba(180,120,0,0.1);border:1px solid rgba(200,140,0,0.3);padding:0.3rem 0.65rem;border-radius:2px;max-width:100%;">
+              <span style="color:#cc9900;font-size:0.68rem;font-weight:700;white-space:nowrap;padding-top:0.05rem;">⚠ IF APPLICABLE</span>
+              <span style="color:#777;font-size:0.72rem;line-height:1.4;">${r.penalty}</span>
+            </div>` : '';
+          condEl.innerHTML += `
+            <div class="req-item" style="border-left-color:#cc9900;">
+              <div class="req-item-icon" style="color:#cc9900;">⚠</div>
+              <div style="width:100%;">
+                <div class="req-item-label">${r.label}</div>
+                <div class="req-item-detail">${r.detail}</div>
+                ${penaltyBadge}
+              </div>
+            </div>`;
+        });
+      }
+
       // Recommended items
       if (recommended.length > 0) {
         const recEl = document.getElementById('results-recommended');
@@ -1412,7 +1490,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       if (!window.jspdf) { alert('PDF generator is loading, please try again in a moment.'); return; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-      const { required, recommended, name, company, email, phone, vehicles } = _pdfData;
+      const { required, recommended, conditional, name, company, email, phone, vehicles } = _pdfData;
 
       const RED=[204,0,0], DARK=[20,20,20], GRAY=[100,100,100], LGRAY=[220,220,220], ORANGE=[190,80,0], BLUE=[20,80,170], WHITE=[255,255,255], YELLOW=[255,200,0];
       const W=215.9, M=15;
@@ -1563,8 +1641,51 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
 
       y = doc.lastAutoTable.finalY + 8;
 
+      // ══════════════════ THRESHOLD-DEPENDENT TABLE ══════════════════
+      const AMBER = [180, 120, 0];
+      if (conditional && conditional.length > 0) {
+        if (y > 220) { doc.addPage(); addFooter(); y = 20; }
+        doc.setTextColor(...AMBER); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+        doc.text('THRESHOLD-DEPENDENT REQUIREMENTS  —  APPLY ONLY IF 1,001+ LBS / CLASS', M, y);
+        doc.setFillColor(...AMBER); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
+        y += 4;
+        doc.setFillColor(255, 248, 220);
+        doc.rect(M, y, W-M*2, 9, 'F');
+        doc.setDrawColor(...AMBER); doc.rect(M, y, W-M*2, 9, 'S');
+        doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...AMBER);
+        doc.text('Non-bulk containers (jugs, drums, totes): placards & ERG required ONLY when aggregate weight per hazmat class reaches 1,001 lbs (49 CFR 172.504 Table 2).', M+3, y+3.5);
+        doc.text('Verify actual cargo weight before each trip. A typical service van with a few gallons of concentrate is well under this threshold.', M+3, y+7);
+        y += 12;
+        const condBody = conditional.map((req, i) => [
+          (i+1).toString(),
+          req.label,
+          req.placement || '—',
+          (req.qty || 1).toString(),
+          (req.workNotes || '—')
+        ]);
+        doc.autoTable({
+          startY: y,
+          head: [['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
+          body: condBody,
+          styles: { fontSize: 7.5, cellPadding: 2.5, textColor: DARK, lineColor: [220,200,150], lineWidth: 0.2 },
+          headStyles: { fillColor: AMBER, textColor: WHITE, fontStyle: 'bold', fontSize: 7.5 },
+          columnStyles: {
+            0: { cellWidth: 8, halign: 'center' },
+            1: { cellWidth: 48, fontStyle: 'bold' },
+            2: { cellWidth: 38 },
+            3: { cellWidth: 10, halign: 'center' },
+            4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+          },
+          alternateRowStyles: { fillColor: [255, 252, 235] },
+          margin: { left: M, right: M },
+          didDrawPage: addFooter
+        });
+        y = doc.lastAutoTable.finalY + 8;
+      }
+
       // ══════════════════ HAZMAT PLACARD SPECS ══════════════════
-      const placardReq = required.find(r => r.placardSpecs);
+      // Check both required and conditional for placard specs
+      const placardReq = required.find(r => r.placardSpecs) || (conditional && conditional.find(r => r.placardSpecs));
       if (placardReq) {
         if (y > 210) { doc.addPage(); addFooter(); y = 20; }
 
@@ -1639,7 +1760,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       }
 
       // ══════════════════ ERG SECTION ══════════════════
-      const ergReq = required.find(r => r.ergSpecs);
+      const ergReq = required.find(r => r.ergSpecs) || (conditional && conditional.find(r => r.ergSpecs));
       if (ergReq) {
         if (y > 210) { doc.addPage(); addFooter(); y = 20; }
         y += 2;
