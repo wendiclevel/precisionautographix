@@ -1318,7 +1318,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.setFillColor(...DARK);
         doc.rect(0, 267, W, 9, 'F');
         doc.setTextColor(160,160,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
-        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin County, AL  |  On-Site Installation Available', M, 272.5);
+        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin/Mobile County, AL  |  On-Site Install · Outside Area Scheduling · DIY Pickup Available', M, 272.5);
         doc.text(`${woNum}  —  Page ${pg}`, W-32, 272.5);
       };
 
@@ -1407,7 +1407,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         req.label,
         req.placement || '—',
         (req.qty || 1).toString(),
-        (req.workNotes || '—') + (req.penalty ? '\n⚠ ' + req.penalty : '')
+        (req.workNotes || '—') + (req.penalty ? '\nPENALTY: ' + req.penalty : '')
       ]);
 
       doc.autoTable({
@@ -1762,7 +1762,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       y += 12;
 
       doc.setTextColor(...DARK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct, authorizes Precision Autographix to produce and install the listed graphics, and acknowledges having read the Liability Disclaimer on the following page.';
+      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct, authorizes Precision Autographix to produce the listed graphics (and install, if on-site installation is selected), and acknowledges having read the Liability Disclaimer and Service Area / Installation Options on the following page.';
       const atLines = doc.splitTextToSize(approvalText, W-M*2-8);
       doc.text(atLines, M+4, y); y += atLines.length*4.5 + 5;
 
@@ -1827,6 +1827,10 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         {
           title: 'GRAPHICS PRODUCTION SCOPE',
           body: 'Precision Autographix is responsible only for the production and installation of vinyl graphics as specified in the signed and approved work order. Compliance determination, placard class selection, UN number verification, cargo classification, operational decisions, and all other regulatory matters remain the sole responsibility of the vehicle operator, fleet owner, and their qualified regulatory counsel. We produce what you specify — it is your responsibility to specify correctly.'
+        },
+        {
+          title: 'SERVICE AREA & INSTALLATION OPTIONS',
+          body: 'PRIMARY SERVICE AREA: Baldwin County and Mobile County, AL — we come to you with on-site installation. No towing, no downtime. We bring our equipment to your location and install everything on-site.\n\nOUTSIDE PRIMARY AREA: We can arrange installation beyond Baldwin/Mobile County with advance scheduling. Travel fee applies — contact us for pricing before work order approval.\n\nDIY INSTALLATION: Graphics can be produced at our facility and picked up or shipped to you for self-installation. DIY orders are cut to the same DOT-compliant specification. Customer assumes full responsibility for correct placement and installation. Contact us to arrange a DIY production order.'
         }
       ];
 
@@ -1868,7 +1872,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.setFillColor(...DARK);
         doc.rect(0, 267, W, 9, 'F');
         doc.setTextColor(160,160,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
-        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin County, AL  |  On-Site Installation Available', M, 272.5);
+        doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin/Mobile County, AL  |  On-Site Install · Outside Area Scheduling · DIY Pickup Available', M, 272.5);
         doc.text(`${woNum}  —  Page ${p} of ${totalPages}`, W-40, 272.5);
       }
 
