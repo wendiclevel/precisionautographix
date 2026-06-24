@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="css/style.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>emailjs.init({ publicKey: '4vxsM547hs2_2HsM4' });</script>
   <style>
     .checker-hero {
       padding: 14rem 2rem 4rem;
@@ -1242,6 +1244,10 @@
         return;
       }
 
+      // Generate compliance report number (used in both email and PDF)
+      const _now = new Date();
+      _crNumber = 'CR-' + _now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+
       const { required, recommended, conditional } = generateRequirements();
       const allServices = [...required, ...recommended].map(r => r.service).join('\n');
 
@@ -1290,17 +1296,64 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             threshold_dependent: conditional.length > 0 ? conditional.map(r => r.service).join(' | ') : 'None',
             recommended: recommended.map(r => r.service).join(' | '),
             full_package_summary: packageSummary,
-            _subject: `PA Compliance Checker Lead — ${company} (${name})`
+            _subject: `PA Compliance — ${company} — ${_crNumber}`
           })
         });
       } catch(e) { /* continue to show results even if submission fails */ }
 
       // Show results
       showResults(required, recommended, conditional, name, company, email, phone, vehicles);
+
+      // Auto-send compliance report via EmailJS (after short delay to let page settle)
+      setTimeout(() => sendComplianceEmail(), 800);
+    }
+
+    // ── EMAILJS SEND ──
+    async function sendComplianceEmail() {
+      if (!window.jspdf) return;
+      try {
+        const blob = generatePDF(true);
+        if (!blob) return;
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          try {
+            const { required, recommended, conditional, name, company, email, phone, vehicles } = _pdfData;
+            const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other' };
+            const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001–26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
+            const vehicleProfile = [
+              'Type: ' + (vtLabels[answers.vehicleType] || 'Not specified'),
+              'Trailer: ' + (answers.hasTrailer === 'yes' ? 'Yes — Tractor + Separate Trailer' : 'No — Single Unit'),
+              'GVWR: ' + (gwLabels[answers.gvwr] || 'Not specified'),
+              'Operations: ' + (answers.ops.join(', ') || 'Not specified'),
+              'States: ' + (answers.states.join(', ').toUpperCase() || 'Not specified'),
+              'Fleet Size: ' + (vehicles || 'Not specified')
+            ].join('\n');
+            const base64 = reader.result.split(',')[1];
+            await emailjs.send('service_ttr9gwb', 'template_aj8ifq6', {
+              cr_number: _crNumber,
+              cr_date: new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}),
+              contact_name: name,
+              company_name: company,
+              email: email,
+              phone: phone,
+              vehicle_profile: vehicleProfile,
+              required_list: required.map(r => '• ' + r.service).join('\n'),
+              conditional_note: conditional && conditional.length > 0
+                ? 'THRESHOLD-DEPENDENT (apply only if 1,001+ lbs per class):\n' + conditional.map(r => '• ' + r.service).join('\n')
+                : 'None — no threshold-dependent items for this profile.',
+              recommended_list: recommended.map(r => '• ' + r.service).join('\n'),
+              pdf_name: `PA-Compliance-${_crNumber}.pdf`,
+              pdf_content: base64
+            });
+          } catch(e) { console.warn('EmailJS send failed:', e); }
+        };
+        reader.readAsDataURL(blob);
+      } catch(e) { console.warn('Compliance email generation failed:', e); }
     }
 
     // Store for PDF generation
     let _pdfData = {};
+    let _crNumber = '';
 
     function showResults(required, recommended, conditional, name, company, email, phone, vehicles) {
       document.getElementById('checker-form-wrap').style.display = 'none';
@@ -1485,9 +1538,9 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       });
     })();
 
-    // ── PDF WORK ORDER ──
-    function generatePDF() {
-      if (!window.jspdf) { alert('PDF generator is loading, please try again in a moment.'); return; }
+    // ── PDF COMPLIANCE REPORT ──
+    function generatePDF(returnBlob = false) {
+      if (!window.jspdf) { if (!returnBlob) alert('PDF generator is loading, please try again in a moment.'); return null; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
       const { required, recommended, conditional, name, company, email, phone, vehicles } = _pdfData;
@@ -1495,7 +1548,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       const RED=[204,0,0], DARK=[20,20,20], GRAY=[100,100,100], LGRAY=[220,220,220], ORANGE=[190,80,0], BLUE=[20,80,170], WHITE=[255,255,255], YELLOW=[255,200,0];
       const W=215.9, M=15;
       const now = new Date();
-      const woNum = 'WO-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
+      const woNum = _crNumber || ('CR-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100));
       const woDate = now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
       const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other / Not Specified' };
@@ -1531,22 +1584,22 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
 
       // WO # and status in header
       doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text('WORK ORDER', W-55, 10);
+      doc.text('COMPLIANCE REPORT', W-60, 10);
       doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      doc.text(woNum, W-55, 16);
-      doc.text(woDate, W-55, 21);
-      // PENDING badge
-      doc.setFillColor(...ORANGE);
-      doc.rect(W-55, 23, 42, 4, 'F');
+      doc.text(woNum, W-60, 16);
+      doc.text(woDate, W-60, 21);
+      // Informational badge
+      doc.setFillColor(0, 120, 80);
+      doc.rect(W-60, 23, 46, 4, 'F');
       doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-      doc.text('PENDING CUSTOMER APPROVAL', W-54, 26);
+      doc.text('INFORMATIONAL DOCUMENT', W-59, 26);
 
       // ── WORK ORDER TITLE ──
       doc.setTextColor(...DARK); doc.setFont('helvetica','bold'); doc.setFontSize(16);
-      doc.text('Vehicle Graphics Work Order', M, 40);
-      doc.setFillColor(...RED); doc.rect(M, 42, 100, 0.8, 'F');
+      doc.text('DOT Compliance Report', M, 40);
+      doc.setFillColor(...RED); doc.rect(M, 42, 85, 0.8, 'F');
       doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...GRAY);
-      doc.text('Prepared by Precision Autographix  —  Not authorized for production until customer approval is received.', M, 47);
+      doc.text('Prepared by Precision Autographix  —  Informational only. Contact us to receive a production quote.', M, 47);
 
       // ── INFO BOX (2 columns) ──
       const boxY = 51, boxH = 47;
@@ -1607,9 +1660,9 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       nextSteps.forEach((s, i) => { doc.text(s, M+5, y+11+i*3.8); });
       y += 34;
 
-      // ── WORK ORDER ITEMS TABLE ──
+      // ── REQUIRED MARKINGS TABLE ──
       doc.setTextColor(...RED); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text('WORK ORDER ITEMS', M, y);
+      doc.text('REQUIRED MARKINGS', M, y);
       doc.setFillColor(...LGRAY); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
       y += 5;
 
@@ -2002,42 +2055,30 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         }
       }
 
-      // ══════════════════ APPROVAL BLOCK ══════════════════
-      if (_ergAppendixDone || y > 210) { doc.addPage(); addFooter(); y = 20; }
+      // ══════════════════ GET A QUOTE CALLOUT ══════════════════
+      if (y > 220) { doc.addPage(); addFooter(); y = 20; }
       y += 6;
 
-      doc.setFillColor(255,245,245); doc.rect(M, y, W-M*2, 52, 'F');
-      doc.setDrawColor(...RED); doc.setLineWidth(0.6); doc.rect(M, y, W-M*2, 52, 'S'); doc.setLineWidth(0.2);
+      const GREEN = [0, 110, 70];
+      doc.setFillColor(235, 248, 240); doc.rect(M, y, W-M*2, 38, 'F');
+      doc.setDrawColor(...GREEN); doc.setLineWidth(0.6); doc.rect(M, y, W-M*2, 38, 'S'); doc.setLineWidth(0.2);
+      doc.setFillColor(...GREEN); doc.rect(M, y, 4, 38, 'F');
 
-      // Warning stripe header
-      doc.setFillColor(...RED); doc.rect(M, y, W-M*2, 8, 'F');
-      doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-      doc.text('APPROVAL REQUIRED  —  NOT AUTHORIZED FOR PRODUCTION UNTIL SIGNED', M+4, y+5.5);
-      y += 12;
+      doc.setTextColor(...GREEN); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.text('Ready to Get Compliant? Request Your Graphics Quote', M+8, y+9);
 
-      doc.setTextColor(...DARK); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-      const approvalText = 'By signing below, customer confirms that all items, quantities, placements, specifications, and information on this work order are correct, authorizes Precision Autographix to produce the listed graphics (and install, if on-site installation is selected), and acknowledges having read the Liability Disclaimer and Service Area / Installation Options on the following page.';
-      const atLines = doc.splitTextToSize(approvalText, W-M*2-8);
-      doc.text(atLines, M+4, y); y += atLines.length*4.5 + 5;
+      doc.setTextColor(30,30,30); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text('Contact Precision Autographix and reference your Compliance Report number — we already have your vehicle profile on file.', M+8, y+16);
 
-      // Signature lines
-      const sigY1 = y;
-      doc.setDrawColor(...DARK); doc.setLineWidth(0.4);
-      doc.line(M+4, sigY1+8, M+80, sigY1+8);
-      doc.line(M+90, sigY1+8, M+155, sigY1+8);
-      doc.setTextColor(...GRAY); doc.setFont('helvetica','normal'); doc.setFontSize(7);
-      doc.text('Customer Signature', M+4, sigY1+12);
-      doc.text('Print Name', M+90, sigY1+12);
-      y = sigY1 + 18;
+      doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...GREEN);
+      doc.text('Your Report #: ' + woNum, M+8, y+23);
 
-      const sigY2 = y;
-      doc.setDrawColor(...DARK);
-      doc.line(M+4, sigY2+8, M+80, sigY2+8);
-      doc.line(M+90, sigY2+8, M+130, sigY2+8);
-      doc.setTextColor(...GRAY); doc.setFontSize(7);
-      doc.text('Authorized by (Precision Autographix)', M+4, sigY2+12);
-      doc.text('Date', M+90, sigY2+12);
-      doc.setLineWidth(0.2);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(50,50,50);
+      doc.text('precisionautographix.com/contact', M+8, y+29);
+      doc.link(M+8, y+26, 80, 5, { url: 'https://precisionautographix.com/#contact' });
+      doc.text('corey@precisionautographix.com  |  Baldwin County & Mobile County, AL — On-Site Installation Available', M+8, y+34);
+
+      y += 42;
 
       // ══════════════════ LIABILITY DISCLAIMER PAGE ══════════════════
       doc.addPage(); addFooter();
@@ -2053,7 +2094,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.setFillColor(250,250,250); doc.rect(M,dy,W-M*2,10,'F');
       doc.setDrawColor(200,200,200); doc.rect(M,dy,W-M*2,10,'S');
       doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(80,80,80);
-      doc.text('Please read this disclaimer carefully. By signing the Work Order Approval on the preceding page, you acknowledge and agree to these terms.', M+4, dy+6.5);
+      doc.text('Please read this disclaimer carefully. This Compliance Report is provided for informational purposes. All regulatory requirements must be independently verified.', M+4, dy+6.5);
       dy += 14;
 
       // Disclaimer sections
@@ -2127,10 +2168,11 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.rect(0, 267, W, 9, 'F');
         doc.setTextColor(160,160,160); doc.setFontSize(7); doc.setFont('helvetica','normal');
         doc.text('Precision Autographix  |  precisionautographix.com  |  Baldwin/Mobile County, AL  |  On-Site Install · Outside Area Scheduling · DIY Pickup Available', M, 272.5);
-        doc.text(`${woNum}  —  Page ${p} of ${totalPages}`, W-40, 272.5);
+        doc.text(`${woNum}  —  Page ${p} of ${totalPages}`, W-46, 272.5);
       }
 
-      const fn = `PA-WorkOrder-${(company||'Client').replace(/[^a-z0-9]/gi,'_')}-${woNum}.pdf`;
+      if (returnBlob) return doc.output('blob');
+      const fn = `PA-Compliance-${(company||'Client').replace(/[^a-z0-9]/gi,'_')}-${woNum}.pdf`;
       doc.save(fn);
     }
   </script>
