@@ -431,7 +431,7 @@
           <label class="check-card" onclick="toggleCheck(event,this,'oversize')">
             <input type="checkbox" name="ops" value="oversize"/>
             <div class="check-box"></div>
-            <div><div class="check-label">We haul oversize / heavy loads</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Width over 8'6", height over 13'6", length over 65', or gross weight over 80,000 lbs — equipment, modular structures, wide loads</div></div>
+            <div><div class="check-label">We haul oversize / heavy loads</div><div class="option-desc" style="font-size:0.78rem;color:#666;">Width over 8'6", height over 13'6", length over 65', or gross weight over 80,000 lbs — in-bed, flatbed, or on a pull trailer. Signage placement depends on where the load is (cab vs. trailer).</div></div>
           </label>
           <label class="check-card" onclick="toggleCheck(event,this,'passengers')">
             <input type="checkbox" name="ops" value="passengers"/>
@@ -902,11 +902,11 @@
         } else {
           required.push({
             label: 'OVERSIZE LOAD Banner',
-            detail: 'Required front and rear when load exceeds legal dimensions — intrastate and interstate. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum. Regulated by state DOT in each operating state.',
+            detail: 'Required front and rear when load exceeds legal dimensions — intrastate and interstate. Minimum 7 feet wide × 18 inches tall. Black lettering on yellow background, 10-inch letters minimum. Regulated by state DOT in each operating state. ⚠ If the load is carried on or extends onto a separate trailer, the rear banner must be mounted on the rear of that trailer — not the cab or truck bed.',
             service: 'Oversize Load Banners — Front & Rear',
-            placement: 'Front & rear of vehicle',
+            placement: 'Front of vehicle & rear of load (trailer rear if load is on trailer)',
             qty: 2,
-            workNotes: '84"W × 18"H min — black on yellow, 10" letters',
+            workNotes: '84"W × 18"H min — black on yellow, 10" letters. If load is on trailer, rear banner mounts on trailer.',
             penalty: 'Alabama: $25 – $500+ per occurrence; FL/GA/MS: $100 – $1,000+ per violation; escort and permit violations may result in load being stopped'
           });
         }
