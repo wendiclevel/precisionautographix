@@ -10,7 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
   <style>
     .checker-hero {
-      padding: 10rem 2rem 4rem;
+      padding: 14rem 2rem 4rem;
       background: linear-gradient(135deg, #000 0%, #1a0000 50%, #000 100%);
       position: relative;
     }
@@ -765,13 +765,6 @@
     }
 
     // ── NAVIGATION ──
-    function goNext(stepNum) {
-      document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
-      document.getElementById('step-' + stepNum).classList.add('active');
-      updateProgress(stepNum);
-      window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
-    }
-
     function goBack(stepNum) {
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       document.getElementById('step-' + stepNum).classList.add('active');
