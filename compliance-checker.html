@@ -953,7 +953,7 @@
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
                           hazmatRequiresPlacards || passengerCMV ||
-                          vt === 'tanker' || vt === 'semi' || vt === 'dump' || vt === 'bus';
+                          vt === 'tanker' || vt === 'semi' || vt === 'dump';
 
       // Company name required only when vehicle is a CMV (same threshold as USDOT)
       // 49 CFR 390.21 — not required for private light vehicles below CMV thresholds
