@@ -934,35 +934,38 @@
 
       const hasTrl = answers.hasTrailer === 'yes';
 
-      // Always: Company name (tractor/power unit)
-      required.push({
-        label: hasTrl ? 'Company Name Lettering — Tractor / Power Unit' : 'Company Name Lettering',
-        detail: 'Legal company name or DBA must appear on both sides of the power unit — interstate and intrastate. Minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
-        service: hasTrl ? 'Company Name — Tractor Both Sides' : 'Company Name — Both Sides',
-        placement: hasTrl ? 'Both sides of tractor' : 'Both sides of vehicle',
-        qty: 2,
-        workNotes: 'Legal name or DBA — min. 2" contrasting letters',
-        penalty: '$1,000 – $10,000 per violation (49 CFR 390.21) — applies interstate and intrastate'
-      });
-
-      // Trailer company name (when separate trailer is towed)
-      if (hasTrl) {
-        required.push({
-          label: 'Company Name Lettering — Trailer',
-          detail: 'Company name must also appear on both sides of the trailer. Required under 49 CFR 390.21 when the trailer is operated as part of a commercial combination — especially when trailer operates with multiple tractors. Penalty applies per unit.',
-          service: 'Company Name — Trailer Both Sides',
-          placement: 'Both sides of trailer',
-          qty: 2,
-          workNotes: 'Match tractor lettering — min. 2" contrasting letters',
-          penalty: '$1,000 – $10,000 per violation per trailer (49 CFR 390.21); vehicle combination may be placed out of service'
-        });
-      }
-
-      // USDOT Number
+      // CMV determination — company name + USDOT only apply to vehicles that qualify as CMVs
+      // under 49 CFR 390.5: 10,001+ lbs, for-hire, hazmat requiring placards, or 9+ passengers
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
                           hazmatRequiresPlacards || hasPassengers ||
                           vt === 'tanker' || vt === 'semi' || vt === 'dump';
+
+      // Company name required only when vehicle is a CMV (same threshold as USDOT)
+      // 49 CFR 390.21 — not required for private light vehicles below CMV thresholds
+      if (needsUSDOT) {
+        required.push({
+          label: hasTrl ? 'Company Name Lettering — Tractor / Power Unit' : 'Company Name Lettering',
+          detail: 'Legal company name or DBA must appear on both sides of the power unit — interstate and intrastate. Minimum 2-inch contrasting letters. Regulated under 49 CFR 390.21.',
+          service: hasTrl ? 'Company Name — Tractor Both Sides' : 'Company Name — Both Sides',
+          placement: hasTrl ? 'Both sides of tractor' : 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'Legal name or DBA — min. 2" contrasting letters',
+          penalty: '$1,000 – $10,000 per violation (49 CFR 390.21) — applies interstate and intrastate'
+        });
+        // Trailer company name (when separate trailer is towed)
+        if (hasTrl) {
+          required.push({
+            label: 'Company Name Lettering — Trailer',
+            detail: 'Company name must also appear on both sides of the trailer. Required under 49 CFR 390.21 when the trailer is operated as part of a commercial combination — especially when trailer operates with multiple tractors. Penalty applies per unit.',
+            service: 'Company Name — Trailer Both Sides',
+            placement: 'Both sides of trailer',
+            qty: 2,
+            workNotes: 'Match tractor lettering — min. 2" contrasting letters',
+            penalty: '$1,000 – $10,000 per violation per trailer (49 CFR 390.21); vehicle combination may be placed out of service'
+          });
+        }
+      }
       if (needsUSDOT) {
         required.push({
           label: hasTrl ? 'USDOT Number — Tractor / Power Unit' : 'USDOT Number',
