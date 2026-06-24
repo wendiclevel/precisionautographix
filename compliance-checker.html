@@ -1626,7 +1626,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       const woNum = _crNumber || ('CR-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100));
       const woDate = now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
-      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other / Not Specified' };
+      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', bus:'Bus / Passenger Van', rv:'RV / Motorhome', boat:'Boat / Vessel', other:'Other / Not Specified' };
       const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001 – 26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
 
       // ── PAGE FOOTER (called for each page) ──
