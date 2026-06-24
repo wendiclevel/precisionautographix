@@ -2073,9 +2073,12 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(...GREEN);
       doc.text('Your Report #: ' + woNum, M+8, y+23);
 
-      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(50,50,50);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(20, 80, 180);
       doc.text('precisionautographix.com/contact', M+8, y+29);
-      doc.link(M+8, y+26, 80, 5, { url: 'https://precisionautographix.com/#contact' });
+      doc.setDrawColor(20, 80, 180); doc.setLineWidth(0.3);
+      doc.line(M+8, y+30, M+72, y+30);
+      doc.setLineWidth(0.2);
+      doc.link(M+8, y+26, 65, 5, { url: 'https://precisionautographix.com/#contact' });
       doc.text('corey@precisionautographix.com  |  Baldwin County & Mobile County, AL — On-Site Installation Available', M+8, y+34);
 
       y += 42;
