@@ -904,7 +904,7 @@
       const states = answers.states;
       const haz = answers.hazmatTypes;
 
-      const isInterstate = ops.includes('interstate');
+      const isInterstate = ops.includes('interstate') || (answers.states || []).length > 1;
       const isForHire = ops.includes('forhire');
       const hasHazmat = ops.includes('hazmat');
       const isOversize = ops.includes('oversize');
@@ -1264,7 +1264,7 @@ Vehicles: ${vehicles || 'Not specified'}
 Type: ${answers.vehicleType || 'Not specified'}
 Trailer: ${answers.hasTrailer === 'yes' ? 'YES — Tractor + Separate Trailer' : 'No — Single Unit'}
 GVWR: ${answers.gvwr || 'Not specified'}
-Operations: ${answers.ops.join(', ') || 'None selected'}
+Operations: ${answers.ops.map(o => ({interstate:'Interstate',forhire:'For-Hire Carrier',hazmat:'Hazmat',oversize:'Oversize/Overweight',passengers:'Passengers'}[o]||o)).join(', ') || 'None selected'}
 States: ${answers.states.join(', ') || 'Not specified'}
 Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}${answers.hazmatPackaging ? '\nHazmat Packaging: ' + answers.hazmatPackaging : ''}${answers.otherHazDesc ? '\nOther Hazmat Description: ' + answers.otherHazDesc : ''}
 ERG Requested: ${answers.wantsERG ? 'YES' : 'No'}
@@ -1324,7 +1324,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
               'Type: ' + (vtLabels[answers.vehicleType] || 'Not specified'),
               'Trailer: ' + (answers.hasTrailer === 'yes' ? 'Yes — Tractor + Separate Trailer' : 'No — Single Unit'),
               'GVWR: ' + (gwLabels[answers.gvwr] || 'Not specified'),
-              'Operations: ' + (answers.ops.join(', ') || 'Not specified'),
+              'Operations: ' + (answers.ops.map(o => ({interstate:'Interstate',forhire:'For-Hire Carrier',hazmat:'Hazmat',oversize:'Oversize/Overweight',passengers:'Passengers'}[o]||o)).join(', ') || 'Not specified'),
               'States: ' + (answers.states.join(', ').toUpperCase() || 'Not specified'),
               'Fleet Size: ' + (vehicles || 'Not specified')
             ].join('\n');
@@ -1626,7 +1626,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         ['Type:', vtLabels[answers.vehicleType] || 'Not specified'],
         ['Trailer:', answers.hasTrailer === 'yes' ? 'Tractor + Separate Trailer' : 'Single Unit'],
         [answers.hasTrailer === 'yes' ? 'GCWR:' : 'GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
-        ['Operations:', answers.ops.join(', ') || '—'],
+        ['Operations:', answers.ops.map(o => ({interstate:'Interstate',forhire:'For-Hire',hazmat:'Hazmat',oversize:'Oversize',passengers:'Passengers'}[o]||o)).join(', ') || '—'],
         ['States:', answers.states.join(', ').toUpperCase() || '—'],
         ['Fleet Size:', vehicles || 'Not specified']
       ];
@@ -2093,7 +2093,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       }
 
       // ══════════════════ GET A QUOTE CALLOUT ══════════════════
-      if (y > 220) { doc.addPage(); addFooter(); y = 20; }
+      if (y > 228) { doc.addPage(); addFooter(); y = 20; }
       y += 6;
 
       const GREEN = [0, 110, 70];
@@ -2111,7 +2111,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('Your Report #: ' + woNum, M+8, y+23);
 
       doc.setFont('helvetica','bold'); doc.setFontSize(8.5); doc.setTextColor(20, 80, 180);
-      doc.text('Get a Quote → precisionautographix.com/get-a-quote', M+8, y+29);
+      doc.text('Get a Quote >> precisionautographix.com/get-a-quote', M+8, y+29);
       doc.setDrawColor(20, 80, 180); doc.setLineWidth(0.4);
       doc.line(M+8, y+30.2, M+110, y+30.2);
       doc.setLineWidth(0.2);
@@ -2130,12 +2130,15 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('LIABILITY DISCLAIMER & LIMITATION OF LIABILITY', M, 9.5);
       let dy = 20;
 
-      // Intro note
-      doc.setFillColor(250,250,250); doc.rect(M,dy,W-M*2,10,'F');
-      doc.setDrawColor(200,200,200); doc.rect(M,dy,W-M*2,10,'S');
+      // Intro note — wrap text first, size box to fit
       doc.setFont('helvetica','italic'); doc.setFontSize(7.5); doc.setTextColor(80,80,80);
-      doc.text('Please read this disclaimer carefully. This Compliance Report is provided for informational purposes. All regulatory requirements must be independently verified.', M+4, dy+6.5);
-      dy += 14;
+      const introText = 'Please read this disclaimer carefully. This Compliance Report is provided for informational purposes. All regulatory requirements must be independently verified.';
+      const introLines = doc.splitTextToSize(introText, W-M*2-8);
+      const introBoxH = introLines.length * 4.5 + 6;
+      doc.setFillColor(250,250,250); doc.rect(M,dy,W-M*2,introBoxH,'F');
+      doc.setDrawColor(200,200,200); doc.rect(M,dy,W-M*2,introBoxH,'S');
+      doc.text(introLines, M+4, dy+5);
+      dy += introBoxH + 4;
 
       // Disclaimer sections
       const dSections = [
