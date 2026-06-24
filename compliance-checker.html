@@ -1312,7 +1312,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
     async function sendComplianceEmail() {
       if (!window.jspdf) return;
       try {
-        const blob = generatePDF(true);
+        const blob = generatePDF(true, true); // lean version for email — no embedded images
         if (!blob) return;
         const reader = new FileReader();
         reader.onloadend = async () => {
@@ -1539,7 +1539,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
     })();
 
     // ── PDF COMPLIANCE REPORT ──
-    function generatePDF(returnBlob = false) {
+    function generatePDF(returnBlob = false, skipImages = false) {
       if (!window.jspdf) { if (!returnBlob) alert('PDF generator is loading, please try again in a moment.'); return null; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
@@ -1573,7 +1573,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.rect(0, 0, 4, 28, 'F');
 
       // Logo
-      if (_logoBase64) {
+      if (_logoBase64 && !skipImages) {
         try { doc.addImage(_logoBase64, 'PNG', 8, 2, 38, 24); } catch(e) {}
       } else {
         doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(13);
@@ -1761,7 +1761,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
           doc.setFillColor(...ORANGE); doc.rect(M, y, 3, 46, 'F');
 
           // Placard image (right side of card)
-          if (spec.hazType && _placardImages[spec.hazType]) {
+          if (spec.hazType && _placardImages[spec.hazType] && !skipImages) {
             try { doc.addImage(_placardImages[spec.hazType], 'PNG', W-M-33, y+2, 30, 30); } catch(e) {}
           }
 
