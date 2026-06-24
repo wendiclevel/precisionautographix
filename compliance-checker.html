@@ -456,8 +456,8 @@
 
       <!-- STEP 4: STATES -->
       <div class="checker-step" id="step-4">
-        <p class="step-question">Which states do you operate in?</p>
-        <p class="step-sub">Select all states where your vehicles run. State-specific requirements vary.</p>
+        <p class="step-question" id="step4-question">Which state(s) do you operate in?</p>
+        <p class="step-sub" id="step4-sub">Select all states where your vehicles run. Even local operators have state-specific rules — FL, GA, and MS each have additional requirements for for-hire carriers.</p>
         <div class="check-grid">
           <label class="check-card" onclick="toggleCheck(event,this,'al')">
             <input type="checkbox" name="states" value="al"/>
@@ -534,7 +534,7 @@
           <input class="checker-input" type="text" id="other-haz-desc" placeholder="Briefly describe what you haul (e.g. pool acid, dry ice, compressed oxygen)..." oninput="answers.otherHazDesc = this.value" />
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack(answers.ops.includes('interstate') ? 4 : 3)">← Back</button>
+          <button class="btn-back" onclick="goBack(4)">← Back</button>
           <button class="btn-next" onclick="goNext('5b')">Next →</button>
         </div>
       </div>
@@ -734,6 +734,28 @@
       }
     }
 
+    // ── STEP 4 UPDATER ──
+    // Adapts question text for interstate vs intrastate, pre-selects Alabama for local operators.
+    function updateStep4() {
+      const isInterstate = answers.ops.includes('interstate');
+      const qEl = document.getElementById('step4-question');
+      const subEl = document.getElementById('step4-sub');
+      if (qEl) qEl.textContent = isInterstate
+        ? 'Which states do you operate in?'
+        : 'Which state do you operate in?';
+      if (subEl) subEl.textContent = isInterstate
+        ? 'Select all states where your vehicles run. State-specific requirements vary — FL, GA, and MS each have additional requirements for for-hire carriers.'
+        : 'Select your home state. Even local operators face state-specific rules — FL, GA, and MS require additional markings for for-hire carriers regardless of whether you cross state lines.';
+      // For local (intrastate) operators, auto-pre-select Alabama if nothing is selected yet
+      if (!isInterstate && answers.states.length === 0) {
+        const alCard = document.querySelector('label.check-card[onclick*="toggleCheck"][onclick*="\'al\'"]');
+        if (alCard && !alCard.classList.contains('selected')) {
+          alCard.classList.add('selected');
+          answers.states.push('al');
+        }
+      }
+    }
+
     // ── OPTION SELECT (radio) ──
     function selectOption(el, field, value) {
       document.querySelectorAll(`[onclick*="'${field}'"]`).forEach(c => c.classList.remove('selected'));
@@ -813,7 +835,7 @@
         updateProgress(5);
         window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
       } else {
-        showGate(answers.ops.includes('interstate') ? 4 : 3);
+        showGate(4);
       }
     }
 
@@ -822,12 +844,9 @@
       if (answers.ops.includes('hazmat')) {
         document.getElementById('step-5b').classList.add('active');
         updateProgress(5);
-      } else if (answers.ops.includes('interstate')) {
+      } else {
         document.getElementById('step-4').classList.add('active');
         updateProgress(4);
-      } else {
-        document.getElementById('step-3').classList.add('active');
-        updateProgress(3);
       }
     }
 
@@ -856,18 +875,7 @@
         window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
         return;
       }
-      if (n === 4 && !answers.ops.includes('interstate')) {
-        // Skip state selection, go to hazmat or gate
-        if (answers.ops.includes('hazmat')) {
-          document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
-          document.getElementById('step-5').classList.add('active');
-          updateProgress(5);
-          return;
-        } else {
-          showGate(3);
-          return;
-        }
-      }
+      if (n === 4) { updateStep4(); }
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       document.getElementById('step-' + n).classList.add('active');
       updateProgress(n);
@@ -1239,13 +1247,13 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       } catch(e) { /* continue to show results even if submission fails */ }
 
       // Show results
-      showResults(required, recommended, name, company, email, phone);
+      showResults(required, recommended, name, company, email, phone, vehicles);
     }
 
     // Store for PDF generation
     let _pdfData = {};
 
-    function showResults(required, recommended, name, company, email, phone) {
+    function showResults(required, recommended, name, company, email, phone, vehicles) {
       document.getElementById('checker-form-wrap').style.display = 'none';
       document.getElementById('results-wrap').classList.add('show');
       document.getElementById('results-subtitle').textContent =
