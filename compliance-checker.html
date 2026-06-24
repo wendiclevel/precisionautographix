@@ -714,15 +714,15 @@
 
       // Update GVWR step whenever vehicle type or trailer status changes
       if (field === 'vehicleType' || field === 'hasTrailer') {
-        updateGVWRStep();
+        try { updateGVWRStep(); } catch(e) {}
       }
 
-      // Auto-advance step-1 and step-1b (quick route questions); GVWR requires explicit Next click
-      setTimeout(() => {
-        const activeStep = document.querySelector('.checker-step.active');
-        if (activeStep.id === 'step-1') goNext('1b');
-        else if (activeStep.id === 'step-1b') goNext(2);
-      }, 300);
+      // Auto-advance: field-based so it's not affected by any other state changes
+      if (field === 'vehicleType') {
+        setTimeout(() => goNext('1b'), 350);
+      } else if (field === 'hasTrailer') {
+        setTimeout(() => goNext(2), 350);
+      }
     }
 
     // ── CHECKBOX TOGGLE ──
