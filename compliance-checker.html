@@ -349,6 +349,11 @@
             <span class="option-icon">🏗️</span>
             <div><div class="option-label">Flatbed / Lowboy</div><div class="option-desc">Equipment or oversize hauling</div></div>
           </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','bus')">
+            <input type="radio" name="vehicleType" value="bus"/>
+            <span class="option-icon">🚌</span>
+            <div><div class="option-label">Bus / Passenger Van</div><div class="option-desc">Charter, shuttle, tour, school, church, airport</div></div>
+          </label>
           <label class="option-card" onclick="selectOption(this,'vehicleType','other')">
             <input type="radio" name="vehicleType" value="other"/>
             <span class="option-icon">🔧</span>
@@ -409,7 +414,7 @@
           </label>
         </div>
         <div class="step-nav">
-          <button class="btn-back" onclick="goBack('1b')">← Back</button>
+          <button class="btn-back" onclick="goBack(answers.vehicleType === 'bus' ? 1 : '1b')">← Back</button>
           <button class="btn-next" id="next-2" onclick="goNext(3)" disabled>Next →</button>
         </div>
       </div>
@@ -718,16 +723,18 @@
           semi:     'over26k',
           tanker:   'over26k',
           flatbed:  'over26k',
+          bus:      'over26k',  // full-size buses; shuttle vans can adjust down
           boat:     'under10k',
           other:    'unknown'
         } : {
           pickup:   'under10k',
           van:      '10k26k',
           boxtruck: '10k26k',
-          dump:     'over26k',  // dump trucks are almost always over 26k
+          dump:     'over26k',
           semi:     'over26k',
           tanker:   'over26k',
           flatbed:  'over26k',
+          bus:      'over26k',  // large bus default; shuttle vans adjust down
           boat:     'under10k',
           other:    'unknown'
         };
@@ -784,7 +791,12 @@
 
       // Auto-advance: field-based so it's not affected by any other state changes
       if (field === 'vehicleType') {
-        setTimeout(() => goNext('1b'), 350);
+        if (value === 'bus') {
+          answers.hasTrailer = 'no';
+          setTimeout(() => goNext(2), 350);
+        } else {
+          setTimeout(() => goNext('1b'), 350);
+        }
       } else if (field === 'hasTrailer') {
         setTimeout(() => goNext(2), 350);
       } else if (field === 'hazmatPackaging') {
@@ -931,10 +943,17 @@
 
       // CMV determination — company name + USDOT only apply to vehicles that qualify as CMVs
       // under 49 CFR 390.5: 10,001+ lbs, for-hire, hazmat requiring placards, or 9+ passengers
+      // Passenger vehicle CMV threshold: 9+ passengers FOR HIRE, 16+ passengers NOT for hire
+      const isForHirePassenger = hasPassengers && isForHire;
+      const isNonHirePassenger = hasPassengers && !isForHire;
+      // For-hire passenger carriers: USDOT required at 9+ passengers (any weight, interstate)
+      // Non-hire (church, non-profit): USDOT required at 16+ passengers — we conservatively flag it
+      const passengerCMV = isForHirePassenger || (isNonHirePassenger && isHeavy);
+
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
-                          hazmatRequiresPlacards || hasPassengers ||
-                          vt === 'tanker' || vt === 'semi' || vt === 'dump';
+                          hazmatRequiresPlacards || passengerCMV ||
+                          vt === 'tanker' || vt === 'semi' || vt === 'dump' || vt === 'bus';
 
       // Company name required only when vehicle is a CMV (same threshold as USDOT)
       // 49 CFR 390.21 — not required for private light vehicles below CMV thresholds
@@ -993,6 +1012,19 @@
           qty: 2,
           workNotes: 'Display alongside USDOT number',
           penalty: '$11,000 – $25,000 per offense for operating without authority (49 USC 14901); repeat violations up to $25,000 per day'
+        });
+      }
+
+      // For-hire passenger carrier designation
+      if (isForHirePassenger) {
+        required.push({
+          label: '"For Hire" Designation',
+          detail: 'For-hire passenger carriers (9+ passengers) must display "For Hire" on both sides of the vehicle under 49 CFR 390.21, alongside the company name and USDOT number.',
+          service: 'For Hire Lettering — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'Min. 2" contrasting letters — display alongside company name and USDOT number',
+          penalty: '$1,000 – $10,000 per violation (49 CFR 390.21)'
         });
       }
 
@@ -1339,7 +1371,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         reader.onloadend = async () => {
           try {
             const { required, recommended, conditional, name, company, email, phone, vehicles } = _pdfData;
-            const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other' };
+            const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', bus:'Bus / Passenger Van', boat:'Boat / Vessel', other:'Other / Not Specified' };
             const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001–26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
             const vehicleProfile = [
               'Type: ' + (vtLabels[answers.vehicleType] || 'Not specified'),
