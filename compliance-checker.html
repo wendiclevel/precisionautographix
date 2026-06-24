@@ -327,6 +327,11 @@
             <span class="option-icon">🚚</span>
             <div><div class="option-label">Box Truck / Straight Truck</div><div class="option-desc">Single unit, medium/heavy duty</div></div>
           </label>
+          <label class="option-card" onclick="selectOption(this,'vehicleType','dump')">
+            <input type="radio" name="vehicleType" value="dump"/>
+            <span class="option-icon">🚧</span>
+            <div><div class="option-label">Dump Truck / Concrete Mixer</div><div class="option-desc">Construction, aggregate, ready-mix — single unit or with pup trailer</div></div>
+          </label>
           <label class="option-card" onclick="selectOption(this,'vehicleType','semi')">
             <input type="radio" name="vehicleType" value="semi"/>
             <span class="option-icon">🚛</span>
@@ -530,7 +535,29 @@
         </div>
         <div class="step-nav">
           <button class="btn-back" onclick="goBack(answers.ops.includes('interstate') ? 4 : 3)">← Back</button>
-          <button class="btn-next" onclick="showGate(5)">See My Requirements →</button>
+          <button class="btn-next" onclick="goNext('5b')">Next →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5b: HAZMAT PACKAGING TYPE -->
+      <div class="checker-step" id="step-5b">
+        <p class="step-question">How is the hazmat transported?</p>
+        <p class="step-sub">This determines whether placard rules always apply or only above a quantity threshold — the two situations have different requirements under 49 CFR 172.504.</p>
+        <div class="option-grid" style="grid-template-columns:1fr;">
+          <label class="option-card" onclick="selectOption(this,'hazmatPackaging','bulk')">
+            <input type="radio" name="hazmatPackaging" value="bulk"/>
+            <span class="option-icon">⛽</span>
+            <div><div class="option-label">Bulk Tank / Cargo Tank</div><div class="option-desc">Hazmat is in a tank permanently part of the vehicle or trailer — fuel tanker, propane bobtail, nurse tank, portable cargo tank, MC-306/DOT-406. Placards ALWAYS required regardless of quantity.</div></div>
+          </label>
+          <label class="option-card" onclick="selectOption(this,'hazmatPackaging','nonbulk')">
+            <input type="radio" name="hazmatPackaging" value="nonbulk"/>
+            <span class="option-icon">📦</span>
+            <div><div class="option-label">Non-Bulk Containers</div><div class="option-desc">Drums, totes, boxes, jugs, cylinders, spray tanks — individual containers loaded onto the vehicle. Placards required when aggregate gross weight of each hazmat class reaches 1,001 lbs (454 kg) on the vehicle (49 CFR 172.504 Table 2).</div></div>
+          </label>
+        </div>
+        <div class="step-nav">
+          <button class="btn-back" onclick="goBack(5)">← Back</button>
+          <button class="btn-next" id="next-5b" onclick="showGate('5b')" disabled>See My Requirements →</button>
         </div>
       </div>
 
@@ -615,6 +642,7 @@
       ops: [],
       states: [],
       hazmatTypes: [],
+      hazmatPackaging: null,
       otherHazDesc: '',
       wantsERG: false
     };
@@ -673,6 +701,7 @@
           pickup:   '10k26k',   // pickup + trailer — medium combo most common
           van:      '10k26k',   // van + trailer
           boxtruck: 'over26k',  // box truck + any trailer almost always over 26k combined
+          dump:     'over26k',  // dump truck + pup almost always over 26k combined
           semi:     'over26k',
           tanker:   'over26k',
           flatbed:  'over26k',
@@ -682,6 +711,7 @@
           pickup:   'under10k',
           van:      '10k26k',
           boxtruck: '10k26k',
+          dump:     'over26k',  // dump trucks are almost always over 26k
           semi:     'over26k',
           tanker:   'over26k',
           flatbed:  'over26k',
@@ -722,6 +752,8 @@
         setTimeout(() => goNext('1b'), 350);
       } else if (field === 'hasTrailer') {
         setTimeout(() => goNext(2), 350);
+      } else if (field === 'hazmatPackaging') {
+        setTimeout(() => showGate('5b'), 350);
       }
     }
 
@@ -768,7 +800,9 @@
     function goBack(stepNum) {
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       document.getElementById('step-' + stepNum).classList.add('active');
-      updateProgress(stepNum === '1b' ? 1 : stepNum);
+      const pStep = stepNum === '1b' ? 1 : stepNum === '5b' ? 5 : Number(stepNum);
+      updateProgress(pStep);
+      window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
     }
 
     function goGate() {
@@ -786,7 +820,7 @@
     function goBackFromGate() {
       document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
       if (answers.ops.includes('hazmat')) {
-        document.getElementById('step-5').classList.add('active');
+        document.getElementById('step-5b').classList.add('active');
         updateProgress(5);
       } else if (answers.ops.includes('interstate')) {
         document.getElementById('step-4').classList.add('active');
@@ -812,6 +846,13 @@
         document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
         document.getElementById('step-1b').classList.add('active');
         updateProgress(1);
+        window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
+        return;
+      }
+      if (n === '5b') {
+        document.querySelectorAll('.checker-step').forEach(s => s.classList.remove('active'));
+        document.getElementById('step-5b').classList.add('active');
+        updateProgress(5);
         window.scrollTo({top: document.querySelector('.checker-section').offsetTop - 80, behavior: 'smooth'});
         return;
       }
@@ -889,7 +930,7 @@
       const needsUSDOT = (isHeavy && (isInterstate || isForHire)) ||
                           (isMedium && isInterstate) ||
                           hasHazmat || hasPassengers ||
-                          vt === 'tanker' || vt === 'semi';
+                          vt === 'tanker' || vt === 'semi' || vt === 'dump';
       if (needsUSDOT) {
         required.push({
           label: hasTrl ? 'USDOT Number — Tractor / Power Unit' : 'USDOT Number',
@@ -938,11 +979,18 @@
         const selectedSpecs = haz.length > 0 ? haz.map(h => hazSpecs[h] || hazSpecs.other_haz) : [hazSpecs.other_haz];
         const hazList = selectedSpecs.map(s => s.label).join('; ');
         const placardSummary = selectedSpecs.map(s => `${s.placardName} (${s.unShort}) ERG ${s.guideNum}`).join(' | ');
+        const isBulkHaz = answers.hazmatPackaging === 'bulk';
+        const isNonBulkHaz = answers.hazmatPackaging === 'nonbulk';
+        const hazThreshNote = isBulkHaz
+          ? ' BULK TANK: Placards ALWAYS required regardless of quantity (49 CFR 172.504 — bulk packaging exemption does not apply).'
+          : isNonBulkHaz
+            ? ' NON-BULK CONTAINERS: Placards required when aggregate gross weight of each hazmat class on the vehicle reaches 1,001 lbs (454 kg) per 49 CFR 172.504 Table 2. Below threshold per class, placards are not required — but if total mixed hazmat exceeds 1,001 lbs combined, a DANGEROUS placard may be used instead.'
+            : '';
         required.push({
           label: hasTrl ? 'Hazmat Placards — Trailer (All 4 Sides)' : 'Hazmat Placards',
           detail: hasTrl
-            ? `Required on all four sides of the TRAILER — the cargo-carrying unit is the regulated transport unit for placard placement. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders or direct-apply vinyl. Regulated under 49 CFR 172.504. ${hazList}.`
-            : `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504. ${hazList}.`,
+            ? `Required on all four sides of the TRAILER — the cargo-carrying unit is the regulated transport unit for placard placement. Tractor cab does NOT require placards. 250mm (9.84") diamond shape — rigid holders or direct-apply vinyl. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`
+            : `Required on all four sides of the vehicle — interstate and intrastate hazmat transport. 250mm (9.84") diamond shape — rigid placard holders or direct-apply vinyl. Must remain legible throughout transport. Regulated under 49 CFR 172.504.${hazThreshNote} ${hazList}.`,
           service: (hasTrl ? 'Hazmat Placards — Trailer All 4 Sides: ' : 'Hazmat Placards — All 4 Sides: ') + hazList,
           placement: hasTrl ? 'All 4 sides of trailer (cargo unit)' : 'All 4 sides of vehicle',
           qty: 4,
@@ -1023,6 +1071,26 @@
         });
       }
 
+      // Retroreflective conspicuity tape (49 CFR 393.11)
+      // Required on trailers GVWR > 10,001 lbs manufactured after Dec 1, 1993
+      if (hasTrl && (isMedium || isHeavy)) {
+        required.push({
+          label: 'Retroreflective Conspicuity Tape — Trailer',
+          detail: 'Required by 49 CFR 393.11 on all trailers and semitrailers with GVWR over 10,001 lbs manufactured after December 1, 1993. White and yellow alternating strips run the length of both sides; red and white alternating strips on the rear. Minimum 2-inch wide DOT-approved retroreflective sheeting. One of the most commonly cited weigh-station violations — trailers missing conspicuity tape are placed out-of-service. Applies interstate and intrastate.',
+          service: 'DOT Retroreflective Conspicuity Tape — Trailer Sides & Rear',
+          placement: 'Trailer sides: white/yellow alternating strips, full length. Trailer rear: red/white alternating strips.',
+          qty: 1,
+          workNotes: '2" min DOT-compliant retroreflective sheeting. Sides: white + yellow alternating. Rear: red + white alternating.',
+          penalty: '$1,000 – $10,000 per violation (49 CFR 393.11 / FMCSA out-of-service criteria); trailers with missing conspicuity tape are placed out-of-service at weigh stations — applies interstate and intrastate'
+        });
+      } else if (!hasTrl && (isMedium || isHeavy) && vt !== 'boat') {
+        recommended.push({
+          label: 'Retroreflective Conspicuity Tape (Strongly Recommended)',
+          detail: '49 CFR 393.11 requires retroreflective sheeting on CMVs over 10,001 lbs. DOT-approved reflective tape on the sides and rear of your vehicle dramatically improves nighttime visibility, satisfies federal reflector requirements, and is checked at weigh stations. A low-cost compliance upgrade with significant safety and enforcement value.',
+          service: 'DOT Retroreflective Conspicuity Tape — Vehicle Sides & Rear'
+        });
+      }
+
       // Florida PSC
       if (states.includes('fl') && isForHire) {
         required.push({
@@ -1049,6 +1117,19 @@
         });
       }
 
+      // Mississippi PSC
+      if (states.includes('ms') && isForHire) {
+        required.push({
+          label: 'Mississippi PSC Number',
+          detail: 'For-hire carriers operating intrastate in Mississippi must display their Mississippi Public Service Commission (PSC) number on both sides of the vehicle. Regulated by the Mississippi PSC under Mississippi Code § 77-7-201 et seq.',
+          service: 'Mississippi PSC Number — Both Sides',
+          placement: 'Both sides of vehicle',
+          qty: 2,
+          workNotes: 'MS Public Service Commission number',
+          penalty: 'Mississippi: $100 – $2,500 per violation (MS Code § 77-7-207); intrastate regulation — applies to for-hire carriers operating within Mississippi'
+        });
+      }
+
       // IRP Recommendation
       if (isInterstate && (isHeavy || isMedium)) {
         recommended.push({
@@ -1064,6 +1145,28 @@
           label: 'IFTA Fuel Tax Registration (Recommended)',
           detail: 'File one quarterly fuel tax return covering all member states instead of buying trip permits at every state line. Administered by Alabama DOR.',
           service: 'IFTA Registration — Contact AL DOR'
+        });
+      }
+
+      // CDL requirement flag
+      if (isHeavy || hasHazmat) {
+        recommended.push({
+          label: 'CDL Requirement — Verify Driver Credentials',
+          detail: isHeavy && hasHazmat
+            ? 'Vehicles over 26,001 lbs GVWR require a Commercial Driver\'s License (CDL). Hauling hazmat requiring placards additionally requires a CDL with a Hazmat (H) endorsement, which includes a TSA security threat assessment and federal background check. Verify at fmcsa.dot.gov or ALEA (alea.gov).'
+            : isHeavy
+              ? 'Vehicles over 26,001 lbs GVWR require a Commercial Driver\'s License (CDL). Verify all drivers hold a valid Class A or Class B CDL appropriate for the vehicle combination. Contact ALEA (alea.gov) or FMCSA (fmcsa.dot.gov) to verify.'
+              : 'Hauling hazmat requiring placards requires a CDL with a Hazmat (H) endorsement. The H endorsement requires a TSA security threat assessment and federal background check. Verify driver credentials at fmcsa.dot.gov.',
+          service: 'CDL Verification — Not a graphics service; verify with FMCSA or ALEA'
+        });
+      }
+
+      // Leased / owner-operator marking reminder
+      if (isForHire && isInterstate) {
+        recommended.push({
+          label: '"Operated By" / "Leased To" Lettering — If Applicable',
+          detail: 'If you operate under another carrier\'s USDOT authority as a leased owner-operator, 49 CFR 390.21(c) requires the vehicle to show the carrier\'s name and USDOT number PLUS either "OPERATED BY [your legal name]" or "LEASED TO [carrier name]" on both sides of the power unit. A common compliance gap for independent contractors running under a carrier\'s authority.',
+          service: '"Operated By" / "Leased To" Lettering — Both Sides Power Unit (if applicable)'
         });
       }
 
@@ -1101,7 +1204,7 @@ Trailer: ${answers.hasTrailer === 'yes' ? 'YES — Tractor + Separate Trailer' :
 GVWR: ${answers.gvwr || 'Not specified'}
 Operations: ${answers.ops.join(', ') || 'None selected'}
 States: ${answers.states.join(', ') || 'Not specified'}
-Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}${answers.otherHazDesc ? '\nOther Hazmat Description: ' + answers.otherHazDesc : ''}
+Hazmat Types: ${answers.hazmatTypes.join(', ') || 'N/A'}${answers.hazmatPackaging ? '\nHazmat Packaging: ' + answers.hazmatPackaging : ''}${answers.otherHazDesc ? '\nOther Hazmat Description: ' + answers.otherHazDesc : ''}
 ERG Requested: ${answers.wantsERG ? 'YES' : 'No'}
 
 === REQUIRED MARKINGS ===
@@ -1124,6 +1227,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
             operations: answers.ops.join(', '),
             states: answers.states.join(', '),
             hazmat_types: answers.hazmatTypes.join(', '),
+            hazmat_packaging: answers.hazmatPackaging || 'N/A',
             other_hazmat_description: answers.otherHazDesc || 'N/A',
             erg_requested: answers.wantsERG ? 'YES' : 'No',
             required_markings: required.map(r => r.service).join(' | '),
@@ -1148,7 +1252,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         `Based on your answers, here is everything your vehicle is legally required to display — plus our recommendations.`;
 
       // Store for PDF
-      _pdfData = { required, recommended, name, company, email, phone };
+      _pdfData = { required, recommended, name, company, email, phone, vehicles };
 
       // Required items
       const reqEl = document.getElementById('results-required');
@@ -1300,7 +1404,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       if (!window.jspdf) { alert('PDF generator is loading, please try again in a moment.'); return; }
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'letter' });
-      const { required, recommended, name, company, email, phone } = _pdfData;
+      const { required, recommended, name, company, email, phone, vehicles } = _pdfData;
 
       const RED=[204,0,0], DARK=[20,20,20], GRAY=[100,100,100], LGRAY=[220,220,220], ORANGE=[190,80,0], BLUE=[20,80,170], WHITE=[255,255,255], YELLOW=[255,200,0];
       const W=215.9, M=15;
@@ -1308,7 +1412,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       const woNum = 'WO-' + now.toISOString().slice(0,10).replace(/-/g,'') + '-' + Math.floor(Math.random()*900+100);
       const woDate = now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
 
-      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other / Not Specified' };
+      const vtLabels = { pickup:'Pickup Truck / SUV', van:'Cargo Van / Sprinter', boxtruck:'Box Truck / Straight Truck', dump:'Dump Truck / Concrete Mixer', semi:'Semi / Tractor-Trailer', tanker:'Tanker Truck', flatbed:'Flatbed / Lowboy', boat:'Boat / Vessel', other:'Other / Not Specified' };
       const gwLabels = { under10k:'Under 10,001 lbs', '10k26k':'10,001 – 26,000 lbs', over26k:'Over 26,000 lbs', unknown:'Not specified' };
 
       // ── PAGE FOOTER (called for each page) ──
@@ -1359,7 +1463,7 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       doc.text('Prepared by Precision Autographix  —  Not authorized for production until customer approval is received.', M, 47);
 
       // ── INFO BOX (2 columns) ──
-      const boxY = 51, boxH = 37;
+      const boxY = 51, boxH = 47;
       doc.setFillColor(248,248,248); doc.rect(M, boxY, W-M*2, boxH, 'F');
       doc.setDrawColor(...LGRAY); doc.rect(M, boxY, W-M*2, boxH, 'S');
       // divider
@@ -1384,7 +1488,8 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         ['Trailer:', answers.hasTrailer === 'yes' ? 'Tractor + Separate Trailer' : 'Single Unit'],
         [answers.hasTrailer === 'yes' ? 'GCWR:' : 'GVWR:', gwLabels[answers.gvwr] || 'Not specified'],
         ['Operations:', answers.ops.join(', ') || '—'],
-        ['States:', answers.states.join(', ').toUpperCase() || '—']
+        ['States:', answers.states.join(', ').toUpperCase() || '—'],
+        ['Fleet Size:', vehicles || 'Not specified']
       ];
       vRows.forEach(([l, v], i) => {
         doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
@@ -1394,7 +1499,27 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.text(vl[0], rx+22, boxY+12+i*5);
       });
 
-      let y = boxY + boxH + 8;
+      let y = boxY + boxH + 5;
+
+      // ── NEXT STEPS ACTION CHECKLIST ──
+      doc.setFillColor(240, 245, 255);
+      doc.rect(M, y, W-M*2, 30, 'F');
+      doc.setDrawColor(150, 180, 220);
+      doc.rect(M, y, W-M*2, 30, 'S');
+      doc.setFillColor(20, 80, 170);
+      doc.rect(M, y, 3, 30, 'F');
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(20, 60, 140);
+      doc.text('NEXT STEPS — ACTION CHECKLIST', M+5, y+5.5);
+      const nextSteps = [
+        '1. Need a USDOT number? Register free at fmcsa.dot.gov/registration (approx. 20 min)',
+        '2. For-hire interstate carriers needing MC authority: Apply at FMCSA Unified Registration System — fmcsa.dot.gov/registration',
+        '3. Hauling hazmat? Confirm cargo class and UN number on your product Safety Data Sheet (SDS) before each trip',
+        '4. Contact Precision Autographix to schedule graphics production and on-site installation',
+        '5. Verify all required graphics are installed before returning vehicle to service'
+      ];
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(6.8); doc.setTextColor(30, 60, 120);
+      nextSteps.forEach((s, i) => { doc.text(s, M+5, y+11+i*3.8); });
+      y += 34;
 
       // ── WORK ORDER ITEMS TABLE ──
       doc.setTextColor(...RED); doc.setFont('helvetica','bold'); doc.setFontSize(9);
