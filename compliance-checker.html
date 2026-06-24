@@ -1661,32 +1661,55 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
       y += 34;
 
       // ── REQUIRED MARKINGS TABLE ──
+      // Parse fleet size for fleet total column
+      const fleetNum = parseInt((vehicles || '').replace(/[^0-9]/g, ''), 10);
+      const showFleet = !isNaN(fleetNum) && fleetNum > 1;
+
       doc.setTextColor(...RED); doc.setFont('helvetica','bold'); doc.setFontSize(9);
       doc.text('REQUIRED MARKINGS', M, y);
+      if (showFleet) {
+        doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...GRAY);
+        doc.text(`Fleet quantities based on ${fleetNum} vehicles`, M+80, y);
+      }
       doc.setFillColor(...LGRAY); doc.rect(M, y+1.5, W-M*2, 0.4, 'F');
       y += 5;
 
-      const tableBody = required.map((req, i) => [
-        (i+1).toString(),
-        req.label,
-        req.placement || '—',
-        (req.qty || 1).toString(),
-        (req.workNotes || '—') + (req.penalty ? '\nPENALTY: ' + req.penalty : '')
-      ]);
+      const tableBody = required.map((req, i) => {
+        const row = [
+          (i+1).toString(),
+          req.label,
+          req.placement || '—',
+          (req.qty || 1).toString(),
+          (req.workNotes || '—') + (req.penalty ? '\nPENALTY: ' + req.penalty : '')
+        ];
+        if (showFleet) row.splice(4, 0, ((req.qty || 1) * fleetNum).toString());
+        return row;
+      });
+
+      const reqColStyles = showFleet ? {
+        0: { cellWidth: 7, halign: 'center' },
+        1: { cellWidth: 42, fontStyle: 'bold' },
+        2: { cellWidth: 32 },
+        3: { cellWidth: 10, halign: 'center' },
+        4: { cellWidth: 14, halign: 'center', fontStyle: 'bold', textColor: RED },
+        5: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+      } : {
+        0: { cellWidth: 8, halign: 'center' },
+        1: { cellWidth: 48, fontStyle: 'bold' },
+        2: { cellWidth: 38 },
+        3: { cellWidth: 10, halign: 'center' },
+        4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+      };
 
       doc.autoTable({
         startY: y,
-        head: [['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
+        head: [showFleet
+          ? ['#', 'Item / Description', 'Placement', 'Qty ea.', 'Fleet Total', 'Spec / Notes']
+          : ['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
         body: tableBody,
         styles: { fontSize: 7.5, cellPadding: 2.5, textColor: DARK, lineColor: LGRAY, lineWidth: 0.2 },
         headStyles: { fillColor: RED, textColor: WHITE, fontStyle: 'bold', fontSize: 7.5 },
-        columnStyles: {
-          0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 48, fontStyle: 'bold' },
-          2: { cellWidth: 38 },
-          3: { cellWidth: 10, halign: 'center' },
-          4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
-        },
+        columnStyles: reqColStyles,
         alternateRowStyles: { fillColor: [250,250,250] },
         margin: { left: M, right: M },
         didDrawPage: addFooter
@@ -1709,26 +1732,40 @@ ${recommended.map(r => '• ' + r.service).join('\n')}
         doc.text('Non-bulk containers (jugs, drums, totes): placards & ERG required ONLY when aggregate weight per hazmat class reaches 1,001 lbs (49 CFR 172.504 Table 2).', M+3, y+3.5);
         doc.text('Verify actual cargo weight before each trip. A typical service van with a few gallons of concentrate is well under this threshold.', M+3, y+7);
         y += 12;
-        const condBody = conditional.map((req, i) => [
-          (i+1).toString(),
-          req.label,
-          req.placement || '—',
-          (req.qty || 1).toString(),
-          (req.workNotes || '—')
-        ]);
+        const condBody = conditional.map((req, i) => {
+          const row = [
+            (i+1).toString(),
+            req.label,
+            req.placement || '—',
+            (req.qty || 1).toString(),
+            (req.workNotes || '—')
+          ];
+          if (showFleet) row.splice(4, 0, ((req.qty || 1) * fleetNum).toString());
+          return row;
+        });
+        const condColStyles = showFleet ? {
+          0: { cellWidth: 7, halign: 'center' },
+          1: { cellWidth: 42, fontStyle: 'bold' },
+          2: { cellWidth: 32 },
+          3: { cellWidth: 10, halign: 'center' },
+          4: { cellWidth: 14, halign: 'center', fontStyle: 'bold', textColor: AMBER },
+          5: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+        } : {
+          0: { cellWidth: 8, halign: 'center' },
+          1: { cellWidth: 48, fontStyle: 'bold' },
+          2: { cellWidth: 38 },
+          3: { cellWidth: 10, halign: 'center' },
+          4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
+        };
         doc.autoTable({
           startY: y,
-          head: [['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
+          head: [showFleet
+            ? ['#', 'Item / Description', 'Placement', 'Qty ea.', 'Fleet Total', 'Spec / Notes']
+            : ['#', 'Item / Description', 'Placement', 'Qty', 'Spec / Notes']],
           body: condBody,
           styles: { fontSize: 7.5, cellPadding: 2.5, textColor: DARK, lineColor: [220,200,150], lineWidth: 0.2 },
           headStyles: { fillColor: AMBER, textColor: WHITE, fontStyle: 'bold', fontSize: 7.5 },
-          columnStyles: {
-            0: { cellWidth: 8, halign: 'center' },
-            1: { cellWidth: 48, fontStyle: 'bold' },
-            2: { cellWidth: 38 },
-            3: { cellWidth: 10, halign: 'center' },
-            4: { cellWidth: 'auto', textColor: GRAY, fontSize: 7 }
-          },
+          columnStyles: condColStyles,
           alternateRowStyles: { fillColor: [255, 252, 235] },
           margin: { left: M, right: M },
           didDrawPage: addFooter
