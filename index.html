@@ -22,13 +22,101 @@
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Precision Autographix",
-    "description": "Cut vinyl graphics for fleet branding, USDOT compliance markings, boat lettering, and on-site installation serving Baldwin County, AL.",
+    "description": "Cut vinyl graphics for fleet branding, USDOT compliance markings, boat lettering, and on-site installation serving Baldwin County and Mobile County, AL.",
     "url": "https://www.precisionautographix.com",
-    "areaServed": {
-      "@type": "AdministrativeArea",
-      "name": "Baldwin County, Alabama"
+    "email": "corey@precisionautographix.com",
+    "image": "https://www.precisionautographix.com/images/logo.png",
+    "logo": "https://www.precisionautographix.com/images/logo.png",
+    "priceRange": "$$",
+    "areaServed": [
+      { "@type": "AdministrativeArea", "name": "Baldwin County, Alabama" },
+      { "@type": "AdministrativeArea", "name": "Mobile County, Alabama" },
+      { "@type": "City", "name": "Daphne, Alabama" },
+      { "@type": "City", "name": "Fairhope, Alabama" },
+      { "@type": "City", "name": "Foley, Alabama" },
+      { "@type": "City", "name": "Gulf Shores, Alabama" },
+      { "@type": "City", "name": "Orange Beach, Alabama" },
+      { "@type": "City", "name": "Spanish Fort, Alabama" },
+      { "@type": "City", "name": "Mobile, Alabama" }
+    ],
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "30.5035",
+      "longitude": "-87.7529"
     },
-    "serviceType": ["Fleet Branding", "USDOT Compliance Graphics", "Boat Names and Numbers", "On-Site Installation", "Custom Vinyl Graphics"]
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Vinyl Graphics Services",
+      "itemListElement": [
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fleet Branding Graphics", "description": "Consistent cut vinyl graphics across your entire fleet — trucks, vans, and trailers." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "USDOT Compliance Graphics", "description": "DOT numbers, company name lettering, hazmat placards, and safety markings." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "On-Site Installation", "description": "We come to your location in Baldwin and Mobile County — no downtime, no towing." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Boat Names and Numbers", "description": "Custom cut vinyl boat names, hailing ports, and USCG hull registration numbers." } },
+        { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Custom Vinyl Design", "description": "In-house design and production for custom vehicle and equipment graphics." } }
+      ]
+    },
+    "sameAs": [
+      "https://www.precisionautographix.com"
+    ]
+  }
+  </script>
+
+  <!-- Service Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "USDOT Compliance Graphics",
+    "provider": { "@type": "LocalBusiness", "name": "Precision Autographix" },
+    "areaServed": "Baldwin County and Mobile County, Alabama",
+    "description": "DOT number installation, company name lettering, hazmat placards, and safety markings to keep your commercial vehicles legal and inspection-ready.",
+    "name": "USDOT Compliance Markings — Baldwin County, AL"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "serviceType": "Fleet Vehicle Graphics",
+    "provider": { "@type": "LocalBusiness", "name": "Precision Autographix" },
+    "areaServed": "Baldwin County and Mobile County, Alabama",
+    "description": "Professional cut vinyl fleet branding graphics for trucks, vans, trailers, and commercial vehicles. On-site installation throughout Baldwin and Mobile County.",
+    "name": "Fleet Branding Graphics — Baldwin County, AL"
+  }
+  </script>
+
+  <!-- FAQ Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do I need a USDOT number in Alabama?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes — if your commercial vehicle crosses state lines and weighs over 10,001 lbs, or operates intrastate at over 26,001 lbs (Alabama ALEA threshold), you are required to display a USDOT number on both sides of the vehicle. Use our free DOT Compliance Checker to find out exactly what your vehicle needs." }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you do on-site installation in Baldwin County?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes — on-site installation is our primary service model. We bring our equipment to your location in Baldwin County and Mobile County so your vehicles stay on the road. No towing, no downtime." }
+      },
+      {
+        "@type": "Question",
+        "name": "What areas do you serve?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Our primary service area is Baldwin County and Mobile County, Alabama — including Daphne, Fairhope, Foley, Gulf Shores, Orange Beach, Spanish Fort, and Mobile. We also schedule installs outside this area with advance notice; a travel fee applies." }
+      },
+      {
+        "@type": "Question",
+        "name": "What materials do you use for vinyl graphics?",
+        "acceptedAnswer": { "@type": "Answer", "text": "We use premium 3M, Avery, and Orafol vinyl materials — the same brands specified for DOT-compliant and commercial-grade applications. All graphics are precision-cut on professional equipment." }
+      },
+      {
+        "@type": "Question",
+        "name": "Can you design vehicle graphics from scratch?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Yes. Our in-house design team will build production-ready artwork based on your logo, brand colors, and layout preferences. No existing design file is required to get started." }
+      }
+    ]
   }
   </script>
 
@@ -82,29 +170,30 @@
 
   <section id="services" class="services">
     <h2>What We Do</h2>
+    <p class="section-sub" style="max-width:640px;margin:0 auto 2rem;color:#aaa;text-align:center;">Cut vinyl graphics, DOT compliance markings, and on-site installation for fleets and commercial vehicles throughout Baldwin County and Mobile County, AL.</p>
     <div class="services-grid">
       <div class="service-card">
-        <img src="images/redline_truck.png" alt="Fleet Branding" class="service-img" />
+        <img src="images/redline_truck.png" alt="Cut vinyl fleet truck branding Baldwin County Alabama" class="service-img" />
         <h3>Fleet Branding</h3>
         <p>Consistent, professional cut vinyl graphics across your entire fleet. Trucks, vans, trailers — every vehicle, on brand.</p>
       </div>
       <div class="service-card">
-        <img src="images/compliance_usdotnumbers.jpg" alt="Compliance Graphics" class="service-img" />
+        <img src="images/compliance_usdotnumbers.jpg" alt="USDOT compliance number lettering installation Baldwin County Alabama" class="service-img" />
         <h3>Compliance Graphics</h3>
         <p>DOT numbers, safety markings, regulatory decals, and USDOT compliance lettering. We keep your fleet legal and inspection-ready.</p>
       </div>
       <div class="service-card">
-        <img src="images/onsiteinstallation_servicevan.jpg" alt="On-Site Installation" class="service-img" />
+        <img src="images/onsiteinstallation_servicevan.jpg" alt="On-site vinyl graphics installation service van Baldwin County Alabama" class="service-img" />
         <h3>On-Site Installation</h3>
         <p>We come to your location. No downtime, no logistics hassle — we install on-site so your vehicles stay on the road.</p>
       </div>
       <div class="service-card">
-        <img src="images/boatnames_sternname.jpg" alt="Boat Names and Numbers" class="service-img" />
+        <img src="images/boatnames_sternname.jpg" alt="Custom cut vinyl boat name stern lettering Baldwin County Alabama" class="service-img" />
         <h3>Boat Names &amp; Numbers</h3>
         <p>Custom cut vinyl boat names, hailing ports, and hull registration numbers. Clean, marine-grade application built to last on the water.</p>
       </div>
       <div class="service-card">
-        <img src="images/customdesign_roofingtruck.jpg" alt="Custom Design" class="service-img" />
+        <img src="images/customdesign_roofingtruck.jpg" alt="Custom vinyl graphic design roofing truck Baldwin County Alabama" class="service-img" />
         <h3>Custom Design</h3>
         <p>No design? No problem. Our in-house team builds graphics that fit your brand and are production-ready to cut.</p>
       </div>
@@ -128,71 +217,71 @@
 
       <!-- Fleet Branding -->
       <div class="gallery-item" data-cat="fleet">
-        <img src="images/fleetbranding_pickuptruck.jpg" alt="Fleet pickup truck branding" />
+        <img src="images/fleetbranding_pickuptruck.jpg" alt="Cut vinyl fleet branding pickup truck Baldwin County Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Fleet Pickup Truck</span></div>
       </div>
       <div class="gallery-item" data-cat="fleet">
-        <img src="images/fleetbranding_cargovan.jpg" alt="Fleet cargo van branding" />
+        <img src="images/fleetbranding_cargovan.jpg" alt="Cut vinyl fleet branding cargo van commercial vehicle Baldwin County AL" />
         <div class="mockup-overlay"><span class="mockup-label">Fleet Cargo Van</span></div>
       </div>
       <div class="gallery-item" data-cat="fleet">
-        <img src="images/fleetbranding_enclosedtrailer.jpg" alt="Fleet enclosed trailer branding" />
+        <img src="images/fleetbranding_enclosedtrailer.jpg" alt="Cut vinyl fleet branding enclosed trailer commercial graphics Baldwin County AL" />
         <div class="mockup-overlay"><span class="mockup-label">Fleet Enclosed Trailer</span></div>
       </div>
 
       <!-- Compliance -->
       <div class="gallery-item" data-cat="compliance">
-        <img src="images/compliance_usdotnumbers.jpg" alt="USDOT compliance numbers" />
+        <img src="images/compliance_usdotnumbers.jpg" alt="USDOT number lettering DOT compliance markings commercial vehicle Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">USDOT Numbers</span></div>
       </div>
       <div class="gallery-item" data-cat="compliance">
-        <img src="images/compliance_hazardplacard.jpg" alt="Hazard placard decals" />
+        <img src="images/compliance_hazardplacard.jpg" alt="Hazmat placard decal DOT compliance commercial vehicle Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Hazard Placards</span></div>
       </div>
       <div class="gallery-item" data-cat="compliance">
-        <img src="images/compliance_safetymarkings.jpg" alt="Safety marking decals" />
+        <img src="images/compliance_safetymarkings.jpg" alt="DOT safety marking decals commercial truck fleet Baldwin County Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Safety Markings</span></div>
       </div>
 
       <!-- On-Site Installation -->
       <div class="gallery-item" data-cat="onsite">
-        <img src="images/onsiteinstallation_servicevan.jpg" alt="On-site service van installation" />
+        <img src="images/onsiteinstallation_servicevan.jpg" alt="On-site vinyl graphics installation service van fleet branding Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Service Van Install</span></div>
       </div>
       <div class="gallery-item" data-cat="onsite">
-        <img src="images/onsiteinstallation_worktruck.jpg" alt="On-site work truck installation" />
+        <img src="images/onsiteinstallation_worktruck.jpg" alt="On-site vinyl graphics installation work truck Baldwin County Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Work Truck Install</span></div>
       </div>
       <div class="gallery-item" data-cat="onsite">
-        <img src="images/onsiteinstallation_equipmenttrailer.jpg" alt="On-site equipment trailer installation" />
+        <img src="images/onsiteinstallation_equipmenttrailer.jpg" alt="On-site vinyl graphics installation equipment trailer commercial Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Equipment Trailer Install</span></div>
       </div>
 
       <!-- Boat Graphics -->
       <div class="gallery-item" data-cat="boat">
-        <img src="images/boatnames_sternname.jpg" alt="Boat stern name lettering" />
+        <img src="images/boatnames_sternname.jpg" alt="Custom cut vinyl boat name stern lettering Baldwin County Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Stern Name</span></div>
       </div>
       <div class="gallery-item" data-cat="boat">
-        <img src="images/boatnames_hailingport.jpg" alt="Boat hailing port lettering" />
+        <img src="images/boatnames_hailingport.jpg" alt="Cut vinyl boat hailing port lettering USCG compliant Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Hailing Port</span></div>
       </div>
       <div class="gallery-item" data-cat="boat">
-        <img src="images/boatnumbers_registration.jpg" alt="Boat registration numbers" />
+        <img src="images/boatnumbers_registration.jpg" alt="Cut vinyl boat hull registration numbers Alabama state compliant" />
         <div class="mockup-overlay"><span class="mockup-label">Registration Numbers</span></div>
       </div>
 
       <!-- Custom Design -->
       <div class="gallery-item" data-cat="custom">
-        <img src="images/customdesign_roofingtruck.jpg" alt="Custom roofing truck graphics" />
+        <img src="images/customdesign_roofingtruck.jpg" alt="Custom vinyl graphics roofing company truck fleet branding Baldwin County AL" />
         <div class="mockup-overlay"><span class="mockup-label">Roofing Truck</span></div>
       </div>
       <div class="gallery-item" data-cat="custom">
-        <img src="images/customdesign_offroadvehicle.jpg" alt="Custom off-road vehicle graphics" />
+        <img src="images/customdesign_offroadvehicle.jpg" alt="Custom vinyl graphics off-road vehicle ATV equipment decals Alabama" />
         <div class="mockup-overlay"><span class="mockup-label">Off-Road Vehicle</span></div>
       </div>
       <div class="gallery-item" data-cat="custom">
-        <img src="images/customdesign_foodtrailer.jpg" alt="Custom food trailer graphics" />
+        <img src="images/customdesign_foodtrailer.jpg" alt="Custom vinyl graphics food trailer concession business branding Baldwin County AL" />
         <div class="mockup-overlay"><span class="mockup-label">Food Trailer</span></div>
       </div>
 
@@ -249,6 +338,7 @@
   <section id="about" class="about">
     <div class="about-content">
       <h2>About Precision Autographix</h2>
+      <h3 style="color:#aaa;font-size:1rem;font-weight:500;margin:-0.5rem 0 1rem;text-transform:none;letter-spacing:0;">Fleet Graphics &amp; DOT Compliance Specialists — Baldwin County, Alabama</h3>
       <p>We're a cut vinyl graphics company specializing in fleet branding, compliance markings, and on-site installation. We bring the shop to you — no towing, no downtime, no hassle. Premium materials, precision cuts, and graphics that hold up on the road.</p>
       <p style="color: var(--red); font-weight: 700; margin-bottom: 1.5rem;">Proudly serving Baldwin County, AL and surrounding areas.</p>
       <ul class="about-list">
@@ -257,6 +347,44 @@
         <li>✔ Fast turnaround</li>
         <li>✔ Satisfaction guaranteed</li>
       </ul>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" style="padding:4rem 1.5rem;background:#111;border-top:1px solid #222;">
+    <div style="max-width:720px;margin:0 auto;">
+      <h2 style="color:#e8e8e8;font-size:1.6rem;margin-bottom:0.5rem;">Frequently Asked Questions</h2>
+      <p style="color:#888;font-size:0.9rem;margin-bottom:2.5rem;">Fleet graphics, DOT compliance, and on-site installation — Baldwin &amp; Mobile County, AL</p>
+
+      <div style="border-top:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">Do I need a USDOT number in Alabama?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">Yes — if your commercial vehicle crosses state lines and weighs over 10,001 lbs GVWR, or operates intrastate at over 26,001 lbs (Alabama ALEA threshold), you are required to display a USDOT number on both sides of the vehicle. Use our free <a href="compliance-checker.html" style="color:#cc0000;">DOT Compliance Checker</a> to find out exactly what your vehicle needs.</p>
+      </div>
+
+      <div style="border-top:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">Do you install on-site in Baldwin County?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">Yes — on-site installation is our primary service model. We come to your location throughout Baldwin County and Mobile County so your vehicles stay on the road. No towing, no downtime. We also schedule installs outside this area with advance notice.</p>
+      </div>
+
+      <div style="border-top:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">What areas do you serve?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">Our primary service area covers Baldwin County and Mobile County — including Daphne, Fairhope, Foley, Gulf Shores, Orange Beach, Spanish Fort, and Mobile. Outside this area, we schedule with advance notice and a travel fee applies.</p>
+      </div>
+
+      <div style="border-top:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">What materials do you use?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">We use premium 3M, Avery, and Orafol vinyl — the same brands specified for DOT-compliant and commercial-grade applications. All graphics are precision-cut on professional equipment for clean edges and long-lasting adhesion.</p>
+      </div>
+
+      <div style="border-top:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">Can you design vehicle graphics from scratch?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">Yes. Our in-house design team will build production-ready artwork based on your logo, brand colors, and layout preferences. No existing design file required — just tell us what you need.</p>
+      </div>
+
+      <div style="border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a;padding:1.25rem 0;">
+        <h3 style="color:#e8e8e8;font-size:1rem;font-weight:700;margin:0 0 0.5rem;">How much does fleet graphics cost?</h3>
+        <p style="color:#aaa;font-size:0.9rem;margin:0;line-height:1.6;">Pricing depends on the number of vehicles, graphics complexity, and whether on-site installation is needed. We provide free quotes — <a href="#contact" style="color:#cc0000;">submit your project details</a> and we'll get back to you within 24 hours.</p>
+      </div>
     </div>
   </section>
 
