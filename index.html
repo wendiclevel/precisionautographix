@@ -426,12 +426,20 @@
     </div>
 
     <script>
+      const ZAPIER_WEBHOOK = 'https://hooks.zapier.com/hooks/catch/28097521/42l7qo0/';
       const form = document.getElementById('quote-form');
       const thanks = document.getElementById('form-thanks');
       form.addEventListener('submit', async e => {
         e.preventDefault();
         const data = new FormData(form);
-        const res = await fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } });
+        const payload = Object.fromEntries(data.entries());
+
+        // Fire Formspree (email) and Zapier (HubSpot) simultaneously
+        const [res] = await Promise.all([
+          fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } }),
+          fetch(ZAPIER_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => {})
+        ]);
+
         if (res.ok) {
           form.style.display = 'none';
           thanks.style.display = 'block';
