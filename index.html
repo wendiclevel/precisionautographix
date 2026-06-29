@@ -437,7 +437,7 @@
         // Fire Formspree (email) and Zapier (HubSpot) simultaneously
         const [res] = await Promise.all([
           fetch(form.action, { method: 'POST', body: data, headers: { 'Accept': 'application/json' } }),
-          fetch(ZAPIER_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(() => {})
+          fetch(ZAPIER_WEBHOOK, { method: 'POST', body: new URLSearchParams(payload) }).catch(() => {})
         ]);
 
         if (res.ok) {
