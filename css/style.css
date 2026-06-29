@@ -67,6 +67,15 @@ header {
 
 .btn-nav:hover { background: var(--red-hot) !important; }
 
+.nav-phone {
+  color: var(--silver) !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+.nav-phone:hover { color: var(--white) !important; }
+
 /* ===== HERO ===== */
 .hero {
   min-height: 100vh;
